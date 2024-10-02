@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "chart.js": "^4.4.4",
+    "query-string": "^9.1.0",
+    "react-chartjs-2": "^5.2.0",
+    "react-countup": "^6.5.3"
+  }
+}

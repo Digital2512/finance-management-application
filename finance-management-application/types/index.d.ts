@@ -202,10 +202,14 @@ declare interface BankTabItemProps {
   appwriteItemId?: string;
 }
 
-declare interface TotlaBalanceBoxProps {
+declare interface TotalBalanceBoxProps {
   accounts: Account[];
   totalBanks: number;
   totalCurrentBalance: number;
+  totalIncomingBalance: number;
+  totalCurrentMonthDebtBalance: number;
+  totalLeftToSpendBalance: number;
+  totalExpenseBalance: number
 }
 
 declare interface FooterProps {
@@ -247,7 +251,8 @@ declare interface CategoryProps {
 }
 
 declare interface DoughnutChartProps {
-  accounts: Account[];
+  totalExpenseBalance: number,
+  totalCurrentMonthDebtBalance: number
 }
 
 declare interface PaymentTransferFormProps {

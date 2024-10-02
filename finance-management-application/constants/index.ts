@@ -1,23 +1,51 @@
 export const sidebarLinks = [
   {
-    imgURL: "/icons/home.svg",
+    imgURL: "/icons/home-icon-black.svg",
+    chosenImgURL: "/icons/home-icon-white.svg",
     route: "/",
     label: "Home",
   },
   {
-    imgURL: "/icons/dollar-circle.svg",
+    imgURL: "/icons/income-expense-icon-black.svg",
+    chosenImgURL: "/icons/income-expense-icon-white.svg",
     route: "/my-banks",
-    label: "My Banks",
+    label: "Income/Expense",
   },
   {
-    imgURL: "/icons/transaction.svg",
-    route: "/transaction-history",
+    imgURL: "/icons/loan-icon-black.svg",
+    chosenImgURL: "/icons/loan-icon-white.svg",
+    route: "/my-banks",
+    label: "Loans",
+  },
+  {
+    imgURL: "/icons/debt-icon-black.svg",
+    chosenImgURL: "/icons/debt-icon-white.svg",
+    route: "/my-banks",
+    label: "Debts",
+  },
+  {
+    imgURL: "/icons/investment-icon-black.svg",
+    chosenImgURL: "/icons/investment-icon-white.svg",
+    route: "/payment-transfer",
+    label: "Investment",
+  },
+  {
+    imgURL: "/icons/transaction-history-icon-black.svg",
+    chosenImgURL: "/icons/transaction-history-icon-white.svg",
+    route: "/payment-transfer",
     label: "Transaction History",
   },
   {
-    imgURL: "/icons/money-send.svg",
+    imgURL: "/icons/group-icon-black.svg",
+    chosenImgURL: "/icons/group-icon-white.svg",
     route: "/payment-transfer",
-    label: "Transfer Funds",
+    label: "Groups",
+  },
+  {
+    imgURL: "/icons/logout-icon-black.svg",
+    chosenImgURL: "/icons/logout-icon-white.svg",
+    route: "/payment-transfer",
+    label: "Logout",
   },
 ];
 
