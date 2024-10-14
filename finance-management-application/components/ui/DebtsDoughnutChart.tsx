@@ -2,28 +2,33 @@
 
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, Plugin } from "chart.js";
 import { Doughnut } from 'react-chartjs-2';
+import { useEffect, useState } from "react";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-interface DoughnutChartProps {
-  totalExpenseBalance: number;
-  totalCurrentMonthDebtBalance: number;
+interface DebtsDoughnutChartProps {
+  debts: Array<{ category: string, amount: number }>;
 }
 
-const DoughnutChart = ({ totalExpenseBalance, totalCurrentMonthDebtBalance }: DoughnutChartProps) => {
+const DebtsDoughnutChart = ({ debts }: DebtsDoughnutChartProps) => {
 
+  // Prepare the data for the doughnut chart
+  const debtsData = debts.map(debt => debt.amount);  // Extract amounts
+  const debtsLabels = debts.map(debt => debt.category);  // Extract categories
+
+  // Include debt in the chart data
   const data = {
     datasets: [
       {
-        data: [totalExpenseBalance, totalCurrentMonthDebtBalance],
-        backgroundColor: ['#0747b6', '#2265d8'],
+        data: [...debtsData],
+        backgroundColor: ['#0747b6', '#2265d8', '#f0c419', '#1f77b4', '#ff7f0e', '#d62728'],  // Add more colors if needed
         borderWidth: 1
       }
     ],
-    labels: ['Expense', 'Debt']
+    labels: [...debtsLabels, 'Debt']  // Include "Debt" as a category
   };
 
-  // Plugin to display text in the center
+  // Plugin to display total in the center
   const centerTextPlugin: Plugin<'doughnut'> = {
     id: "centerText",
     beforeDraw: (chart) => {
@@ -32,7 +37,6 @@ const DoughnutChart = ({ totalExpenseBalance, totalCurrentMonthDebtBalance }: Do
       const height = chart.height;
       const { datasets } = chart.data;
 
-      // Ensure datasets[0].data is an array of numbers
       const total = (datasets[0].data as number[]).reduce((acc: number, val: number) => {
         return acc + val;
       }, 0);
@@ -68,4 +72,4 @@ const DoughnutChart = ({ totalExpenseBalance, totalCurrentMonthDebtBalance }: Do
   );
 };
 
-export default DoughnutChart;
+export default DebtsDoughnutChart;

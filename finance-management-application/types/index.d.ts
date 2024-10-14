@@ -29,8 +29,9 @@ declare type User = {
   $id: string;
   email: string;
   userId: string;
-  dwollaCustomerUrl: string;
-  dwollaCustomerId: string;
+  // MUST DO: FIND AN APP WHICH ALLOWS FOR BANK ACCOUNT CONNECTION TO THE APP
+  // dwollaCustomerUrl: string;
+  // dwollaCustomerId: string;
   firstName: string;
   lastName: string;
   address1: string;
@@ -39,7 +40,15 @@ declare type User = {
   postalCode: string;
   dateOfBirth: string;
   ssn: string;
+  goals: Goals[];
 };
+
+declare type Goals = {
+  goalName: string;
+  goalType: string;
+  goalCurrentAmount: number;
+  goalAmount: number;
+}
 
 declare type NewUserParams = {
   userId: string;
@@ -58,8 +67,8 @@ declare type Account = {
   name: string;
   type: string;
   subtype: string;
-  appwriteItemId: string;
-  sharableId: string;
+  // appwriteItemId: string;
+  accountSharableId: string;
 };
 
 declare type Transaction = {
@@ -88,7 +97,21 @@ declare type Bank = {
   accessToken: string;
   fundingSourceUrl: string;
   userId: string;
-  sharableId: string;
+  bankSharableId: string;
+  typeOfAccount: string;
+  typeOfCard: string;
+  cardNumber: string;
+  expiryDate: string;
+};
+
+declare type bankCardDetails = {
+  name: string;
+  currentBalance: number;
+  cardNumber: string;
+  expiryDate: string;
+  typeOfAccount: string;
+  typeOfCard: string;
+  mask: string;
 };
 
 declare type AccountTypes =
@@ -136,15 +159,45 @@ declare type NewDwollaCustomerParams = {
   ssn: string;
 };
 
-declare interface CreditCardProps {
-  account: Account;
+declare type Badges = {
+   name: string;
+   userID: string;
+   scoreExp: number;
+}
+
+declare type Challenges = {
+  name: string;
+  userID: string;
+  scorePoints: number;
+}
+
+declare type Community = {
+  name: string;
+  userID: string;
+  scoreExp: number;
+}
+
+declare type LeaderboardProfile = {
+  name: string;
+  location: string;
+  scoreExp: number;
+  img: string;
+  dateLastUpdated: Date;
+  badges: Badges[];       
+  challenges: Challenges[]; 
+  community: Community[];   
+};
+
+
+declare interface BankCardProps {
+  bankCardDetails: bankCardDetails[];
   userName: string;
   showBalance?: boolean;
 }
 
 declare interface BankInfoProps {
   account: Account;
-  appwriteItemId?: string;
+  // appwriteItemId?: string;
   type: "full" | "card";
 }
 
@@ -199,18 +252,44 @@ declare interface BankDropdownProps {
 
 declare interface BankTabItemProps {
   account: Account;
-  appwriteItemId?: string;
+  // appwriteItemId?: string;
 }
 
-declare interface TotalBalanceBoxProps {
+declare interface ExpenseBoxProps {
   accounts: Account[];
   totalBanks: number;
-  totalCurrentBalance: number;
-  totalIncomingBalance: number;
-  totalCurrentMonthDebtBalance: number;
   totalLeftToSpendBalance: number;
-  totalExpenseBalance: number
+  expenseData: Expenses[];
 }
+
+  type Expenses = {
+    category: string;
+    amount: number;
+  };
+
+declare interface SavingsBoxProps {
+  accounts: Account[];
+  totalBanks: number;
+  totalLeftToSaveBalance: number;
+  savingsData: Savings[];
+}
+
+    type Savings = {
+      category: string;
+      amount: number;
+  };
+
+declare interface DebtsBoxProps {
+  accounts: Account[];
+  totalBanks: number;
+  totalLeftToPayBalance: number;
+  debtsData : Debts[];
+}
+
+  type Debts = {
+    category: string;
+    amount: number;
+  };
 
 declare interface FooterProps {
   user: User;
@@ -219,7 +298,8 @@ declare interface FooterProps {
 declare interface RightSidebarProps {
   user: User;
   transactions: Transaction[];
-  banks: Bank[] & Account[];
+  bankAccounts: Bank[] & Account[];
+  goalsTracker: Goals[];
 }
 
 declare interface SiderbarProps {
@@ -229,7 +309,7 @@ declare interface SiderbarProps {
 declare interface RecentTransactionsProps {
   accounts: Account[];
   transactions: Transaction[];
-  appwriteItemId: string;
+  // appwriteItemId: string;
   page: number;
 }
 
@@ -265,7 +345,7 @@ declare interface getAccountsProps {
 }
 
 declare interface getAccountProps {
-  appwriteItemId: string;
+  // appwriteItemId: string;
 }
 
 declare interface getInstitutionProps {
@@ -330,4 +410,10 @@ declare interface getBankProps {
 
 declare interface getBankByAccountIdProps {
   accountId: string;
+}
+
+declare interface LeaderboardProfileProps{
+  leaderboardData: LeaderboardProfile[];
+  selectedSection?: string;
+  selectedOption?: string;
 }

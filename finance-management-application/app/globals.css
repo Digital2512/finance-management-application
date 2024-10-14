@@ -117,19 +117,51 @@
     @apply flex flex-col justify-between gap-8;
   }
 
-  .total-balance {
+  .expense-balance {
     @apply flex w-full items-center gap-4 rounded-xl border border-gray-200 p-4 shadow-chart sm:gap-6 sm:p-6;
   }
 
-  .total-balance-chart {
+  .expense-chart {
     @apply flex size-full max-w-[100px] items-center sm:max-w-[120px];
   }
 
-  .total-balance-label {
+  .expense-label {
     @apply text-14 font-medium text-gray-600;
   }
 
-  .total-balance-amount {
+  .expense-amount {
+    @apply text-24 lg:text-30 flex-1 font-semibold text-gray-900;
+  }
+
+  .savings-balance {
+    @apply flex w-full items-center gap-4 rounded-xl border border-gray-200 p-4 shadow-chart sm:gap-6 sm:p-6;
+  }
+
+  .savings-chart {
+    @apply flex size-full max-w-[100px] items-center sm:max-w-[120px];
+  }
+
+  .savings-label {
+    @apply text-14 font-medium text-gray-600;
+  }
+
+  .savings-amount {
+    @apply text-24 lg:text-30 flex-1 font-semibold text-gray-900;
+  }
+
+  .debt-balance {
+    @apply flex w-full items-center gap-4 rounded-xl border border-gray-200 p-4 shadow-chart sm:gap-6 sm:p-6;
+  }
+
+  .debt-chart {
+    @apply flex size-full max-w-[100px] items-center sm:max-w-[120px];
+  }
+
+  .debt-label {
+    @apply text-14 font-medium text-gray-600;
+  }
+
+  .debt-amount {
     @apply text-24 lg:text-30 flex-1 font-semibold text-gray-900;
   }
 
@@ -159,7 +191,7 @@
   }
 
   .profile-banner {
-    @apply h-[120px] w-full bg-gradient-mesh bg-cover bg-no-repeat;
+    @apply h-[120px] w-full bg-gradient-to-r from-[#2968d6] via-[#a9c3ef] to-[#d4e1f7] bg-cover bg-no-repeat;
   }
 
   .profile {
@@ -222,7 +254,7 @@
 
   /* Bank Card */
   .bank-card {
-    @apply relative flex h-[190px] w-full max-w-[320px] justify-between rounded-[20px] border border-white bg-bank-gradient shadow-creditCard backdrop-blur-[6px];
+    @apply relative flex h-[175px] w-full max-w-[400px] justify-between rounded-[20px] border border-white bg-bank-gradient shadow-creditCard backdrop-blur-[6px];
   }
 
   .bank-card_content {
@@ -230,8 +262,13 @@
   }
 
   .bank-card_icon {
-    @apply flex size-full flex-1 flex-col items-end justify-between rounded-r-[20px] bg-bank-gradient bg-cover bg-center bg-no-repeat py-5 pr-5;
+    @apply flex size-full flex-1 flex-col items-end justify-between rounded-r-[20px] bg-bank-gradient bg-cover bg-center bg-no-repeat py-5 pr-5 ;
   }
+
+  .bank-card_icon span {
+    @apply text-white text-10 font-semibold mr-2 ml-1; /* Adjust size and spacing */
+  }
+  
 
   /* Bank Info */
   .bank-info {
@@ -361,18 +398,224 @@
 
   /* Sidebar */
   .sidebar {
-    @apply sticky left-0 top-0 flex h-screen w-fit flex-col justify-between border-r border-gray-200 bg-white pt-8 text-white sm:p-4 xl:p-6 2xl:w-[355px] max-md:w-16;
+    @apply sticky z-50 left-0 top-0 flex h-screen w-fit flex-col justify-between border-r border-gray-200 bg-white pt-8 text-white max-md:hidden sm:p-4 xl:p-6 2xl:w-[355px];
   }
-
+  
   .sidebar-logo {
     @apply 2xl:text-26 font-ibm-plex-serif text-[26px] font-bold text-black-1 max-xl:hidden;
   }
-
+  
   .sidebar-link {
     @apply flex gap-3 items-center py-1 md:p-3 2xl:p-4 rounded-lg justify-center xl:justify-start;
   }
-
+  
   .sidebar-label {
-    @apply text-16 font-semibold; /* General styling */
+    @apply text-16 font-semibold max-xl:hidden; 
+  }
+}
+
+/* Swiper */
+.custom-swiper {
+  position: relative;
+}
+
+.custom-swiper .swiper-button-next,
+.custom-swiper .swiper-button-prev {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.custom-swiper:hover .swiper-button-next,
+.custom-swiper:hover .swiper-button-prev {
+  opacity: 1;
+  visibility: visible;
+}
+
+.swiper-button-disabled {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+.custom-swiper .swiper-pagination-bullet {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.custom-swiper:hover .swiper-pagination-bullet {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Leaderboards */
+.board {
+  margin-top: 40px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 1em;
+
+  /* box-sizing: border-box;
+  border: 4px solid #000;
+  border-radius: 10px;
+  max-width: fit-content;
+  @apply sm:p-4 xl:p-6 2xl:w-[355px]; */
+}
+
+.board .leaderboard{
+  margin-bottom: 1em;
+  font-size: large;
+  font-size: 25px;
+}
+
+.board .sections{
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1em;
+  margin-bottom: 1em;
+  
+  /* border-bottom: 1px solid #000;
+  width: 50%;
+  @apply max-md: sm:p-4 xl:p-6 2xl:w-[355px]; */
+}
+
+.board .divider {
+  border: none;
+  border-top: 4px solid #000; 
+  margin: 1em; 
+  width: 80%;
+}
+
+.options-label{
+  margin-top: 12px;
+  margin-bottom: 1em;
+  margin-right: 1em;
+}
+
+.options-selection{
+  width: 800px;
+  display: flex;
+  margin-bottom: 1em;
+}
+
+.option-item{
+  cursor: pointer;
+  box-sizing: border-box;
+  border: 1px solid #000;
+  border-radius: 10px;
+  margin-right: 1em;
+  padding-right: 1em;
+  padding-left: 1em;
+  border-radius: 10px;
+  height: 3em
+}
+
+.option-item:hover{
+  background-color: blue;
+  color: #fff;
+}
+
+
+.board .option-section{
+  border: 1px solid var(--color-light);
+  padding: .5em 2em;
+  border-radius: 50px;
+  background-color: transparent;
+  cursor: pointer;
+  box-sizing: border-box;
+  border: 1px solid #000;
+  border-radius: 10px;
+}
+
+.board .option-section:hover{
+  background-color: blue;
+  color: #fff;
+}
+
+/* Leaderboard Profile */
+#LeaderboardProfile{
+  /* display: flex; */
+
+  margin-top: 3em;
+}
+
+.leaderboardProfile{
+  display: flex;
+  justify-content: space-between;
+  gap: 1em;
+  text-align: left;
+  margin-bottom: 10px;
+
+  /* padding: 1em; */
+}
+
+.leaderboardProfile .profile-container {
+  width:800px;
+  display: flex;
+  justify-content: space-between;
+  gap: 1em;
+  text-align: left;
+  padding: 10px 1em; 
+  border: 1px solid transparent; 
+  border-radius: 10px;
+  transition: border 0.3s ease; 
+}
+
+.profile-container:hover {
+  border: 2px solid #000; 
+}
+
+.leaderboardProfile .item{
+  display: flex;
+  align-items: center;
+  min-width: 300px;
+}
+
+.leaderboardProfile .score{
+  display: flex;
+  align-items: center;
+}
+
+.leaderboardProfile .image{
+  width: 20%;
+  border-radius: 50%;
+}
+
+.leaderboardProfile .info{
+ padding: 1em;
+}
+
+.active {
+  background-color: blue; 
+  color: #fff; 
+}
+
+/* Option Item Styles */
+.option-item.active {
+  background-color: blue;
+  color: #fff;
+}
+
+/* Section button styles */
+.option-section.active {
+  background-color: blue;
+  color: #fff;
+}
+
+@media (max-width: 900px) {
+  .leaderboardProfile .profile-container {
+    width: 400px; /* Slightly smaller on small screens */
+  }
+  .board .divider {
+    width: 75%; /* Slightly smaller on small screens */
+  }
+  .options-selection {
+    width: 400px; /* Slightly smaller on small screens */
+    justify-content: center;
+    flex-wrap: wrap;
   }
 }
