@@ -1,10 +1,10 @@
 import Leaderboard from '@/components/ui/Leaderboard'
 import React from 'react'
 
-const page = () => {
+const leaderboard = () => {
   return (
     <Leaderboard></Leaderboard>
   )
 }
 
-export default page
+export default leaderboard

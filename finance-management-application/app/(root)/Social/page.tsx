@@ -1,9 +1,11 @@
+import SocialList from '@/components/ui/SocialList'
 import React from 'react'
 
-const page = () => {
+const Socials = () => {
   return (
-    <div>page</div>
+    // <div>Socials</div>
+    <SocialList></SocialList>
   )
 }
 
-export default page
+export default Socials

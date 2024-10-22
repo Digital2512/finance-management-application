@@ -41,6 +41,8 @@ declare type User = {
   dateOfBirth: string;
   ssn: string;
   goals: Goals[];
+  friends: [];
+  groups: [];
 };
 
 declare type Goals = {
@@ -177,6 +179,26 @@ declare type Community = {
   scoreExp: number;
 }
 
+//DATABASE IMPLEMENTATION: After database implementation, maybe could cross reference it with the user database using the user id and just take the data from there, 
+//which means that the friends array in the user interface could just be an array filled with user IDs
+declare type Friend = {
+  userID: number;
+  name: string;
+  img: string;
+}
+
+//DATABASE IMPLEMENTATION: After database implementation, maybe could cross reference it with the group database using the group id and just take the data from there
+//which means that the friends array in the user interface could just be an array filled with group IDs
+declare type Group = {
+  groupID: number;
+  name: string;
+  type: string;
+  members: Friend[];
+  inviteCode?: string;
+  img: string;
+}
+
+
 declare type LeaderboardProfile = {
   name: string;
   location: string;
@@ -239,6 +261,14 @@ declare interface PlaidLinkProps {
 //   accessToken: string;
 //   image: string;
 // };
+
+declare type SocialListUser = {
+  userID: number;
+  username: string;
+  level: number;
+  friends: Friend[];
+  groups: Group[];
+}
 
 declare interface AuthFormProps {
   type: "sign-in" | "sign-up";
@@ -416,4 +446,16 @@ declare interface LeaderboardProfileProps{
   leaderboardData: LeaderboardProfile[];
   selectedSection?: string;
   selectedOption?: string;
+}
+
+/* Social List */
+
+declare interface SocialListProfileUserProps{
+  socialListUserData: Friend[];
+}
+
+declare interface SocialListProfileGroupProps{
+  socialListGroupData: Group[];
+  selectedOption?: string;
+
 }
