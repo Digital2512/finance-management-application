@@ -448,8 +448,8 @@
   visibility: visible;
 }
 
-/* Social List */
-.socialList {
+/* Leaderboards */
+.board {
   margin-top: 40px;
   text-align: center;
   display: flex;
@@ -465,13 +465,13 @@
   @apply sm:p-4 xl:p-6 2xl:w-[355px]; */
 }
 
-.socialList .socialListLabel{
+.board .leaderboard{
   margin-bottom: 1em;
   font-size: large;
   font-size: 25px;
 }
 
-.socialList .sections{
+.board .sections{
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -483,149 +483,35 @@
   @apply max-md: sm:p-4 xl:p-6 2xl:w-[355px]; */
 }
 
-.socialList .options-label{
-  margin-top: 12px;
-  margin-bottom: 1em;
-  margin-right: 1em;
-}
-
-
-.socialList .option-section{
-  border: 1px solid var(--color-light);
-  padding: .5em 2em;
-  border-radius: 50px;
-  background-color: transparent;
-  cursor: pointer;
-  box-sizing: border-box;
-  border: 1px solid #000;
-  border-radius: 10px;
-}
-
-.socialList .option-section:hover{
-  background-color: blue;
-  color: #fff;
-}
-
-.socialList .viewButton{
-  display: flex;
-  align-items: center;
-}
-
-/* Social List Profile */
-#SocialListProfile{
-  /* display: flex; */
-  margin-top: 3em;
-}
-
-.socialListProfile{
-  display: flex;
-  justify-content: space-between;
-  gap: 1em;
-  text-align: left;
-  margin-bottom: 10px;
-
-  /* padding: 1em; */
-}
-
-.socialListProfile .profile-container {
-  width:800px;
-  display: flex;
-  justify-content: space-between;
-  gap: 1em;
-  text-align: left;
-  padding: 10px 1em; 
-  border: 1px solid transparent; 
-  border-radius: 10px;
-  transition: border 0.3s ease; 
-}
-
-.socialListProfile .profile-container:hover {
-  border: 2px solid #000; 
-}
-
-.socialListProfile .item{
-  display: flex;
-  align-items: center;
-  min-width: 300px;
-}
-
-.socialListProfile .buttonView{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-width: 2px;
-  border-radius: 10px;
-  margin-left: 5px;
-  width: 50px;
-  height: 50px;
-  /* max-width: 50px;
-  max-height: 50px; */
-}
-
-.socialListProfile .buttonViewImage{
-  width: 30px;
-  height: 30px;
-}
-
-.socialListProfile .buttonView:hover{
-  background-color: blue;
-}
-
-.socialListProfile .profileImage{
-  width: 20%;
-  border-radius: 50%;
-}
-
-.socialListProfile .info{
- padding: 1em;
-}
-
-/* Leaderboard */
-.leaderboard {
-  margin-top: 40px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  padding: 1em;
-
-  /* box-sizing: border-box;
-  border: 4px solid #000;
-  border-radius: 10px;
-  max-width: fit-content;
-  @apply sm:p-4 xl:p-6 2xl:w-[355px]; */
-}
-
-.leaderboard .leaderboardLabel{
-  margin-bottom: 1em;
-  font-size: large;
-  font-size: 25px;
-}
-
-.leaderboard .sections{
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 1em;
-  margin-bottom: 1em;
-  
-  /* border-bottom: 1px solid #000;
-  width: 50%;
-  @apply max-md: sm:p-4 xl:p-6 2xl:w-[355px]; */
-}
-
-.divider {
+.board .divider {
   border: none;
   border-top: 4px solid #000; 
   margin: 1em; 
   width: 80%;
 }
 
-.leaderboard .options-label{
+.options-label{
   margin-top: 12px;
   margin-bottom: 1em;
   margin-right: 1em;
+}
+
+.options-selection{
+  width: 800px;
+  display: flex;
+  margin-bottom: 1em;
+}
+
+.option-item{
+  cursor: pointer;
+  box-sizing: border-box;
+  border: 1px solid #000;
+  border-radius: 10px;
+  margin-right: 1em;
+  padding-right: 1em;
+  padding-left: 1em;
+  border-radius: 10px;
+  height: 3em
 }
 
 .option-item:hover{
@@ -634,7 +520,7 @@
 }
 
 
-.leaderboard .option-section{
+.board .option-section{
   border: 1px solid var(--color-light);
   padding: .5em 2em;
   border-radius: 50px;
@@ -645,7 +531,7 @@
   border-radius: 10px;
 }
 
-.leaderboard .option-section:hover{
+.board .option-section:hover{
   background-color: blue;
   color: #fff;
 }
@@ -679,7 +565,7 @@
   transition: border 0.3s ease; 
 }
 
-.leaderboardProfile .profile-container:hover {
+.profile-container:hover {
   border: 2px solid #000; 
 }
 
@@ -703,13 +589,6 @@
  padding: 1em;
 }
 
-.options-selection{
-  width: 800px;
-  display: flex;
-  margin-bottom: 1em;
-  flex-wrap: wrap;
-}
-
 .active {
   background-color: blue; 
   color: #fff; 
@@ -727,28 +606,11 @@
   color: #fff;
 }
 
-
-.option-item{
-  cursor: pointer;
-  box-sizing: border-box;
-  border: 1px solid #000;
-  border-radius: 10px;
-  margin-right: 1em;
-  padding-right: 1em;
-  padding-left: 1em;
-  border-radius: 10px;
-  height: 3em;
-  margin-bottom: 5px;
-}
-
 @media (max-width: 900px) {
   .leaderboardProfile .profile-container {
     width: 400px; /* Slightly smaller on small screens */
   }
-  .socialListProfile .profile-container {
-    width: 400px; /* Slightly smaller on small screens */
-  }
-  .divider {
+  .board .divider {
     width: 75%; /* Slightly smaller on small screens */
   }
   .options-selection {

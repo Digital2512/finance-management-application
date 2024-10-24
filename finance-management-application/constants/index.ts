@@ -44,15 +44,15 @@ export const sidebarLinks = [
   {
     imgURL: "/icons/group-icon-black.svg",
     chosenImgURL: "/icons/group-icon-white.svg",
-    route: "/social",
-    label: "Socials",
+    route: "/groups",
+    label: "Groups",
   },
   {
     imgURL: "/icons/logout-icon-black.svg",
     chosenImgURL: "/icons/logout-icon-white.svg",
     route: "/payment-transfer",
     label: "Logout",
-  }
+  },
 ];
 
 // good_user / good_password - Bank of America

@@ -1,9 +1,9 @@
 import React from 'react'
 
-const Loans = () => {
+const page = () => {
   return (
-    <div>Loans</div>
+    <div>page</div>
   )
 }
 
-export default Loans
+export default page

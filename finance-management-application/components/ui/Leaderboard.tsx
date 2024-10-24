@@ -113,8 +113,7 @@ const LeaderboardFakeData: LeaderboardProfile[] = [
           { name: "Time Attack Group", userID: "Elena Carter", scoreExp: 350 },
           { name: "Troop Attack Group", userID: "Elena Carter", scoreExp: 400 }
       ]
-  },
-  
+  }
 ];
 
 
@@ -169,8 +168,8 @@ const Leaderboard = () => {
     
   return (
     
-    <div className='leaderboard'>
-        <h1 className='leaderboardLabel font-semibold'>Leaderboard</h1>
+    <div className='board'>
+        <h1 className='leaderboard font-semibold'>Leaderboard</h1>
 
         <div className='sections'>
             <button onClick={handleClickSection} data-id='Friends' className={`option-section ${selectedSection === 'Friends' ? 'active' : ''}`}>Friends</button>
