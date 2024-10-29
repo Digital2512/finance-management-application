@@ -28,7 +28,7 @@ export const registerUser = async (
 
     if(!connected){
       console.log('Error: Database not connected');
-      return { statusCode: 500, message: 'Database connection failed' };
+      return false
     }
 
     // console.log('-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------');
@@ -36,7 +36,7 @@ export const registerUser = async (
     try {
       const existingUser = await User.findOne({ username });
       if (existingUser) {
-        return { statusCode: 400, message: 'User already exists' };
+        return false
       }
 
       // Hash the password
