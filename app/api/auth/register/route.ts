@@ -1,6 +1,6 @@
-// api/register.ts
 import { NextResponse, NextRequest } from 'next/server';
 import { registerUser } from '@/app/lib/auth/register';
+import authMiddleware from '@/app/middleware/authMiddleware';
 
 export async function POST(request: Request) {
   try {
@@ -21,7 +21,7 @@ export async function POST(request: Request) {
       selectedPlan,
     } = await request.json();
 
-    const response = await registerUser(
+    const {result, token, message} = await registerUser(
       username,
       password,
       email,
@@ -38,15 +38,26 @@ export async function POST(request: Request) {
       selectedPlan
     );
 
-    console.log(response);
+    const verified = authMiddleware(token, 'verify');
 
-    if(!response){
-      return NextResponse.json({ message: 'Invalid Credentials' }, { status: 400 });
+    console.log('Verified Result: ' + verified);
+    console.log('Result: ' + result);
+
+    if(result && verified){
+      return NextResponse.json({ message: message }, { status: 200 });
+    }else{
+      return NextResponse.json({ message: message }, { status: 400 });
     }
 
-    return NextResponse.json({ message: 'Success' }, { status: 200 });
+    // console.log(response);
+
+    // if(!response){
+    //   return NextResponse.json({ message: 'Invalid Credentials' }, { status: 400 });
+    // }
+
+    // return NextResponse.json({ message: 'Success' }, { status: 200 });
   } catch (error) {
-    console.error('Registration request error:', error);
-    return NextResponse.json({ message: 'Registration request failed' }, { status: 500 });
+    console.error('Registeration request error:', error);
+    return NextResponse.json({ message: 'Registeration request failed' }, { status: 500 });
   }
 }

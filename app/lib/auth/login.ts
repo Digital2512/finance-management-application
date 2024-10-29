@@ -3,6 +3,8 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '@/app/models/userModel';
 import { connectToDatabase } from '@/app/lib/database';
+import { signToken } from '../jwt';
+import authMiddleware from '@/app/middleware/authMiddleware'
 require('dotenv').config();
 
 export const loginUser = async (username: string, password: string) => {
@@ -12,40 +14,38 @@ export const loginUser = async (username: string, password: string) => {
 
       if(!connected){
         console.log('Error: Database not connected');
-        return { statusCode: 500, message: 'Database connection failed' };
+        return { result: false, message: 'Database connection failed' };
       }
       
       console.log('Database is connected');
+
+      //double try-catch blocks
+
       try{
         const foundUser = await User.findOne({ username });
         if(!foundUser){
-          console.log('-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------');
           console.log('User not found');
-          return false
+          return { result: false, message: 'User not found' };
         }
-          console.log('-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------');
 
           const passwordMatch = await bcrypt.compare(password, foundUser.password);
           if (!passwordMatch) {
             console.log('Password is Invalid');
-            return false
+            return { result: false, message: 'Invalid password' };
           }
       
-          const token = jwt.sign(
-            { userId: foundUser._id, username: foundUser.username },
-            process.env.JWT_SECRET!,
-            { expiresIn: '1h' }
-          );
+          const token = authMiddleware({ userID: foundUser._id, username: foundUser.username, expiresInAmount: '1h'}, 'sign');
+          console.log('Login Token: ' + token)
       
           console.log("Login is successful");
-          return true
+          return {result: true, token: token, message: 'Login Successful'}
     } catch (error) {
       console.error('Login error:', error);
-      return false
+      return { result: false, message: 'Login failed' };
     }
   }catch(error){
     console.error('Login error:', error);
-    return false
+    return { result: false, message: 'Login failed' };
   }
 }
   

@@ -78,20 +78,17 @@ const AuthForm = ({ type }: { type: string }) => {
                 console.log('User data being sent:', userData);
 
                 // Register request
-                // const response = await axios.post('/api/auth/register', userData);
                 const response = await axios.post('/api/auth/register', userData);                
+                
                 console.log(response);
 
-                // await connectToDatabase();
-
-
-                
-                // if(response.status === 200) {
-                //     setUser(response.data);
-                //     alert('User registered successfully');
-                // } else {
-                //     setErrorMessage('User registration unsuccessful');
-                // }
+                if(response.status === 200) {
+                    setUser(response.data);
+                    alert('Register successful');
+                } else {
+                    setErrorMessage('Register unsuccessful');
+                    alert('Register unsuccessful');
+                }
             }
 
             if (type === 'login') {
@@ -104,12 +101,15 @@ const AuthForm = ({ type }: { type: string }) => {
 
                 // Login request
                 const response = await axios.post('/api/auth/login', userData);
+
+                console.log(response);
                 
                 if(response.status === 200) {
                     setUser(response.data);
                     alert('Login successful');
                 } else {
                     setErrorMessage('Login unsuccessful');
+                    alert('Login unsuccessful');
                 }
             }
         } catch (error: any) {
