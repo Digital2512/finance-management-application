@@ -13,10 +13,10 @@ import {
   import {VisuallyHidden} from '@radix-ui/react-visually-hidden'
   import Image from 'next/image'
   import Link from 'next/link'
-  import { sidebarLinks } from '@/constants'
+  import { sidebarLinks } from '@/app/constants'
   import { usePathname } from 'next/navigation'
   import { useState } from 'react'
-  import { cn } from '@/lib/utils'
+  import { cn } from '@/app/lib/utils'
 
 
 const MobileNav = () => {

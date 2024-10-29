@@ -1,6 +1,6 @@
 "use client"
 
-import { formatAmount } from "@/lib/utils";
+import { formatAmount } from "@/app/lib/utils";
 import AnimatedCounter from "./AnimatedCounter";
 import DebtsDoughnutChart from "./DebtsDoughnutChart";
 import { useState } from "react";

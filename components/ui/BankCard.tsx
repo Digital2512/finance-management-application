@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { formatAmount } from '@/lib/utils';
+import { formatAmount } from '@/app/lib/utils';
 
 const BankCard = ({ bankCardDetails, userName, showBalance = true }: BankCardProps) => {
   const formatCardNumber = (cardNumber: string) => {

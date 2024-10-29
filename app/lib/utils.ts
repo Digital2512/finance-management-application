@@ -4,6 +4,7 @@ import qs from "query-string";
 import { twMerge } from "tailwind-merge";
 import { z } from "zod";
 
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -196,16 +197,29 @@ export const getTransactionStatus = (date: Date) => {
 };
 
 export const authFormSchema = (type: string) => z.object({
-  // sign up
-  firstName: type === 'sign-in' ? z.string().optional() : z.string().min(3),
-  lastName: type === 'sign-in' ? z.string().optional() : z.string().min(3),
-  address1: type === 'sign-in' ? z.string().optional() : z.string().max(50),
-  city: type === 'sign-in' ? z.string().optional() : z.string().max(50),
-  state: type === 'sign-in' ? z.string().optional() : z.string().min(2).max(2),
-  postalCode: type === 'sign-in' ? z.string().optional() : z.string().min(3).max(6),
-  dateOfBirth: type === 'sign-in' ? z.string().optional() : z.string().min(3),
-  ssn: type === 'sign-in' ? z.string().optional() : z.string().min(3),
-  // both
-  email: z.string().email(),
-  password: z.string().min(8),
-})
+  firstName: type === "register" ? z.string().min(3, "First name must be at least 3 characters") : z.string().optional(),
+  lastName: type === "register" ? z.string().min(3, "Last name must be at least 3 characters") : z.string().optional(),
+  email: type === "register" ? z.string().email("Invalid email format") : z.string().optional(),
+  addressLine1: type === "register" ? z.string().min(5, "Address line 1 must be at least 5 characters") : z.string().optional(),
+  addressLine2: type === "register" ? z.string().min(5, "Address line 2 must be at least 5 characters") : z.string().optional(),
+  addressLine3: type === "register" ? z.string().min(5, "Address line 3 must be at least 5 characters") : z.string().optional(),
+  city: type === "register" ? z.string().min(1, "City is required") : z.string().optional(),
+  state: type === "register" ? z.string().min(4, "State must be at least 4 characters") : z.string().optional(),
+  postalCode: type === "register" ? z.string().length(6, "Postal code must be exactly 6 characters") : z.string().optional(),
+  country: type === "register" ? z.string().min(4, "Country must be at least 4 characters") : z.string().optional(),
+  dateOfBirth: type === "register" ? z.date().refine((date) => !isNaN(date.getTime()), {
+    message: "Invalid date format",
+  }) : z.date().optional(),
+  selectedPlan: type === "register" ? z.string().min(5, "Selected plan must be at least 5 characters") : z.string().optional(),
+
+  username: z
+    .string()
+    .min(8, "Username must be at least 8 characters long"),
+
+  password: z
+    .string()
+    .min(12, "Password must be at least 12 characters long")
+    .regex(/[A-Z]/, "Password must have at least one uppercase letter")
+    .regex(/\d/, "Password must have at least one number")
+    .regex(/[@$!%*?&.]/, "Password must have at least one special character"),
+});
