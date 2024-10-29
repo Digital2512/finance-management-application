@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { sidebarLinks } from '@/constants';
-import { cn } from '@/lib/utils';
+import { sidebarLinks } from '@/app/constants';
+import { cn } from '@/app/lib/utils';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 

@@ -459,3 +459,10 @@ declare interface SocialListProfileGroupProps{
   selectedOption?: string;
 
 }
+
+declare interface CustomInputProps<schemaType> {
+  control: Control<z.infer<typeof schemaType>>,
+  typeInfo: FieldPath<z.infer<typeof schemaType>>,
+  labelInfo: string,
+  placeholderInfo: string
+}

@@ -1,7 +1,7 @@
-// app/api/checkdb/route.ts
-
 import { NextResponse } from 'next/server';
 import mongoose from 'mongoose';
+
+require('dotenv').config();
 
 const MONGO_URI = process.env.MONGO_URI; // Retrieve the MongoDB URI from environment variables
 
