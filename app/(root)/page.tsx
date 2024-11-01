@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import RightSidebar from '@/components/ui/RightSidebar';
@@ -14,8 +14,57 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { Pagination, Navigation } from 'swiper/modules';
+import { useRouter } from 'next/navigation';
+import { getUserInfo } from '@/lib/actions/user.actions';
+import { count } from 'console';
+import { date } from 'zod';
 
 const Home = () => {
+    const router = useRouter();
+    const [loggedInUserInfo, setLoggedInUserInfo] = useState<any>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchUserInfo = async() => {
+            try{
+                const loggedInUserID = localStorage.getItem('loggedInUser');
+
+                if(loggedInUserID){
+                    const userInfo = await getUserInfo(loggedInUserID);
+
+                    // console.log('User Info: ', JSON.stringify(userInfo, null, 2));
+
+                    setLoggedInUserInfo(userInfo);
+                }else{
+                    console.log('No logged in user found');
+                    router.push('/login');
+                }
+
+                setIsLoading(false);
+            }catch(error){
+                console.log('Error in retrieving logged in user ID', error);
+            }
+        }
+        fetchUserInfo();
+    }, [router])
+
+    useEffect(() => {
+        if(!isLoading && !loggedInUserInfo){
+            router.push('/login');
+        }
+    }, [isLoading, loggedInUserInfo, router]);
+
+    if(isLoading){
+        return <div>Loading...</div>
+    }
+
+    if(!loggedInUserInfo){
+        console.log('No user info')
+        return null
+    }
+
+    const { _id, username, firstName, lastName, email, addressLine1, addressLine2, addressLine3, postalCode, city, state, country, dateOfBirth, selectedPlan } = loggedInUserInfo;
+
     const goalDetails1 = {
         goalName: "Emergency Fund",
         goalType: "Savings",
@@ -36,22 +85,27 @@ const Home = () => {
       goalCurrentAmount: 2000,
       goalAmount: 20000,
     }
+
     const loggedInUser = { 
-        firstName: 'User', 
-        lastName: 'Tester', 
-        email: 'userTester@gmail.com', 
-        $id: "Tester_123",
-        userId: "Tester_123",
+        userID: _id,
+        username: username,
+        firstName: firstName, 
+        lastName: lastName, 
+        email: email, 
         // dwollaCustomerUrl: "https://api.dwolla.com/customers/user_12345",
         // dwollaCustomerId: "dwolla_customer_12345",
-        address1: "123 Main St",
-        city: "Anytown",
-        state: "CA",
-        postalCode: "90210",
-        dateOfBirth: "1990-01-01",
-        ssn: "123-45-6789",
+        addressLine1: addressLine1,
+        addressLine2: addressLine2,
+        addressLine3: addressLine3,
+        city: city,
+        state: state,
+        postalCode: postalCode,
+        dateOfBirth: dateOfBirth,
+        country: country,
+        selectedPlan: selectedPlan,
         goals: [goalDetails1, goalDetails2, goalDetails3]
     };
+    
     const bankAccount1 = {
         $id: "bank_1",
         accountId: "acc_101",

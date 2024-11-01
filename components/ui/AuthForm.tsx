@@ -16,12 +16,14 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import CustomFormInput from './CustomFormInput'
-import { authFormSchema } from '@/app/lib/utils'
+import { authFormSchema } from '@/lib/utils'
 import axios from 'axios'
 import 'react-datepicker/dist/react-datepicker.css';
-import { connectToDatabase } from '@/app/lib/database'
+import { connectToDatabase } from '@/lib/database'
+import { useRouter } from 'next/navigation'
 
 const AuthForm = ({ type }: { type: string }) => {
+    const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [user, setUser] = useState<any>(null);
@@ -85,7 +87,8 @@ const AuthForm = ({ type }: { type: string }) => {
                 if(response.status === 200) {
                     setUser(response.data);
                     alert('Register successful');
-                } else {
+                    router.push('/login')
+                } else if (response.status === 400 || response.status === 500){
                     setErrorMessage('Register unsuccessful');
                     alert('Register unsuccessful');
                 }
@@ -105,8 +108,11 @@ const AuthForm = ({ type }: { type: string }) => {
                 console.log(response);
                 
                 if(response.status === 200) {
+                    setUser(response.data.loggedInUser);
                     setUser(response.data);
                     alert('Login successful');
+                    localStorage.setItem('loggedInUser', response.data.loggedInUserInfo)
+                    router.push('/')
                 } else {
                     setErrorMessage('Login unsuccessful');
                     alert('Login unsuccessful');

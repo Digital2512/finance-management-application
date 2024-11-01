@@ -26,23 +26,27 @@ declare type LoginUser = {
 };
 
 declare type User = {
-  $id: string;
+  userID: string;
+  username: string;
+  // password: string;
   email: string;
-  userId: string;
   // MUST DO: FIND AN APP WHICH ALLOWS FOR BANK ACCOUNT CONNECTION TO THE APP
   // dwollaCustomerUrl: string;
   // dwollaCustomerId: string;
   firstName: string;
   lastName: string;
-  address1: string;
+  addressLine1: string;
+  addressLine2: string;
+  addressLine3: string;
   city: string;
   state: string;
   postalCode: string;
-  dateOfBirth: string;
-  ssn: string;
-  goals: Goals[];
-  friends: [];
-  groups: [];
+  dateOfBirth: Date;
+  selectedPlan: string;
+  // ssn: string;
+  // goals: Goals[];
+  // friends: [];
+  // groups: [];
 };
 
 declare type Goals = {
@@ -230,10 +234,6 @@ declare interface HeaderBoxProps {
   user?: string;
 }
 
-declare interface MobileNavProps {
-  user: User;
-}
-
 declare interface PageHeaderProps {
   topTitle: string;
   bottomTitle: string;
@@ -332,9 +332,29 @@ declare interface RightSidebarProps {
   goalsTracker: Goals[];
 }
 
-declare interface SiderbarProps {
-  user: User;
+declare type SidebarUser = {
+  username: string;
+  firstName: string;
+  lastName: string;
+  selectedPlan: string;
 }
+
+declare interface SidebarProps {
+  user: SidebarUser
+}
+
+declare type MobileNavUser = {
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  selectedPlan: string;
+}
+
+declare interface MobileNavProps {
+  user: MobileNavUser
+}
+
 
 declare interface RecentTransactionsProps {
   accounts: Account[];
@@ -413,7 +433,7 @@ declare interface signInProps {
 }
 
 declare interface getUserInfoProps {
-  userId: string;
+  userID: string;
 }
 
 declare interface exchangePublicTokenProps {

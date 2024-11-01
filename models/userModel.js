@@ -18,14 +18,6 @@ const userSchema = new mongoose.Schema({
   selectedPlan: { type: String, required: true },
 });
 
-// var User;
-
-// if (mongoose.models.User) {
-//   User = mongoose.model('User');
-// } else {
-//   User = mongoose.model('User', userSchema);
-// }
-
 var User = mongoose.models.User || mongoose.model('User', userSchema);
 
 export default User;

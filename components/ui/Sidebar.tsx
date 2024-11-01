@@ -2,12 +2,13 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { sidebarLinks } from '@/app/constants';
-import { cn } from '@/app/lib/utils';
+import { sidebarLinks } from '@/constants';
+import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import { getUserInfo } from '@/lib/actions/user.actions';
 
-const Sidebar = ({ user }: SiderbarProps) => {
+const Sidebar = ({ user }: SidebarProps) => {
   const pathname = usePathname();
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
 
@@ -24,6 +25,7 @@ const Sidebar = ({ user }: SiderbarProps) => {
             className="size-[40px] max-xl:size-14"
           />
           <h1 className="sidebar-logo hidden lg:block">WalletWiz</h1>
+          <h1>{user.firstName}</h1>
         </Link>
 
         {sidebarLinks.map((item) => {

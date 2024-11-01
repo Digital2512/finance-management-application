@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import User from '@/app/models/userModel';
-import { connectToDatabase } from '@/app/lib/database';
+import User from '@/models/userModel';
+import { connectToDatabase } from '@/lib/database';
 import { signToken } from '../jwt';
-import authMiddleware from '@/app/middleware/authMiddleware'
+import authMiddleware from '@/middleware/authMiddleware'
 require('dotenv').config();
 
 export const registerUser = async ( 

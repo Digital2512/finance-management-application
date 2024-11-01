@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import User from '@/app/models/userModel';
-import { connectToDatabase } from '@/app/lib/database';
+import User from '@/models/userModel';
+import { connectToDatabase } from '@/lib/database';
 import { signToken } from '../jwt';
-import authMiddleware from '@/app/middleware/authMiddleware'
+import authMiddleware from '@/middleware/authMiddleware'
 require('dotenv').config();
 
 export const loginUser = async (username: string, password: string) => {
@@ -19,9 +19,6 @@ export const loginUser = async (username: string, password: string) => {
       
       console.log('Database is connected');
 
-      //double try-catch blocks
-
-      try{
         const foundUser = await User.findOne({ username });
         if(!foundUser){
           console.log('User not found');
@@ -38,11 +35,7 @@ export const loginUser = async (username: string, password: string) => {
           console.log('Login Token: ' + token)
       
           console.log("Login is successful");
-          return {result: true, token: token, message: 'Login Successful'}
-    } catch (error) {
-      console.error('Login error:', error);
-      return { result: false, message: 'Login failed' };
-    }
+          return {result: true, token: token, message: 'Login Successful', loggedInUserInfo: foundUser.username}
   }catch(error){
     console.error('Login error:', error);
     return { result: false, message: 'Login failed' };

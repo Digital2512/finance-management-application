@@ -13,13 +13,13 @@ import {
   import {VisuallyHidden} from '@radix-ui/react-visually-hidden'
   import Image from 'next/image'
   import Link from 'next/link'
-  import { sidebarLinks } from '@/app/constants'
+  import { sidebarLinks } from '@/constants'
   import { usePathname } from 'next/navigation'
   import { useState } from 'react'
-  import { cn } from '@/app/lib/utils'
+  import { cn } from '@/lib/utils'
 
 
-const MobileNav = () => {
+const MobileNav = ({user}: MobileNavProps) => {
     const pathname = usePathname();
     const [hoveredLink, setHoveredLink] = useState<string | null>(null);
   return (

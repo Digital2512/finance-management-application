@@ -3,8 +3,8 @@ import { JwtPayload } from "jsonwebtoken";
 import { signToken, verifyToken } from "../lib/jwt";
 
 export default function authMiddleware(payload, type){
-    console.log('----------------------------------------------------------------------------------------------------------------------------------------------------');
-    console.log(payload);
+    // console.log('----------------------------------------------------------------------------------------------------------------------------------------------------');
+    // console.log(payload);
     if(type === 'sign'){
         const {userID, username, expiresInAmount} = payload;
         var signedToken = signToken({userID, username}, expiresInAmount)

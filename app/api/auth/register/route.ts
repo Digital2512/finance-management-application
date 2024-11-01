@@ -1,6 +1,6 @@
 import { NextResponse, NextRequest } from 'next/server';
-import { registerUser } from '@/app/lib/auth/register';
-import authMiddleware from '@/app/middleware/authMiddleware';
+import { registerUser } from '@/lib/auth/register';
+import authMiddleware from '@/middleware/authMiddleware';
 
 export async function POST(request: Request) {
   try {
@@ -48,16 +48,10 @@ export async function POST(request: Request) {
     }else{
       return NextResponse.json({ message: message }, { status: 400 });
     }
-
-    // console.log(response);
-
-    // if(!response){
-    //   return NextResponse.json({ message: 'Invalid Credentials' }, { status: 400 });
-    // }
-
-    // return NextResponse.json({ message: 'Success' }, { status: 200 });
   } catch (error) {
     console.error('Registeration request error:', error);
+
+    //the reason for the alert not announcing when the registeration or login fails is because when an error happended is because we used a try-catch block which instantly stops the program when it catches an error
     return NextResponse.json({ message: 'Registeration request failed' }, { status: 500 });
   }
 }
