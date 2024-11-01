@@ -67,8 +67,14 @@ export const registerUser = async (
       const token = authMiddleware({ userID: newUser._id, username: newUser.username, expiresInAmount: '1h'}, 'sign');
       console.log('Register Token: ' + token);
 
-      console.log("Registration is successful");
-      return { result: true, token: token, message: 'Registeration Successful' };
+      if(token){
+        console.log("Registration is successful");
+        return { result: true, token: token, message: 'Registeration Successful' };
+      }
+
+      console.log("Registration is unsuccessful");
+        return { result: true, token: token, message: 'Registeration Unsuccessful' };
+
   } catch (error) {
     console.log("Registeration is unsuccessful");
     console.error('Registeration error:', error);

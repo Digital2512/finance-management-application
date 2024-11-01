@@ -21,7 +21,7 @@ export default function RootLayout({
       try{
 
         //maybe find an alternative to local storage
-        const loggedInUserID = localStorage.getItem('loggedInUser');
+        const loggedInUserID = sessionStorage.getItem('loggedInUser');
 
         if(loggedInUserID){
           const userInfo = await getUserInfo(loggedInUserID);

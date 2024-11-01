@@ -33,9 +33,15 @@ export const loginUser = async (username: string, password: string) => {
       
           const token = authMiddleware({ userID: foundUser._id, username: foundUser.username, expiresInAmount: '1h'}, 'sign');
           console.log('Login Token: ' + token)
-      
-          console.log("Login is successful");
-          return {result: true, token: token, message: 'Login Successful', loggedInUserInfo: foundUser.username}
+
+          if(token){
+            console.log("Login is successful");
+            return {result: true, token: token, message: 'Login Successful', loggedInUserInfo: foundUser.username}
+          }
+
+          console.log("Login is unsuccessful");
+            return {result: true, token: token, message: 'Login Unsuccessful', loggedInUserInfo: foundUser.username}
+
   }catch(error){
     console.error('Login error:', error);
     return { result: false, message: 'Login failed' };

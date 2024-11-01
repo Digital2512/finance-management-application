@@ -27,7 +27,7 @@ const Home = () => {
     useEffect(() => {
         const fetchUserInfo = async() => {
             try{
-                const loggedInUserID = localStorage.getItem('loggedInUser');
+                const loggedInUserID = sessionStorage.getItem('loggedInUser');
 
                 if(loggedInUserID){
                     const userInfo = await getUserInfo(loggedInUserID);

@@ -111,7 +111,7 @@ const AuthForm = ({ type }: { type: string }) => {
                     setUser(response.data.loggedInUser);
                     setUser(response.data);
                     alert('Login successful');
-                    localStorage.setItem('loggedInUser', response.data.loggedInUserInfo)
+                    sessionStorage.setItem('loggedInUser', response.data.loggedInUserInfo)
                     router.push('/')
                 } else {
                     setErrorMessage('Login unsuccessful');
