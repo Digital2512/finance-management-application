@@ -27,12 +27,18 @@ const Home = () => {
     useEffect(() => {
         const fetchUserInfo = async() => {
             try{
-                const loggedInUserID = sessionStorage.getItem('loggedInUser');
+                const loggedInUserInfo = sessionStorage.getItem('loggedInUsername');
 
-                if(loggedInUserID){
-                    const userInfo = await getUserInfo(loggedInUserID);
+                if(loggedInUserInfo){
+                    const userInfo = await getUserInfo(loggedInUserInfo);
 
                     // console.log('User Info: ', JSON.stringify(userInfo, null, 2));
+
+                    if(userInfo){
+                        sessionStorage.setItem('loggedInUserID', userInfo._id);
+                    }else{
+                        console.log('User Info not found');
+                    }
 
                     setLoggedInUserInfo(userInfo);
                 }else{

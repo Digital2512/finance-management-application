@@ -14,7 +14,7 @@ import {
 import "react-datepicker/dist/react-datepicker.css" // Make sure this CSS is imported
 
 // Define the component
-const CustomFormInput = <FormSchemaType extends z.ZodType<any, any>>(
+const CustomAuthFormInput = <FormSchemaType extends z.ZodType<any, any>>(
   {control, typeInfo, labelInfo, placeholderInfo}: 
   CustomInputProps<FormSchemaType>) => {
 
@@ -71,4 +71,4 @@ const CustomFormInput = <FormSchemaType extends z.ZodType<any, any>>(
   )
 }
 
-export default CustomFormInput
+export default CustomAuthFormInput

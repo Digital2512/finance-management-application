@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   title: "WalletWiz",
   description: "Your Magic Tool for Smart Spending!",
   icons: {
-    icon: '/icons/logo.svg'
+    icon: '/icons/logo-wallet-blue.svg'
   }
 };
 

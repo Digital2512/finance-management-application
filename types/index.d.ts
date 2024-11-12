@@ -77,11 +77,11 @@ declare type Account = {
   accountSharableId: string;
 };
 
-declare type Transaction = {
-  id: string;
-  $id: string;
+declare type TransactionDetails = {
+  transactionID: string;
+  // $id: string;
   name: string;
-  paymentChannel: string;
+  // paymentChannel: string;
   type: string;
   accountId: string;
   amount: number;
@@ -89,11 +89,11 @@ declare type Transaction = {
   category: string;
   date: string;
   image: string;
-  type: string;
+  // type: string;
   $createdAt: string;
-  channel: string;
-  senderBankId: string;
-  receiverBankId: string;
+  // channel: string;
+  senderAccountID: string;
+  receiverAccountID: string;
 };
 
 declare type Bank = {
@@ -373,7 +373,7 @@ declare interface CategoryBadgeProps {
 }
 
 declare interface TransactionTableProps {
-  transactions: Transaction[];
+  Transactions: Transaction[];
 }
 
 declare interface CategoryProps {

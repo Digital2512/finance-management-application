@@ -132,7 +132,7 @@ export function getAccountTypeColors(type: AccountTypes) {
 }
 
 export function countTransactionCategories(
-  transactions: Transaction[]
+  transactions: TransactionDetails[]
 ): CategoryCount[] {
   const categoryCounts: { [category: string]: number } = {};
   let totalCount = 0;
@@ -223,3 +223,61 @@ export const authFormSchema = (type: string) => z.object({
     .regex(/\d/, "Password must have at least one number")
     .regex(/[@$!%*?&.]/, "Password must have at least one special character"),
 });
+
+const currencyCodes = [
+  "AED", "AFN", "ALL", "AMD", "ANG", "AOA", "ARS", "AUD", "AWG", "AZN",
+  "BAM", "BBD", "BDT", "BGN", "BHD", "BIF", "BMD", "BND", "BOB", "BRL",
+  "BSD", "BTN", "BWP", "BYN", "BZD", "CAD", "CDF", "CHF", "CLP", "CNY",
+  "COP", "CRC", "CUP", "CVE", "CZK", "DJF", "DKK", "DOP", "DZD", "EGP",
+  "ERN", "ETB", "EUR", "FJD", "FKP", "FOK", "GBP", "GEL", "GGP", "GHS",
+  "GIP", "GMD", "GNF", "GTQ", "GYD", "HKD", "HNL", "HRK", "HTG", "HUF",
+  "IDR", "ILS", "IMP", "INR", "IQD", "IRR", "ISK", "JEP", "JMD", "JOD",
+  "JPY", "KES", "KGS", "KHR", "KID", "KMF", "KRW", "KWD", "KYD", "KZT",
+  "LAK", "LBP", "LKR", "LRD", "LSL", "LYD", "MAD", "MDL", "MGA", "MKD",
+  "MMK", "MNT", "MOP", "MRU", "MUR", "MVR", "MWK", "MXN", "MYR", "MZN",
+  "NAD", "NGN", "NIO", "NOK", "NPR", "NZD", "OMR", "PAB", "PEN", "PGK",
+  "PHP", "PKR", "PLN", "PYG", "QAR", "RON", "RSD", "RUB", "RWF", "SAR",
+  "SBD", "SCR", "SDG", "SEK", "SGD", "SHP", "SLL", "SOS", "SRD", "SSP",
+  "STN", "SYP", "SZL", "THB", "TJS", "TMT", "TND", "TOP", "TRY", "TTD",
+  "TVD", "TWD", "TZS", "UAH", "UGX", "USD", "UYU", "UZS", "VES", "VND",
+  "VUV", "WST", "XAF", "XCD", "XOF", "XPF", "YER", "ZAR", "ZMW", "ZWL"
+] as const;
+
+const transactionIndividualDetailsSchema = z.object({
+  nameOfTransactionIndividual: z.string().default('Undefined'),
+  descriptionOfTransactionIndividual: z.string().default('Undefined'),
+  typeOfTransactionIndividual: z.enum(['Income', 'Expense']),
+  amountOfTransactionIndividual: z.number().min(0),
+  individualTransactionCurrency: z.enum(currencyCodes)
+})
+export const transactionFormSchema = () => z.object({
+  // transactionID: type === 'edit' ? z.string().min(1, {message: 'Old Transaction ID is required'}) : z.string().optional(),
+  transactionName: z.string().min(1, {message: 'Name is required'}),
+  transactionCategory: z.string().min(1, {message: 'Category is required'}),
+  dateOfTransaction: z.date().default(new Date()),
+  transactionDescription: z.string().min(1, {message: 'Description is required'}),
+  receiverID: z.string().min(1, {message: 'Receiver ID is required'}),
+  senderID: z.string().min(1, {message: 'Sender ID is required'}),
+  // receiverID: z.union([z.string(), z.object({})]),
+  // senderID: z.union([z.string(), z.object({})]),
+  transactionCurrency: z.enum(currencyCodes),
+  transactionIndividualDetails: z.array(transactionIndividualDetailsSchema),
+  transactionType: z.enum(['One-Time', 'Recurring']).default('One-Time'),
+  transactionPlannedCycle: z.enum(['None', 'Daily', 'Weekly', 'Monthly', 'Yearly']).default('None'),
+  transactionPlannedCycleDate: z.date().optional(),
+  transactionProofOfURL: z.string().default('Empty'),
+  totalAmountOfTransaction: z.number().default(0),
+});
+// .refine(
+//   data => {
+//     const calculatedTotalAmount = data.transactionIndividualDetails.reduce(
+//       (acc, detail) => acc + (detail.amountOfTransactionIndividual || 0),
+//       0
+//     );
+
+//     return data.totalAmountOfTransaction = calculatedTotalAmount;
+//   },
+//   {
+//     message: "Total amount mismatch or calculation error",
+//   });
+

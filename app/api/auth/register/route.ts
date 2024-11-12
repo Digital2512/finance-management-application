@@ -2,7 +2,7 @@ import { NextResponse, NextRequest } from 'next/server';
 import { registerUser } from '@/lib/auth/register';
 import authMiddleware from '@/middleware/authMiddleware';
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const {
       username,

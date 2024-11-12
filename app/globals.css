@@ -741,22 +741,6 @@
   margin-bottom: 5px;
 }
 
-@media (max-width: 900px) {
-  .leaderboardProfile .profile-container {
-    width: 400px; /* Slightly smaller on small screens */
-  }
-  .socialListProfile .profile-container {
-    width: 400px; /* Slightly smaller on small screens */
-  }
-  .divider {
-    width: 75%; /* Slightly smaller on small screens */
-  }
-  .options-selection {
-    width: 400px; /* Slightly smaller on small screens */
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-}
 /* 
 @layer base {
   :root {
@@ -822,3 +806,170 @@
     @apply bg-background text-foreground;
   }
 } */
+
+.transaction-form-layout{
+  /* margin-top: 150px; */
+  /* margin-left: 50px; */
+  display: flex;
+  flex-direction: column;
+  /* padding-bottom: 20px; */
+}
+
+.transaction-form-row-layout{
+  display: flex;
+  column-gap: 50px;
+  flex-direction: row;
+}
+
+.transaction-form {
+  /* @apply flex min-h-screen w-full max-w-[420px] flex-col justify-center gap-5 py-10 md:gap-8; */
+  margin-top: 30px;
+  margin-left: 50px;
+}
+
+.transaction-form-item {
+  margin-top: 10px;
+  max-width: 500px;
+}
+
+.transaction-label {
+  @apply text-14 w-full max-w-[280px] font-medium text-gray-700;
+}
+
+.transaction-btn {
+  @apply text-16 rounded-lg border border-bankGradient bg-bank-gradient font-semibold text-white shadow-form;
+  margin-top: 20px;
+  max-width: 850px;
+}
+
+.transaction-column-first-item {
+  width: 500px;
+}
+
+.transaction-column-second-item {
+  width: 300px;
+}
+
+.transaction-column-singular-item {
+  width: 850px;
+}
+
+/* .transaction-form-date {
+  margin-top: 15px;
+  max-width: 500px;
+} */
+
+.transaction-table {
+  width: 100%;
+  padding-top: 20px; /* Adjust the value as needed */
+
+  /* border-collapse: separate; */
+  /* border-spacing: 10px;  */
+}
+
+.transaction-table th {
+  text-align: left; /* Centers content horizontally */
+  padding: 8px;
+  border: 1px solid #ddd; /* Adds a light gray border around each cell */
+}
+
+.transaction-table .input-td {
+  text-align: center; /* Centers content horizontally */
+  /* padding: 8px; */
+  border: 1px solid #ddd; /* Adds a light gray border around each cell */
+}
+
+.transaction-table .button-td {
+  border: none;
+}
+
+.transaction-table .remove-button {
+  background-color: #f44336; /* Red background for Remove button */
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  /* visibility: collapse; */
+  opacity: 0;
+}
+
+.transaction-table .remove-button:hover {
+  /* visibility: visible; */
+  background-color: #d32f2f; /* Darker red on hover */
+  /* group hover */
+  opacity: 100;
+}
+
+.transaction-table input {
+  width: 100%; /* Ensures the input takes up the full width of the cell */
+  text-align: center; /* Centers the input text */
+  padding: 5px;
+  border: 1px solid #ddd;
+  /* border-radius: 4px; */
+}
+
+/* Add a hover effect for rows to make it more interactive */
+.transaction-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+.transaction-table button[type="button"] {
+  width: 100%;
+}
+
+
+@media (max-width: 900px) {
+  .transaction-form {
+    /* @apply flex min-h-screen w-full max-w-[420px] flex-col justify-center gap-5 py-10 md:gap-8; */
+    margin-top: 30px;
+    margin-left: 30px;
+  }
+  .leaderboardProfile .profile-container {
+    width: 400px; /* Slightly smaller on small screens */
+  }
+  .socialListProfile .profile-container {
+    width: 400px; /* Slightly smaller on small screens */
+  }
+  .divider {
+    width: 75%; /* Slightly smaller on small screens */
+  }
+  .options-selection {
+    width: 400px; /* Slightly smaller on small screens */
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .transaction-form-row-layout{
+    /* display: flex; */
+    /* column-gap: 40px; */
+    flex-direction: column;
+  }
+
+  .transaction-form-item {
+    margin-top: 15px;
+    max-width: 445px;
+  }
+  
+  .transaction-btn {
+    max-width: 445px;
+  }
+
+  .transaction-column-first-item {
+    width: 445px;
+  }
+
+  .transaction-column-second-item {
+    width: 445px;
+  }
+
+  .transaction-column-singular-item {
+    width: 445px;
+  }
+
+  /* .transaction-form-date {
+    margin-top: 15px;
+    max-width: 400px;
+  } */
+
+}

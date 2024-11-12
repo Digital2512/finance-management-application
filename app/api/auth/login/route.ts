@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     }
   } catch (error) {
     //the reason for the alert not announcing when the registeration or login fails is because when an error happended is because we used a try-catch block which instantly stops the program when it catches an error
-    console.error('Login request error:', error);
-    return NextResponse.json({ message: 'Login request failed' }, { status: 500 });
+    console.error('Edit Transaction request error:', error);
+    return NextResponse.json({ message: 'Edit Transaction request failed' }, { status: 500 });
   }
 }
