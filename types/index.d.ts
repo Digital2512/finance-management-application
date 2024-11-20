@@ -77,24 +77,24 @@ declare type Account = {
   accountSharableId: string;
 };
 
-declare type TransactionDetails = {
-  transactionID: string;
-  // $id: string;
-  name: string;
-  // paymentChannel: string;
-  type: string;
-  accountId: string;
-  amount: number;
-  pending: boolean;
-  category: string;
-  date: string;
-  image: string;
-  // type: string;
-  $createdAt: string;
-  // channel: string;
-  senderAccountID: string;
-  receiverAccountID: string;
-};
+// declare type TransactionDetails = {
+//   transactionID: string;
+//   // $id: string;
+//   name: string;
+//   // paymentChannel: string;
+//   type: string;
+//   accountId: string;
+//   amount: number;
+//   pending: boolean;
+//   category: string;
+//   date: string;
+//   image: string;
+//   // type: string;
+//   $createdAt: string;
+//   // channel: string;
+//   senderAccountID: string;
+//   receiverAccountID: string;
+// };
 
 declare type Bank = {
   $id: string;
@@ -297,6 +297,14 @@ declare interface ExpenseBoxProps {
     amount: number;
   };
 
+declare interface BoxOverviewProps {
+  accounts: Account[];
+  totalBanks: number;
+  totalLeftBalance: number;
+  boxData: BoxOverviewData[];
+  typeBox: string;
+}
+
 declare interface SavingsBoxProps {
   accounts: Account[];
   totalBanks: number;
@@ -304,10 +312,15 @@ declare interface SavingsBoxProps {
   savingsData: Savings[];
 }
 
-    type Savings = {
-      category: string;
-      amount: number;
-  };
+type Savings = {
+  category: string;
+  amount: number;
+};
+
+type BoxOverviewData = {
+  category: string;
+  amount: number;
+};
 
 declare interface DebtsBoxProps {
   accounts: Account[];
@@ -485,4 +498,41 @@ declare interface CustomInputProps<schemaType> {
   typeInfo: FieldPath<z.infer<typeof schemaType>>,
   labelInfo: string,
   placeholderInfo: string
+}
+
+declare interface CustomTransactionInputProps<schemaType> {
+  control: Control<z.infer<typeof schemaType>>,
+  typeInfo: FieldPath<z.infer<typeof schemaType>>,
+  labelInfo: string,
+  placeholderInfo: string,
+  formType: string
+}
+
+declare interface transactionIndividualDetails {
+  nameOfTransactionIndividual: string;
+  descriptionOfTransactionIndividual: string;
+  typeOfTransactionIndividual: string;
+  amountOfTransactionIndividual: number;
+  individualTransactionCurrency: string;
+};
+
+declare type Transaction = {
+  _id: string;
+  userID: string;
+  transactionName: string;
+  transactionCategory: string;
+  dateOfTransaction: string;
+  transactionDescription: string;
+  receiverID: string;
+  senderID: string;
+  transactionCurrency: string;
+  transactionType: string;
+  transactionStatus: string;
+  transactionIndividualDetails: transactionIndividualDetails[]; 
+  transactionCycleType: string;
+  transactionPlannedCycle: string;
+  transactionPlannedCycleDate: string | null;
+  totalAmountOfTransaction: number;
+  transactionProofURL: string;
+  __v: number;
 }

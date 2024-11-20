@@ -1,6 +1,6 @@
 import React from 'react'
 import { z } from "zod"
-import { Controller, Control, FieldPath } from "react-hook-form"
+import { Controller, Control, FieldPath, useFormContext} from "react-hook-form"
 import { Input } from "@/components/ui/input"
 import DatePicker from "react-datepicker"
 import Image from 'next/image'
@@ -15,8 +15,19 @@ import "react-datepicker/dist/react-datepicker.css" // Make sure this CSS is imp
 
 // Define the component
 const CustomTransactionFormInput = <FormSchemaType extends z.ZodType<any, any>>(
-  {control, typeInfo, labelInfo, placeholderInfo}: 
-  CustomInputProps<FormSchemaType>) => {
+  {control, typeInfo, labelInfo, placeholderInfo, formType}: 
+  CustomTransactionInputProps<FormSchemaType>) => {
+
+  
+  const {setValue, getValues, formState: {dirtyFields}} = useFormContext();
+  const isNumericField = typeInfo === 'totalAmountOfTransaction';
+
+  const handleDateChange = (field: any, date: Date | null) => {
+    const formattedDate = date ? new Date(date) : null;
+    field.onChange(formattedDate);
+  }
+
+  const isFieldDirty = dirtyFields[typeInfo]; 
 
   return (
     <FormField
@@ -30,17 +41,18 @@ const CustomTransactionFormInput = <FormSchemaType extends z.ZodType<any, any>>(
               {typeInfo === 'dateOfTransaction' || typeInfo === 'transactionPlannedCycleDate' ? (
                 <div className="relative">
                   <Controller
-                    name="dateOfTransaction"
+                    name={typeInfo}
                     control={control}
                     render={({ field }) => (
                       <>
                         <DatePicker
                           placeholderText={placeholderInfo}
-                          selected={field.value}
-                          onChange={(date) => field.onChange(date)}
+                          selected={formType === 'edit' && field.value ? new Date(field.value) : new Date()}
+                          onChange={(date) => handleDateChange(field, date)}
                           dateFormat="dd-MM-yyyy"
                           showFullMonthYearPicker
                           className="input-class w-[300px] h-[40px] max-md:w-[445px] h-[40px]"
+                          // value={formType === 'edit' ? field.value : null}
                         />
                         <span className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
                           <Image src={'/icons/calendar-icon.svg'} width={20} height={20} alt='Calendar Icon'/>
@@ -58,6 +70,8 @@ const CustomTransactionFormInput = <FormSchemaType extends z.ZodType<any, any>>(
                       placeholder={placeholderInfo}
                       className='input-class'
                       {...field}
+                      value={formType === 'edit' && !isFieldDirty ? field.value : getValues(typeInfo) || ''}
+                      onChange={(e) => field.onChange(isNumericField ? +e.target.value : e.target.value)}
                     />
                   )}
                 />

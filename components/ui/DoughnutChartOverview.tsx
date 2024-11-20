@@ -6,26 +6,26 @@ import { useEffect, useState } from "react";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-interface DebtsDoughnutChartProps {
-  debts: Array<{ category: string, amount: number }>;
+interface DoughnutChartProps {
+    doughnutChartData: Array<{ category: string, amount: number }>;  
 }
 
-const DebtsDoughnutChart = ({ debts }: DebtsDoughnutChartProps) => {
+const DoughnutChartOverview = ({ doughnutChartData }: DoughnutChartProps) => {
 
   // Prepare the data for the doughnut chart
-  const debtsData = debts.map(debt => debt.amount);  // Extract amounts
-  const debtsLabels = debts.map(debt => debt.category);  // Extract categories
+  const doughnutChartDataAmount = doughnutChartData.map(dataIndividual => dataIndividual.amount);  // Extract amounts
+  const doughnutChartDataLabels = doughnutChartData.map(dataIndividual => dataIndividual.category);  // Extract categories
 
-  // Include debt in the chart data
+  // Include savings in the chart data
   const data = {
     datasets: [
       {
-        data: [...debtsData],
+        data: [...doughnutChartDataAmount],
         backgroundColor: ['#0747b6', '#2265d8', '#f0c419', '#1f77b4', '#ff7f0e', '#d62728'],  // Add more colors if needed
         borderWidth: 1
       }
     ],
-    labels: [...debtsLabels, 'Debt']  // Include "Debt" as a category
+    labels: [...doughnutChartDataLabels, 'savings']  // Include "savings" as a category
   };
 
   // Plugin to display total in the center
@@ -72,4 +72,4 @@ const DebtsDoughnutChart = ({ debts }: DebtsDoughnutChartProps) => {
   );
 };
 
-export default DebtsDoughnutChart;
+export default DoughnutChartOverview;

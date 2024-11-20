@@ -28,6 +28,8 @@ export const addTransaction = async (
     transactionCurrency: string,
     transactionIndividualDetails: TransactionIndividualDetail[],
     transactionType: string,
+    transactionStatus: string,
+    transactionCycleType: string,
     transactionPlannedCycle: string,
     transactionPlannedCycleDate: Date,
     transactionProofURL: string,
@@ -37,7 +39,8 @@ export const addTransaction = async (
     console.log(`Function Transaction Data: UserID: ${userID}, Transaction Name: ${transactionName}, Transaction Category: ${transactionCategory}, 
       Date of Transaction: ${dateOfTransaction}, Transaction Description: ${transactionDescription}, Receiver ID: ${receiverID}, Sender ID: ${senderID}, 
       Transaction Currency: ${transactionCurrency}, Transaction Type: ${transactionType}, Transaction Planned Cycle: ${transactionPlannedCycle},
-      Transaction Planned Cycle Date: ${transactionPlannedCycleDate}, Transaction Proof Of URL: ${transactionProofURL}, Total Amount: ${totalAmountOfTransaction}`);
+      Transaction Planned Cycle Date: ${transactionPlannedCycleDate}, Transaction Proof Of URL: ${transactionProofURL}, Total Amount: ${totalAmountOfTransaction},
+      Transaction Transaction Type: ${transactionType}, Transaction Status: ${transactionStatus}`);
 
     const connected = await connectToDatabase();
 
@@ -53,6 +56,7 @@ export const addTransaction = async (
         transactionName, 
         transactionCategory,
         transactionDescription,
+        transactionType,
         dateOfTransaction, 
         receiverID,
         senderID,
@@ -89,6 +93,8 @@ export const addTransaction = async (
           transactionCurrency: transactionCurrency,
           transactionIndividualDetails: transactionIndividualDetails,
           transactionType: transactionType,
+          transactionStatus: transactionStatus,
+          transactionCycleType: transactionCycleType,
           transactionPlannedCycle: transactionPlannedCycle,
           transactionPlannedCycleDate: transactionPlannedCycleDate,
           transactionProofURL: transactionProofURL,

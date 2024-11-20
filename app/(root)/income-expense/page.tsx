@@ -1,82 +1,67 @@
+"use client"
+
 import TransactionsTable from '@/components/ui/TransactionsTable'
-import React from 'react'
+import React, {useState, useEffect} from 'react'
+import axios from 'axios';
 
 const incomeExpensePage = () => {
-  const dummyTransactions: TransactionDetails[] = [
-    {
-      transactionID: "tx001",
-      name: "Grocery Store",
-      type: "expense",
-      accountId: "acc123",
-      amount: 56.75,
-      pending: false,
-      category: "Groceries",
-      date: "2024-10-25T13:30:00Z",
-      image: "https://example.com/images/receipt1.jpg",
-      $createdAt: "2024-10-25T13:00:00Z",
-      senderAccountID: "acc123",
-      receiverAccountID: "store567",
-    },
-    {
-      transactionID: "tx002",
-      name: "Freelance Payment",
-      type: "income",
-      accountId: "acc456",
-      amount: 1500.00,
-      pending: false,
-      category: "Income",
-      date: "2024-10-24T10:15:00Z",
-      image: "https://example.com/images/invoice1.jpg",
-      $createdAt: "2024-10-24T09:45:00Z",
-      senderAccountID: "client789",
-      receiverAccountID: "acc456",
-    },
-    {
-      transactionID: "tx003",
-      name: "Electricity Bill",
-      type: "expense",
-      accountId: "acc123",
-      amount: 120.40,
-      pending: true,
-      category: "Utilities",
-      date: "2024-10-22T08:00:00Z",
-      image: "https://example.com/images/bill1.jpg",
-      $createdAt: "2024-10-22T07:30:00Z",
-      senderAccountID: "acc123",
-      receiverAccountID: "utilityCompany234",
-    },
-    {
-      transactionID: "tx004",
-      name: "Coffee Shop",
-      type: "expense",
-      accountId: "acc123",
-      amount: 8.25,
-      pending: false,
-      category: "Dining",
-      date: "2024-10-23T15:45:00Z",
-      image: "https://example.com/images/coffee.jpg",
-      $createdAt: "2024-10-23T15:30:00Z",
-      senderAccountID: "acc123",
-      receiverAccountID: "cafe567",
-    },
-    {
-      transactionID: "tx005",
-      name: "Salary Deposit",
-      type: "income",
-      accountId: "acc456",
-      amount: 3000.00,
-      pending: false,
-      category: "Salary",
-      date: "2024-10-20T09:00:00Z",
-      image: "https://example.com/images/paystub.jpg",
-      $createdAt: "2024-10-20T08:30:00Z",
-      senderAccountID: "employer123",
-      receiverAccountID: "acc456",
-    },
-  ];
+  // const [userTransactionsData, setUserTransactionsData] = useState<Transaction[]>([]);
+  // // const [isLoading, setIsLoading] = useState(false);
   
+  // useEffect(() => {
+  //     const fetchUserTransactions = async (loggedInUserID: string) => {
+  //         // setIsLoading(true);
+  //         console.log('Logged In User ID Use Effect', loggedInUserID);
+  //         if (loggedInUserID) {
+  //             try {
+  //                 const response = await axios.get('/api/transaction/fetchUserTransaction', {
+  //                     params: { userID: loggedInUserID }
+  //                 });
+  
+  //                 console.log('User Transactions Response Function:', response);
+  //                 console.log('User Transactions Data Function:', response.data.userTransactionsData); 
+  //                 setUserTransactionsData(response.data.userTransactionsData); 
+  //                 // return {userTransactionsData: response.data.userTransactionData};
+  //             } catch (error) {
+  //                 console.error("Error fetching user transactions:", error);
+  //             }finally{
+  //                 // setIsLoading(false);
+  //             }
+  //         } else {
+  //             console.log("Error: No logged-in user ID found in session storage.");
+  //             // setIsLoading(false);
+  //         }
+  //     };
+  
+      
+  //     if (loggedInUserID) {
+  //         console.log('User ID Table:', loggedInUserID);
+  //         fetchUserTransactions(loggedInUserID);
+
+  //         // console.log('Fetched User Transactions Table: ', fetchedUserTransactionData)
+  //         // setUserTransactionsData(fetchedUserTransactionData);
+          
+  //         // console.log('User Transactions Table: ', userTransactionsData)
+  //         // if(userTransactionsData){
+  //         //     console.log('Suceeded User Transactions Table: ', userTransactionsData)
+  //         // }else{
+  //         //     console.log('No Transaction Data')
+  //         // }
+  //     } else {
+  //         console.log('No Logged In User ID');
+  //         // setIsLoading(false);
+  //     }
+  // }, []); // Ensure only runs once
+
+
+  // // console.log('User Transactions Data:', userTransactionsData);
+  
+  // // const transactionsData: Transaction[] = userTransactionsData;
+
+  const loggedInUserID = sessionStorage.getItem('loggedInUserID');
+
   return (
-    <TransactionsTable Transactions={dummyTransactions}></TransactionsTable>
+    <TransactionsTable userID = {loggedInUserID || ''}></TransactionsTable>
   )
 }
 

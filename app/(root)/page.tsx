@@ -5,9 +5,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import RightSidebar from '@/components/ui/RightSidebar';
 import HeaderBox from '@/components/ui/HeaderBox';
-import ExpenseBox from '@/components/ui/ExpenseBox';
-import DebtsBox from '@/components/ui/DebtsBox';
-import SavingsBox from '@/components/ui/SavingsBox';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
 import 'swiper/css';
@@ -18,6 +15,7 @@ import { useRouter } from 'next/navigation';
 import { getUserInfo } from '@/lib/actions/user.actions';
 import { count } from 'console';
 import { date } from 'zod';
+import BoxOverview from '@/components/ui/BoxOverview';
 
 const Home = () => {
     const router = useRouter();
@@ -218,29 +216,32 @@ const Home = () => {
                         className='w-full lg:max-w-[600px] custom-swiper'
                     >
                         <SwiperSlide>
-                            <ExpenseBox
+                            <BoxOverview
                                 accounts={[]}
                                 totalBanks={1}
-                                totalLeftToSpendBalance={totalLeftToSpendBalanceAmount}
-                                expenseData={fakeExpenses}
+                                totalLeftBalance={totalLeftToSpendBalanceAmount}
+                                boxData={fakeExpenses}
+                                typeBox='Expense'
                             />
                         </SwiperSlide> 
 
                         <SwiperSlide>
-                            <SavingsBox
+                            <BoxOverview
                                 accounts={[]}
                                 totalBanks={1}
-                                totalLeftToSaveBalance={totalLeftToSaveBalanceAmount}
-                                savingsData={fakeSavings}
+                                totalLeftBalance={totalLeftToSaveBalanceAmount}
+                                boxData={fakeSavings}
+                                typeBox='Savings'
                             />
                         </SwiperSlide>
 
                         <SwiperSlide>
-                            <DebtsBox
+                            <BoxOverview
                                 accounts={[]}
                                 totalBanks={1}
-                                totalLeftToPayBalance={totalLeftToPayDebtBalanceAmount}
-                                debtsData={fakeDebts}
+                                totalLeftBalance={totalLeftToPayDebtBalanceAmount}
+                                boxData={fakeDebts}
+                                typeBox='Debt'
                             />
                         </SwiperSlide>
                      </Swiper>

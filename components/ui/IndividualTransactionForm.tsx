@@ -22,6 +22,7 @@ import axios from 'axios'
 import 'react-datepicker/dist/react-datepicker.css';
 import { connectToDatabase } from '@/lib/database'
 import { useRouter } from 'next/navigation'
+import { fetchTransaction } from '@/lib/transaction/fetchTransaction';
 
 interface IndividualTransactionsDetailsProps{
     type: string,
@@ -39,7 +40,6 @@ interface TransactionsIndividualDetails{
 const IndividualTransactionForm = ({ type, oldTransactionID }: IndividualTransactionsDetailsProps) => {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
-    const [transactionData, setTransactionData] = useState<any>(null);
     const [transactionIndividualDetails, setTransactionIndividualDetails] = useState<TransactionsIndividualDetails[]>([{
         transactionIndividualDetailsName: '', 
         transactionIndividualDetailsDescription: '', 
@@ -84,7 +84,9 @@ const IndividualTransactionForm = ({ type, oldTransactionID }: IndividualTransac
             senderID: "",
             transactionCurrency: "USD",
             transactionIndividualDetails: [],
-            transactionType: "One-Time",
+            transactionType: "Expense",
+            transactionStatus: "Not Paid",
+            transactionPlannedCycleType: "One-Time",
             transactionPlannedCycle: "None",
             transactionPlannedCycleDate: new Date(),
             transactionProofOfURL: "Empty",
@@ -106,21 +108,51 @@ const IndividualTransactionForm = ({ type, oldTransactionID }: IndividualTransac
         },
     });
 
-    // useEffect(() => {
-    //     if(type === 'edit' && oldTransactionID){
-    //         const fetchTransactionData = async () => {
-    //             try{
-    //                 setIsLoading(true);
-    //                 const response = await axios.get('/api/transaction/fetchTransaction', {
-    //                     data: {oldTransactionID}
-    //                 })
-    //             }catch(error){
-    //                 console.log('Error in fetching data: ', error);
-    //                 alert('Error in fetching data');
-    //             }
-    //         }
-    //     }
-    // })
+    useEffect(() => {
+        const fetchTransactionData = async (oldTransactionID: string) => {
+            try {
+                setIsLoading(true);
+                const response = await axios.get('/api/transaction/fetchTransaction', {
+                    params: { transactionID: oldTransactionID }, 
+                });
+    
+                console.log('Fetch Transaction Response: ', response);
+                console.log('Fetch Transaction Data: ', response.data.existingTransactionData);
+
+                const fetchedData = response.data.existingTransactionData;
+                console.log('Fetched Data: ', fetchedData);
+
+                Object.keys(fetchedData).forEach((key) => {
+                    if (key !== 'transactionIndividualDetails') {
+                        form.setValue(key as keyof z.infer<typeof formSchema>, fetchedData[key]);
+                        // console.log('Updated form values:', form.watch());
+                    }
+                });
+
+                setTransactionIndividualDetails(
+                    fetchedData.transactionIndividualDetails.map((detail: any) => ({
+                        transactionIndividualDetailsName: detail.nameOfTransactionIndividual || "",
+                        transactionIndividualDetailsDescription: detail.descriptionOfTransactionIndividual || "",
+                        transactionIndividualDetailsType: detail.typeOfTransactionIndividual || "",
+                        transactionIndividualDetailsCurrency: detail.individualTransactionCurrency || "",
+                        transactionIndividualDetailsAmount: detail.amountOfTransactionIndividual || 0,
+                })));
+
+                // setTransactionData(response.data.existingTransactionData);
+            } catch (error) {
+                console.log('Error in fetching data: ', error);
+                alert('Error in fetching data');
+                setIsLoading(false);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+    
+        if (type === 'edit' && oldTransactionID) {
+            fetchTransactionData(oldTransactionID);
+        }
+    }, [type, oldTransactionID]);
+    
 
     // Submit handler for form
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
@@ -155,12 +187,14 @@ const IndividualTransactionForm = ({ type, oldTransactionID }: IndividualTransac
                     transactionCurrency: data.transactionCurrency,
                     transactionIndividualDetails: formattedTransactionDetails,
                     transactionType: data.transactionType,
+                    transactionStatus: data.transactionStatus,
+                    transactionCycleType: data.transactionPlannedCycleType,
                     transactionPlannedCycle: data.transactionPlannedCycle,
                     transactionPlannedCycleDate: data.transactionPlannedCycleDate,
                     transactionProofURL: data.transactionProofOfURL,
                     totalAmountOfTransaction: data.totalAmountOfTransaction
                 };
-                console.log('Transaction data being sent:', transactionData);
+                console.log('Add Transaction data being sent:', transactionData);
 
                 // Add request
                 const response = await axios.post('/api/transaction/add', transactionData);                
@@ -168,7 +202,7 @@ const IndividualTransactionForm = ({ type, oldTransactionID }: IndividualTransac
                 console.log(response);
 
                 if(response.status === 200) {
-                    setTransactionData(response.data);
+                    // setTransactionData(response.data);
                     alert('Transaction Addition successful');
                     router.push('/income-expense')
                 } else if (response.status === 400 || response.status === 500){
@@ -189,6 +223,8 @@ const IndividualTransactionForm = ({ type, oldTransactionID }: IndividualTransac
 
                 console.log('Logged In User ID: ', loggedInUserID);
 
+                console.log('Data received from form: ', data);
+
                 const transactionData = {
                     userID: loggedInUserID,
                     oldTransactionID: oldTransactionID,
@@ -197,16 +233,18 @@ const IndividualTransactionForm = ({ type, oldTransactionID }: IndividualTransac
                     newDateOfTransaction: data.dateOfTransaction,
                     newTransactionDescription: data.transactionDescription,
                     newReceiverID: data.receiverID,
-                    newSender: data.senderID,
-                    newTansactionCurrency: data.transactionCurrency,
+                    newSenderID: data.senderID,
+                    newTransactionCurrency: data.transactionCurrency,
                     newTransactionIndividualDetails: formattedTransactionDetails,
-                    transactionType: data.transactionType,
-                    transactionPlannedCycle: data.transactionPlannedCycle,
-                    transactionPlannedCycleDate: data.transactionPlannedCycleDate,
+                    newTransactionType: data.transactionType,
+                    newTransactionStatus: data.transactionStatus,
+                    newTransactionCycleType: data.transactionPlannedCycleType,
+                    newTransactionPlannedCycle: data.transactionPlannedCycle,
+                    newTransactionPlannedCycleDate: data.transactionPlannedCycleDate,
                     newTransactionProofURL: data.transactionProofOfURL,
                     newTotalAmountOfTransaction: data.totalAmountOfTransaction
                 };
-                console.log('Transaction data being sent:', transactionData);
+                console.log('Edit Transaction data being sent:', transactionData);
 
                 // Edit request
                 const response = await axios.post('/api/transaction/edit', transactionData);
@@ -216,7 +254,7 @@ const IndividualTransactionForm = ({ type, oldTransactionID }: IndividualTransac
                 if(response.status === 200) {
                     // setUser(response.data.loggedInUser);
                     // setUser(response.data);
-                    setTransactionData(response.data);
+                    // setTransactionData(response.data);
                     alert('Transaction Edit successful');
                     // sessionStorage.setItem('loggedInUser', response.data.loggedInUserInfo)
                     router.push('/transactionHistory')
@@ -258,40 +296,27 @@ const IndividualTransactionForm = ({ type, oldTransactionID }: IndividualTransac
                             <h1>Old Transaction ID: {oldTransactionID}</h1>
                         </div>
                         <div className="transaction-form-row-layout">
-                            <div className='transaction-column-first-item'>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionName' labelInfo='Transaction Name' placeholderInfo='Enter your transaction name' />
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionCategory' labelInfo='Transaction Category' placeholderInfo='Enter your category' />
+                        <div className='transaction-column-first-item'>
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionName' labelInfo='Transaction Name' placeholderInfo='Enter your transaction name' formType='edit'/>
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionCategory' labelInfo='Transaction Category' placeholderInfo='Enter your category' formType='edit'/>
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionDescription' labelInfo='Transaction Description' placeholderInfo='Enter your Description' formType='edit'/>
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionType' labelInfo='Transaction Type' placeholderInfo='Enter your Transaction Type' formType='edit'/>
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionProofOfURL' labelInfo='Transaction Proof of URL' placeholderInfo='Enter your Transaction Proof URL' formType='edit'/>
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionPlannedCycleType' labelInfo='Transaction Planned Cycle Type' placeholderInfo='Enter your Transaction Planned Cycle Type' formType='edit'/>
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionPlannedCycle' labelInfo='Transaction Planned Cycle' placeholderInfo='Enter your Transaction Planned Cycle' formType='edit'/>
                             </div>
                             <div className='transaction-column-second-item'>
-                            <CustomTransactionFormInput control={form.control} typeInfo='receiverID' labelInfo='Receiver ID' placeholderInfo='Enter your Receiver ID' />
-                            <CustomTransactionFormInput control={form.control} typeInfo='senderID' labelInfo='Sender ID' placeholderInfo='Enter your Sender ID' />
+                            <CustomTransactionFormInput control={form.control} typeInfo='receiverID' labelInfo='Receiver ID' placeholderInfo='Enter your Receiver ID' formType='edit'/>
+                            <CustomTransactionFormInput control={form.control} typeInfo='senderID' labelInfo='Sender ID' placeholderInfo='Enter your Sender ID' formType='edit'/>
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionCurrency' labelInfo='Transaction Currency' placeholderInfo='Enter your Transaction Currency' formType='edit'/>
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionStatus' labelInfo='Transaction Status' placeholderInfo='Enter your Transaction Status' formType='edit'/>
+                            <CustomTransactionFormInput control={form.control} typeInfo='totalAmountOfTransaction' labelInfo='Total Amount' placeholderInfo='Total Amount' formType='edit'/>                                                    
+                            <CustomTransactionFormInput control={form.control} typeInfo='dateOfTransaction' labelInfo='Date of Transaction' placeholderInfo='Enter your Date of Transaction' formType='edit'/>
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionPlannedCycleDate' labelInfo='Transaction Planned Cycle Date' placeholderInfo='Enter your Transaction Planned Cycle Date' formType='edit'/>
                             </div>
                         </div>
-
-                        <div className="transaction-form-row-layout">
-                            <div className='transaction-column-first-item'>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionDescription' labelInfo='Transaction Description' placeholderInfo='Enter your Description' />
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionProofOfURL' labelInfo='Transaction Proof of URL' placeholderInfo='Enter your Transaction Proof URL' />
-                            </div>
-                            <div className='transaction-column-second-item'>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionCurrency' labelInfo='Transaction Currency' placeholderInfo='Enter your Transaction Currency' />
-                            <CustomTransactionFormInput control={form.control} typeInfo='totalAmountOfTransaction' labelInfo='Total Amount' placeholderInfo='Total Amount' />                                                    
-                            </div>
-                        </div>
-                        
-                        <div className="transaction-form-row-layout">
-                            <div className='transaction-column-first-item'>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionType' labelInfo='Transaction Type' placeholderInfo='Enter your Transaction Type' />
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionPlannedCycle' labelInfo='Transaction Planned Cycle' placeholderInfo='Enter your Transaction Planned Cycle' />
-                            </div>
-                            <div className='transaction-column-second-item'>
-                            <CustomTransactionFormInput control={form.control} typeInfo='dateOfTransaction' labelInfo='Date of Transaction' placeholderInfo='Enter your Date of Transaction' />
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionPlannedCycleDate' labelInfo='Transaction Planned Cycle Date' placeholderInfo='Enter your Transaction Planned Cycle Date' />
-                            </div>
-                        </div>
-                            
+                            {/*  */}
                         {/* TODO: Have to make it so that the individual details has a button which can be dyanmic and add or decrease based on the details */}
-                        {/* <CustomTransactionFormInput control={form.control} typeInfo='transactionIndividualDetails' labelInfo='Transaction Individual Details' placeholderInfo='Enter your Transaction Details' /> */}
 
                         <div className="my-6"></div> {/* Adds margin on the y-axis */}
 
@@ -380,18 +405,27 @@ const IndividualTransactionForm = ({ type, oldTransactionID }: IndividualTransac
                     <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="transaction-form-layout">
                         <div className="transaction-form-row-layout">
-                            <div className='transaction-column-first-item'>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionName' labelInfo='Transaction Name' placeholderInfo='Enter your transaction name' />
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionCategory' labelInfo='Transaction Category' placeholderInfo='Enter your category' />
+                        <div className='transaction-column-first-item'>
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionName' labelInfo='Transaction Name' placeholderInfo='Enter your transaction name' formType='add'/>
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionCategory' labelInfo='Transaction Category' placeholderInfo='Enter your category' formType='add'/>
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionDescription' labelInfo='Transaction Description' placeholderInfo='Enter your Description' formType='add'/>
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionType' labelInfo='Transaction Type' placeholderInfo='Enter your Transaction Type' formType='add'/>
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionProofOfURL' labelInfo='Transaction Proof of URL' placeholderInfo='Enter your Transaction Proof URL' formType='add'/>
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionPlannedCycleType' labelInfo='Transaction Planned Cycle Type' placeholderInfo='Enter your Transaction Planned Cycle Type' formType='add'/>
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionPlannedCycle' labelInfo='Transaction Planned Cycle' placeholderInfo='Enter your Transaction Planned Cycle' formType='add'/>
                             </div>
                             <div className='transaction-column-second-item'>
-                            {/* Change it so that the receiver name and sender naem (from the friend and group list) will be automatically converted to receiver id and sender id */}
-                            <CustomTransactionFormInput control={form.control} typeInfo='receiverID' labelInfo='Receiver ID' placeholderInfo='Enter your Receiver ID' />
-                            <CustomTransactionFormInput control={form.control} typeInfo='senderID' labelInfo='Sender ID' placeholderInfo='Enter your Sender ID' />
+                            <CustomTransactionFormInput control={form.control} typeInfo='receiverID' labelInfo='Receiver ID' placeholderInfo='Enter your Receiver ID' formType='add'/>
+                            <CustomTransactionFormInput control={form.control} typeInfo='senderID' labelInfo='Sender ID' placeholderInfo='Enter your Sender ID' formType='add'/>
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionCurrency' labelInfo='Transaction Currency' placeholderInfo='Enter your Transaction Currency' formType='add'/>
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionStatus' labelInfo='Transaction Status' placeholderInfo='Enter your Transaction Status' formType='add'/>
+                            <CustomTransactionFormInput control={form.control} typeInfo='totalAmountOfTransaction' labelInfo='Total Amount' placeholderInfo='Total Amount' formType='add'/>                                                    
+                            <CustomTransactionFormInput control={form.control} typeInfo='dateOfTransaction' labelInfo='Date of Transaction' placeholderInfo='Enter your Date of Transaction' formType='add'/>
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionPlannedCycleDate' labelInfo='Transaction Planned Cycle Date' placeholderInfo='Enter your Transaction Planned Cycle Date' formType='add'/>
                             </div>
                         </div>
 
-                        <div className="transaction-form-row-layout">
+                        {/* <div className="transaction-form-row-layout">
                             <div className='transaction-column-first-item'>
                             <CustomTransactionFormInput control={form.control} typeInfo='transactionDescription' labelInfo='Transaction Description' placeholderInfo='Enter your Transaction Description' />
                             <CustomTransactionFormInput control={form.control} typeInfo='transactionProofOfURL' labelInfo='Transaction Proof of URL' placeholderInfo='Enter your Transaction Proof URL' />
@@ -411,7 +445,7 @@ const IndividualTransactionForm = ({ type, oldTransactionID }: IndividualTransac
                             <CustomTransactionFormInput control={form.control} typeInfo='dateOfTransaction' labelInfo='Date of Transaction' placeholderInfo='Enter your Date of Transaction' />
                             <CustomTransactionFormInput control={form.control} typeInfo='transactionPlannedCycleDate' labelInfo='Transaction Planned Cycle Date' placeholderInfo='Enter your Transaction Planned Cycle Date' />
                             </div>
-                        </div>
+                        </div> */}
                             
                         {/* TODO: Have to make it so that the individual details has a button which can be dyanmic and add or decrease based on the details */}
                         {/* <CustomTransactionFormInput control={form.control} typeInfo='transactionIndividualDetails' labelInfo='Transaction Individual Details' placeholderInfo='Enter your Transaction Details' /> */}

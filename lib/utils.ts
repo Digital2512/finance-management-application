@@ -132,7 +132,7 @@ export function getAccountTypeColors(type: AccountTypes) {
 }
 
 export function countTransactionCategories(
-  transactions: TransactionDetails[]
+  transactions: Transaction[]
 ): CategoryCount[] {
   const categoryCounts: { [category: string]: number } = {};
   let totalCount = 0;
@@ -141,7 +141,7 @@ export function countTransactionCategories(
   transactions &&
     transactions.forEach((transaction) => {
       // Extract the category from the transaction
-      const category = transaction.category;
+      const category = transaction.transactionCategory;
 
       // If the category exists in the categoryCounts object, increment its count
       if (categoryCounts.hasOwnProperty(category)) {
@@ -249,7 +249,7 @@ const transactionIndividualDetailsSchema = z.object({
   typeOfTransactionIndividual: z.enum(['Income', 'Expense']),
   amountOfTransactionIndividual: z.number().min(0),
   individualTransactionCurrency: z.enum(currencyCodes)
-})
+});
 export const transactionFormSchema = () => z.object({
   // transactionID: type === 'edit' ? z.string().min(1, {message: 'Old Transaction ID is required'}) : z.string().optional(),
   transactionName: z.string().min(1, {message: 'Name is required'}),
@@ -262,7 +262,9 @@ export const transactionFormSchema = () => z.object({
   // senderID: z.union([z.string(), z.object({})]),
   transactionCurrency: z.enum(currencyCodes),
   transactionIndividualDetails: z.array(transactionIndividualDetailsSchema),
-  transactionType: z.enum(['One-Time', 'Recurring']).default('One-Time'),
+  transactionType: z.enum(['Income', 'Expense']).default('Expense'),
+  transactionStatus: z.enum(['Not Paid', 'Pending', 'Paid']).default('Not Paid'),
+  transactionPlannedCycleType: z.enum(['One-Time', 'Recurring']).default('One-Time'),
   transactionPlannedCycle: z.enum(['None', 'Daily', 'Weekly', 'Monthly', 'Yearly']).default('None'),
   transactionPlannedCycleDate: z.date().optional(),
   transactionProofOfURL: z.string().default('Empty'),

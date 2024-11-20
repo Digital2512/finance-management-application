@@ -5,10 +5,11 @@ import { deleteTransaction } from '@/lib/transaction/deleteTransaction';
 
 export async function POST(request: NextRequest) {
   try {
-    const { transactionID } = await request.json();  
+    const { transactionID } = await request.json(); 
+    console.log('Not Deleted Transaction: ' + transactionID); 
     const {result, message, deletedTransactionID} = await deleteTransaction(transactionID);
 
-    console.log('New Transaction Info: ' + deletedTransactionID);
+    console.log('Deleted Transaction: ' + deletedTransactionID);
 
     console.log('----------------------------------------------------------------------------------------------------------------------------------------------------');
     

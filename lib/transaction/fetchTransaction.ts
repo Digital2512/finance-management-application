@@ -40,7 +40,7 @@ export const fetchTransaction = async ( transactionID: string) => {
       //   console.log("Fetch Transaction successful");
       //   return { result: true, token: token, message: 'Fetch Transaction Successful', existingTransactionData: existingTransaction};
       // }
-
+        console.log("Fetch Transaction: ", existingTransaction);
         console.log("Fetch Transaction successful");
         return { result: true, message: 'Fetch Transaction Successful', existingTransactionData: existingTransaction};
 

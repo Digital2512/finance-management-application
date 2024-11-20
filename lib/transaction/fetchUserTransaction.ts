@@ -23,7 +23,7 @@ export const fetchUserTransaction = async ( userID: string ) => {
     console.log('Database is connected');
     try {
         const userIDObject = new mongoose.Types.ObjectId(userID)
-      const userTransactionsData = await Transaction.find({userID: userIDObject});
+        const userTransactionsData = await Transaction.find({userID: userIDObject});
       if (!userTransactionsData) {
         console.log('No record of User Transactions is found');
         return { result: false, message: 'User Transactions is not in Database' };

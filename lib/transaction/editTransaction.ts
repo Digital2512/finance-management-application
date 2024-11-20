@@ -9,9 +9,11 @@ import mongoose from 'mongoose';
 require('dotenv').config();
 
 interface TransactionIndividualDetail {
-    transactionType: string;
-    transactionPlannedCycle: string;
-    transactionPlannedCycleDate: Date;
+  nameOfTransactionIndividual: string,
+  descriptionOfTransactionIndividual: string,
+  typeOfTransactionIndividual: string,
+  amountOfTransactionIndividual: number,
+  individualTransactionCurrency: string
   }
 
 export const editTransaction = async ( 
@@ -25,6 +27,11 @@ export const editTransaction = async (
     newSenderID: string,
     newTransactionCurrency: string,
     newTransactionIndividualDetails: TransactionIndividualDetail[],
+    newTransactionType: string,
+    newTransactionStatus: string,
+    newTransactionCycleType: string,
+    newTransactionPlannedCycle: string,
+    newTransactionPlannedCycleDate: Date,
     newTransactionProofURL: string,
     newTotalAmountOfTransaction: string
 ) => {
@@ -56,14 +63,19 @@ export const editTransaction = async (
 
       const addNewTransaction = new Transaction({
         userID: userID,
-        name: newTransactionName,
-        category: newTransactionCategory,
+        transactionName: newTransactionName,
+        transactionCategory: newTransactionCategory,
         dateOfTransaction: newDateOfTransaction,
-        description: newTransactionDescription,
+        transactionDescription: newTransactionDescription,
         receiverID: newReceiverID,
         senderID: newSenderID,
         transactionCurrency: newTransactionCurrency,
         transactionIndividualDetails: newTransactionIndividualDetails,
+        transactionType: newTransactionType,
+        transactionStatus: newTransactionStatus,
+        transactionCycleType: newTransactionCycleType,
+        transactionPlannedCycle: newTransactionPlannedCycle,
+        transactionPlannedCycleDate: newTransactionPlannedCycleDate,
         transactionProofURL: newTransactionProofURL,
         totalAmountOfTransaction: newTotalAmountOfTransaction
       });

@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
     
       } catch (error) {
         //the reason for the alert not announcing when the registeration or login fails is because when an error happended is because we used a try-catch block which instantly stops the program when it catches an error
-        console.error('Fetch Transaction request error:', error);
+        console.error('Fetch User Transaction request error:', error);
         return NextResponse.json({ message: 'Fetch Transaction request failed' }, { status: 500 });
       }
 }
