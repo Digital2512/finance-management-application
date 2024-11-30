@@ -4,12 +4,14 @@ import { formatAmount } from "@/lib/utils";
 import AnimatedCounter from "./AnimatedCounter";
 import { useState } from "react";
 import DoughnutChartOverview from "./DoughnutChartOverview";
+import DoughnutChartTextOverview from "./DoughnutChartOverviewText";
 
 const BoxOverview = ({
     accounts = [],
     totalBanks,
     totalLeftBalance,
     boxData,
+    boxTextData,
     typeBox,
 }: BoxOverviewProps) => {
 
@@ -19,6 +21,7 @@ const BoxOverview = ({
             <section className="savings-balance">
               <div className="savings-chart">
                 <DoughnutChartOverview doughnutChartData={boxData} />
+                {/* <DoughnutChartTextOverview doughnutChartData={boxTextData} chartOverviewType="savings"/> */}
               </div>
     
               <div className="flex flex-col gap-6">
@@ -37,6 +40,7 @@ const BoxOverview = ({
             <section className="savings-balance">
             <div className="savings-chart">
               <DoughnutChartOverview doughnutChartData={boxData} />
+              <DoughnutChartTextOverview doughnutChartData={boxTextData} chartOverviewType="savings"/>
             </div>
   
             <div className="flex flex-col gap-6">
@@ -55,6 +59,7 @@ const BoxOverview = ({
             <section className="savings-balance">
             <div className="savings-chart">
               <DoughnutChartOverview doughnutChartData={boxData} />
+              <DoughnutChartTextOverview doughnutChartData={boxTextData} chartOverviewType="savings"/>
             </div>
   
             <div className="flex flex-col gap-6">

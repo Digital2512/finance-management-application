@@ -292,16 +292,34 @@ declare interface ExpenseBoxProps {
   expenseData: Expenses[];
 }
 
-  type Expenses = {
-    category: string;
-    amount: number;
-  };
+type Expenses = {
+  category: string;
+  amount: number;
+};
+
+type BoxOverviewData = {
+  category: string;
+  amount: number;
+};
+
+type BoxOverviewTextData = {
+  name: string,
+  category: string, 
+  amount: number,
+  fillColor: string,
+}  
+
+declare interface DoughnutChartProps {
+  doughnutChartData: BoxOverviewTextData[];
+  chartOverviewType: string,
+}
 
 declare interface BoxOverviewProps {
   accounts: Account[];
   totalBanks: number;
   totalLeftBalance: number;
   boxData: BoxOverviewData[];
+  boxTextData: BoxOverviewTextData[];
   typeBox: string;
 }
 
@@ -313,11 +331,6 @@ declare interface SavingsBoxProps {
 }
 
 type Savings = {
-  category: string;
-  amount: number;
-};
-
-type BoxOverviewData = {
   category: string;
   amount: number;
 };
@@ -393,10 +406,10 @@ declare interface CategoryProps {
   category: CategoryCount;
 }
 
-declare interface DoughnutChartProps {
-  totalExpenseBalance: number,
-  totalCurrentMonthDebtBalance: number
-}
+// declare interface DoughnutChartProps {
+//   totalExpenseBalance: number,
+//   totalCurrentMonthDebtBalance: number
+// }
 
 declare interface PaymentTransferFormProps {
   accounts: Account[];
@@ -505,15 +518,16 @@ declare interface CustomTransactionInputProps<schemaType> {
   typeInfo: FieldPath<z.infer<typeof schemaType>>,
   labelInfo: string,
   placeholderInfo: string,
-  formType: string
+  formType: string,
+  optionsGiven?: boolean,
+  options?: {value: string}[]
 }
-
 declare interface transactionIndividualDetails {
   nameOfTransactionIndividual: string;
   descriptionOfTransactionIndividual: string;
-  typeOfTransactionIndividual: string;
+  // typeOfTransactionIndividual: string;
   amountOfTransactionIndividual: number;
-  individualTransactionCurrency: string;
+  // individualTransactionCurrency: string;
 };
 
 declare type Transaction = {
@@ -535,4 +549,34 @@ declare type Transaction = {
   totalAmountOfTransaction: number;
   transactionProofURL: string;
   __v: number;
+}
+
+declare type ChartDataItem = {
+  date: string;
+  name: string;
+  type: string;
+  amount: number;
+}
+
+declare type AreaChartDataItem = {
+  date: string;
+  income: number;
+  expense: number;
+}
+
+declare interface IncomeExpenseAreaChartProps {
+  userID: string;
+  // chartData: Array<ChartDataItem>;
+    // settedTimeRange?: "7 Days" | "30 Days" | "90 Days";
+}
+
+declare type floatingButtonOptionItem = {  
+  label: string;
+  value: string;
+  route: string;
+  icon: string;
+}
+
+declare interface floatingButtonProps {  
+  floatingButtonOptions : floatingButtonOptionItem[]
 }

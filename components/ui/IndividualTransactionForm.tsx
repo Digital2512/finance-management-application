@@ -133,8 +133,8 @@ const IndividualTransactionForm = ({ type, oldTransactionID }: IndividualTransac
                     fetchedData.transactionIndividualDetails.map((detail: any) => ({
                         transactionIndividualDetailsName: detail.nameOfTransactionIndividual || "",
                         transactionIndividualDetailsDescription: detail.descriptionOfTransactionIndividual || "",
-                        transactionIndividualDetailsType: detail.typeOfTransactionIndividual || "",
-                        transactionIndividualDetailsCurrency: detail.individualTransactionCurrency || "",
+                        // transactionIndividualDetailsType: detail.typeOfTransactionIndividual || "",
+                        // transactionIndividualDetailsCurrency: detail.individualTransactionCurrency || "",
                         transactionIndividualDetailsAmount: detail.amountOfTransactionIndividual || 0,
                 })));
 
@@ -152,6 +152,29 @@ const IndividualTransactionForm = ({ type, oldTransactionID }: IndividualTransac
             fetchTransactionData(oldTransactionID);
         }
     }, [type, oldTransactionID]);
+
+    const currencyCodes = [
+        "AED", "AFN", "ALL", "AMD", "ANG", "AOA", "ARS", "AUD", "AWG", "AZN",
+        "BAM", "BBD", "BDT", "BGN", "BHD", "BIF", "BMD", "BND", "BOB", "BRL",
+        "BSD", "BTN", "BWP", "BYN", "BZD", "CAD", "CDF", "CHF", "CLP", "CNY",
+        "COP", "CRC", "CUP", "CVE", "CZK", "DJF", "DKK", "DOP", "DZD", "EGP",
+        "ERN", "ETB", "EUR", "FJD", "FKP", "FOK", "GBP", "GEL", "GGP", "GHS",
+        "GIP", "GMD", "GNF", "GTQ", "GYD", "HKD", "HNL", "HRK", "HTG", "HUF",
+        "IDR", "ILS", "IMP", "INR", "IQD", "IRR", "ISK", "JEP", "JMD", "JOD",
+        "JPY", "KES", "KGS", "KHR", "KID", "KMF", "KRW", "KWD", "KYD", "KZT",
+        "LAK", "LBP", "LKR", "LRD", "LSL", "LYD", "MAD", "MDL", "MGA", "MKD",
+        "MMK", "MNT", "MOP", "MRU", "MUR", "MVR", "MWK", "MXN", "MYR", "MZN",
+        "NAD", "NGN", "NIO", "NOK", "NPR", "NZD", "OMR", "PAB", "PEN", "PGK",
+        "PHP", "PKR", "PLN", "PYG", "QAR", "RON", "RSD", "RUB", "RWF", "SAR",
+        "SBD", "SCR", "SDG", "SEK", "SGD", "SHP", "SLL", "SOS", "SRD", "SSP",
+        "STN", "SYP", "SZL", "THB", "TJS", "TMT", "TND", "TOP", "TRY", "TTD",
+        "TVD", "TWD", "TZS", "UAH", "UGX", "USD", "UYU", "UZS", "VES", "VND",
+        "VUV", "WST", "XAF", "XCD", "XOF", "XPF", "YER", "ZAR", "ZMW", "ZWL"
+      ];      
+
+    const currencyOptions = currencyCodes.map((code) => ({
+        value: code
+    }))
     
 
     // Submit handler for form
@@ -168,9 +191,9 @@ const IndividualTransactionForm = ({ type, oldTransactionID }: IndividualTransac
                 const formattedTransactionDetails = transactionIndividualDetails.map(detail => ({
                     nameOfTransactionIndividual: detail.transactionIndividualDetailsName,
                     descriptionOfTransactionIndividual: detail.transactionIndividualDetailsDescription,
-                    typeOfTransactionIndividual: detail.transactionIndividualDetailsType,
+                    // typeOfTransactionIndividual: detail.transactionIndividualDetailsType,
                     amountOfTransactionIndividual: detail.transactionIndividualDetailsAmount,
-                    individualTransactionCurrency: detail.transactionIndividualDetailsCurrency
+                    // individualTransactionCurrency: detail.transactionIndividualDetailsCurrency
                 }));                
                 const loggedInUserID = sessionStorage.getItem('loggedInUserID');
 
@@ -257,7 +280,7 @@ const IndividualTransactionForm = ({ type, oldTransactionID }: IndividualTransac
                     // setTransactionData(response.data);
                     alert('Transaction Edit successful');
                     // sessionStorage.setItem('loggedInUser', response.data.loggedInUserInfo)
-                    router.push('/transactionHistory')
+                    router.push('/income-expense')
                 } else {
                     // setErrorMessage('Login unsuccessful');
                     alert('Transaction Edit unsuccessful');
@@ -300,16 +323,48 @@ const IndividualTransactionForm = ({ type, oldTransactionID }: IndividualTransac
                             <CustomTransactionFormInput control={form.control} typeInfo='transactionName' labelInfo='Transaction Name' placeholderInfo='Enter your transaction name' formType='edit'/>
                             <CustomTransactionFormInput control={form.control} typeInfo='transactionCategory' labelInfo='Transaction Category' placeholderInfo='Enter your category' formType='edit'/>
                             <CustomTransactionFormInput control={form.control} typeInfo='transactionDescription' labelInfo='Transaction Description' placeholderInfo='Enter your Description' formType='edit'/>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionType' labelInfo='Transaction Type' placeholderInfo='Enter your Transaction Type' formType='edit'/>
+
+
+                            {/* Given options income or expense */}
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionType' labelInfo='Transaction Type' placeholderInfo='Enter your Transaction Type' formType='edit' options={
+                                [
+                                    {value: "Income"},
+                                    {value: "Expense"}
+                                ]
+                            }/>
+                            
                             <CustomTransactionFormInput control={form.control} typeInfo='transactionProofOfURL' labelInfo='Transaction Proof of URL' placeholderInfo='Enter your Transaction Proof URL' formType='edit'/>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionPlannedCycleType' labelInfo='Transaction Planned Cycle Type' placeholderInfo='Enter your Transaction Planned Cycle Type' formType='edit'/>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionPlannedCycle' labelInfo='Transaction Planned Cycle' placeholderInfo='Enter your Transaction Planned Cycle' formType='edit'/>
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionPlannedCycleType' labelInfo='Transaction Planned Cycle Type' placeholderInfo='Enter your Transaction Planned Cycle Type' formType='edit' options={
+                                [
+                                    {value: "One-Time"},
+                                    {value: "Recurring"}
+                                ]
+                            }/>
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionPlannedCycle' labelInfo='Transaction Planned Cycle' placeholderInfo='Enter your Transaction Planned Cycle' formType='edit' options={
+                                [
+                                    {value: "None"},
+                                    {value: "Daily"},
+                                    {value: "Weekly"},
+                                    {value: "Monthly"},
+                                    {value: "Yearly"}
+                                ]
+                            }/>
                             </div>
                             <div className='transaction-column-second-item'>
                             <CustomTransactionFormInput control={form.control} typeInfo='receiverID' labelInfo='Receiver ID' placeholderInfo='Enter your Receiver ID' formType='edit'/>
                             <CustomTransactionFormInput control={form.control} typeInfo='senderID' labelInfo='Sender ID' placeholderInfo='Enter your Sender ID' formType='edit'/>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionCurrency' labelInfo='Transaction Currency' placeholderInfo='Enter your Transaction Currency' formType='edit'/>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionStatus' labelInfo='Transaction Status' placeholderInfo='Enter your Transaction Status' formType='edit'/>
+
+                            {/* Given options on currency */}
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionCurrency' labelInfo='Transaction Currency' placeholderInfo='Enter your Transaction Currency' formType='edit' options={currencyOptions}/>
+
+                            {/* Given options on status */}
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionStatus' labelInfo='Transaction Status' placeholderInfo='Enter your Transaction Status' formType='edit'
+                            options={[
+                                {value: 'Not Paid'},
+                                {value: 'Pending'},
+                                {value: 'Done'}
+                            ]}/>
+                            
                             <CustomTransactionFormInput control={form.control} typeInfo='totalAmountOfTransaction' labelInfo='Total Amount' placeholderInfo='Total Amount' formType='edit'/>                                                    
                             <CustomTransactionFormInput control={form.control} typeInfo='dateOfTransaction' labelInfo='Date of Transaction' placeholderInfo='Enter your Date of Transaction' formType='edit'/>
                             <CustomTransactionFormInput control={form.control} typeInfo='transactionPlannedCycleDate' labelInfo='Transaction Planned Cycle Date' placeholderInfo='Enter your Transaction Planned Cycle Date' formType='edit'/>
@@ -323,10 +378,10 @@ const IndividualTransactionForm = ({ type, oldTransactionID }: IndividualTransac
                         <table className='transaction-table padding-[10px]'>
                             <thead>
                                 <tr>
-                                    <th>Edit Name</th>
+                                    <th>Name</th>
                                     <th>Description</th>
-                                    <th>Type</th>
-                                    <th>Currency</th>
+                                    {/* <th>Type</th>
+                                    <th>Currency</th> */}
                                     <th>Amount</th>
                                 </tr>
                             </thead>
@@ -341,15 +396,15 @@ const IndividualTransactionForm = ({ type, oldTransactionID }: IndividualTransac
                                         className='w-[200px]'
                                         />
                                     </td>
-                                    <td className='input-td w-[400px]'>
+                                    <td className='input-td w-[575px]'>
                                         <input
                                         type="text"
                                         value={transactionIndividualDetail.transactionIndividualDetailsDescription}
                                         onChange={(e) => handleIndividualTransactionDetailChange(e, index, 'transactionIndividualDetailsDescription', e.target.value)}
-                                        className='w-[400px]'
+                                        className='w-[575px]'
                                         />
                                     </td>
-                                    <td className='input-td w-[100px]'>
+                                    {/* <td className='input-td w-[100px]'>
                                         <input
                                         type="text"
                                         value={transactionIndividualDetail.transactionIndividualDetailsType}
@@ -357,6 +412,7 @@ const IndividualTransactionForm = ({ type, oldTransactionID }: IndividualTransac
                                         className='w-[100px]'
                                         />
                                     </td>
+                                    
                                     <td className='input-td w-[100px]'>
                                         <input
                                         type="text"
@@ -364,7 +420,8 @@ const IndividualTransactionForm = ({ type, oldTransactionID }: IndividualTransac
                                         onChange={(e) => handleIndividualTransactionDetailChange(e, index, 'transactionIndividualDetailsCurrency', e.target.value)}
                                         className='w-[100px]'
                                         />
-                                    </td>
+                                    </td> */}
+
                                     <td className='input-td w-[75px]'>
                                         <input
                                         type="number"
@@ -406,22 +463,54 @@ const IndividualTransactionForm = ({ type, oldTransactionID }: IndividualTransac
                     <form onSubmit={form.handleSubmit(onSubmit)} className="transaction-form-layout">
                         <div className="transaction-form-row-layout">
                         <div className='transaction-column-first-item'>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionName' labelInfo='Transaction Name' placeholderInfo='Enter your transaction name' formType='add'/>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionCategory' labelInfo='Transaction Category' placeholderInfo='Enter your category' formType='add'/>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionDescription' labelInfo='Transaction Description' placeholderInfo='Enter your Description' formType='add'/>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionType' labelInfo='Transaction Type' placeholderInfo='Enter your Transaction Type' formType='add'/>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionProofOfURL' labelInfo='Transaction Proof of URL' placeholderInfo='Enter your Transaction Proof URL' formType='add'/>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionPlannedCycleType' labelInfo='Transaction Planned Cycle Type' placeholderInfo='Enter your Transaction Planned Cycle Type' formType='add'/>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionPlannedCycle' labelInfo='Transaction Planned Cycle' placeholderInfo='Enter your Transaction Planned Cycle' formType='add'/>
+                        <CustomTransactionFormInput control={form.control} typeInfo='transactionName' labelInfo='Transaction Name' placeholderInfo='Enter your transaction name' formType='edit'/>
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionCategory' labelInfo='Transaction Category' placeholderInfo='Enter your category' formType='edit'/>
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionDescription' labelInfo='Transaction Description' placeholderInfo='Enter your Description' formType='edit'/>
+
+
+                            {/* Given options income or expense */}
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionType' labelInfo='Transaction Type' placeholderInfo='Enter your Transaction Type' formType='edit' options={
+                                [
+                                    {value: "Income"},
+                                    {value: "Expense"}
+                                ]
+                            }/>
+                            
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionProofOfURL' labelInfo='Transaction Proof of URL' placeholderInfo='Enter your Transaction Proof URL' formType='edit'/>
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionPlannedCycleType' labelInfo='Transaction Planned Cycle Type' placeholderInfo='Enter your Transaction Planned Cycle Type' formType='edit' options={
+                                [
+                                    {value: "One-Time"},
+                                    {value: "Recurring"}
+                                ]
+                            }/>
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionPlannedCycle' labelInfo='Transaction Planned Cycle' placeholderInfo='Enter your Transaction Planned Cycle' formType='edit' options={
+                                [
+                                    {value: "None"},
+                                    {value: "Daily"},
+                                    {value: "Weekly"},
+                                    {value: "Monthly"},
+                                    {value: "Yearly"}
+                                ]
+                            }/>
                             </div>
                             <div className='transaction-column-second-item'>
-                            <CustomTransactionFormInput control={form.control} typeInfo='receiverID' labelInfo='Receiver ID' placeholderInfo='Enter your Receiver ID' formType='add'/>
-                            <CustomTransactionFormInput control={form.control} typeInfo='senderID' labelInfo='Sender ID' placeholderInfo='Enter your Sender ID' formType='add'/>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionCurrency' labelInfo='Transaction Currency' placeholderInfo='Enter your Transaction Currency' formType='add'/>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionStatus' labelInfo='Transaction Status' placeholderInfo='Enter your Transaction Status' formType='add'/>
-                            <CustomTransactionFormInput control={form.control} typeInfo='totalAmountOfTransaction' labelInfo='Total Amount' placeholderInfo='Total Amount' formType='add'/>                                                    
-                            <CustomTransactionFormInput control={form.control} typeInfo='dateOfTransaction' labelInfo='Date of Transaction' placeholderInfo='Enter your Date of Transaction' formType='add'/>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionPlannedCycleDate' labelInfo='Transaction Planned Cycle Date' placeholderInfo='Enter your Transaction Planned Cycle Date' formType='add'/>
+                            <CustomTransactionFormInput control={form.control} typeInfo='receiverID' labelInfo='Receiver ID' placeholderInfo='Enter your Receiver ID' formType='edit'/>
+                            <CustomTransactionFormInput control={form.control} typeInfo='senderID' labelInfo='Sender ID' placeholderInfo='Enter your Sender ID' formType='edit'/>
+
+                            {/* Given options on currency */}
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionCurrency' labelInfo='Transaction Currency' placeholderInfo='Enter your Transaction Currency' formType='edit' options={currencyOptions}/>
+
+                            {/* Given options on status */}
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionStatus' labelInfo='Transaction Status' placeholderInfo='Enter your Transaction Status' formType='edit'
+                            options={[
+                                {value: 'Not Paid'},
+                                {value: 'Pending'},
+                                {value: 'Done'}
+                            ]}/>
+                            
+                            <CustomTransactionFormInput control={form.control} typeInfo='totalAmountOfTransaction' labelInfo='Total Amount' placeholderInfo='Total Amount' formType='edit'/>                                                    
+                            <CustomTransactionFormInput control={form.control} typeInfo='dateOfTransaction' labelInfo='Date of Transaction' placeholderInfo='Enter your Date of Transaction' formType='edit'/>
+                            <CustomTransactionFormInput control={form.control} typeInfo='transactionPlannedCycleDate' labelInfo='Transaction Planned Cycle Date' placeholderInfo='Enter your Transaction Planned Cycle Date' formType='edit'/>
                             </div>
                         </div>
 
@@ -457,8 +546,8 @@ const IndividualTransactionForm = ({ type, oldTransactionID }: IndividualTransac
                                 <tr>
                                     <th>Add Name</th>
                                     <th>Description</th>
-                                    <th>Type</th>
-                                    <th>Currency</th>
+                                    {/* <th>Type</th>
+                                    <th>Currency</th> */}
                                     <th>Amount</th>
                                 </tr>
                             </thead>
@@ -473,15 +562,15 @@ const IndividualTransactionForm = ({ type, oldTransactionID }: IndividualTransac
                                         className='w-[200px]'
                                         />
                                     </td>
-                                    <td className='input-td w-[400px]'>
+                                    <td className='input-td w-[575px]'>
                                         <input
                                         type="text"
                                         value={transactionIndividualDetail.transactionIndividualDetailsDescription}
                                         onChange={(e) => handleIndividualTransactionDetailChange(e, index, 'transactionIndividualDetailsDescription', e.target.value)}
-                                        className='w-[400px]'
+                                        className='w-[575px]'
                                         />
                                     </td>
-                                    <td className='input-td w-[100px]'>
+                                    {/* <td className='input-td w-[100px]'>
                                         <input
                                         type="text"
                                         value={transactionIndividualDetail.transactionIndividualDetailsType}
@@ -496,7 +585,7 @@ const IndividualTransactionForm = ({ type, oldTransactionID }: IndividualTransac
                                         onChange={(e) => handleIndividualTransactionDetailChange(e, index, 'transactionIndividualDetailsCurrency', e.target.value)}
                                         className='w-[100px]'
                                         />
-                                    </td>
+                                    </td> */}
                                     <td className='input-td w-[75px]'>
                                         <input
                                         type="number"

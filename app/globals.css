@@ -615,9 +615,16 @@
   @apply max-md: sm:p-4 xl:p-6 2xl:w-[355px]; */
 }
 
-.divider {
+.divider-line {
   border: none;
   border-top: 4px solid #000; 
+  margin: 1em; 
+  width: 80%;
+}
+
+.divider-invisible {
+  border: none;
+  border-top: 4px; 
   margin: 1em; 
   width: 80%;
 }
@@ -918,6 +925,215 @@
   width: 100%;
 }
 
+  /* .floating-button-menu{
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    width: 60px;
+    height: 250px;
+    gap:5px;
+  }
+
+  .floating-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 360px;
+    background-color: blue;
+    width: 60px;
+    height: 60px;
+    font-size: 25px;
+    font-weight: 400px;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+  } */
+
+  /* .floating-button-menu{
+    display: none;
+    margin-top: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    overflow: hidden;
+    border: #000;
+    border-width: 2px;
+  } */
+
+  /* .floating-button-menu ul{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  } */
+
+  /* .floating-button-menu ul li{
+    padding: 10px 20px;
+    color: #fff;
+    cursor: pointer;
+  } */
+
+  /* .floating-button-menu ul li:hover{
+    color: #5c5c7b;
+  } */
+
+  /* .floating-button-menu:hover .menu{
+    display: block;
+  } */
+   /* .floating-button-item{
+    z-index: 1000;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items:center;
+    border-radius: 360px;
+    background-color: blue;
+    width: 60px;
+    height: 60px;
+   }
+
+   .floating-button-item img{
+    transition: all 0.3s ease;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+   }
+
+   .floating-button-item:hover{
+    width: 200px;
+    height:60px;
+    border-radius: 8px;
+    margin-right: 130px;
+   }
+
+   .floating-button-item .floating-button-label{
+    visibility: hidden;
+    opacity: 0;
+    white-space: nowrap;
+   }
+
+   .floating-button-item:hover .floating-button-label{
+    visibility: visible;
+    opacity: 1;
+   }
+
+   .floating-button-item:hover img {
+    margin-right: 8px; 
+  } */
+
+   /* .floating-button-link{
+    visibility: hidden;
+   } */
+
+  /* @media (max-width: 1090px) {
+    .transaction-table{
+      width: 100px;
+    }
+  } */
+
+  .floating-button-menu {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-end;
+    width: 60px;
+    height: 250px;
+    gap:5px;
+    /* background-color: black; */
+  }
+  
+  .floating-button {
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%; /* Circle shape */
+    background-color: blue;
+    width: 60px;
+    height: 60px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .floating-button-item {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 60px;  /* Circle width */
+    height: 60px; /* Circle height */
+    border-radius: 360px;
+    background-color: blue;
+    overflow: hidden; /* Prevents overflow */
+    transition: all 0.3s ease;
+  }
+  
+  .floating-button-item a {
+    /* visibility: hidden;
+    opacity: 0; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    transition: all 0.3s ease;
+  }
+  
+  /* The image should stay centered in the circle */
+  .floating-button-item img {
+    position: absolute;
+    width: 30px; /* Icon size */
+    height: 30px;
+    border-radius: 50%; /* Circular icon */
+    transition: all 0.3s ease;
+  }
+  
+  /* Text will be hidden initially */
+  .floating-button-item .floating-button-label {    
+    visibility: hidden;
+    opacity: 0;
+    margin-left: 8px; /* Space between icon and label */
+    transition: all 0.3s ease;
+    white-space: nowrap; /* Prevents text from wrapping */
+    color: white;
+    /* font-weight: 30px; */
+    /* font-weight: bold; */
+  }
+  
+  
+  .floating-button-item:hover {
+    /* width: ;  */
+    width: max-content;
+    height: 60px;
+    border-radius: 8px; 
+    /* margin-right: 80px; */
+  }
+  
+  .floating-button-item:hover .floating-button-label {
+    position: relative;
+    visibility: visible;
+    opacity: 1;
+    margin-left: 10px;    
+    order: -1;
+  }
+
+  .floating-button-item:hover a {
+    visibility: visible;
+    opacity: 1;
+  }
+  
+  .floating-button-item:hover img{
+    position: relative;
+    /* left: 40px; */
+    margin-right: 10px;
+    margin-left: 10px;
+  }
+  
 
 @media (max-width: 900px) {
   .transaction-form {
@@ -931,8 +1147,11 @@
   .socialListProfile .profile-container {
     width: 400px; /* Slightly smaller on small screens */
   }
-  .divider {
+  .divider-line {
     width: 75%; /* Slightly smaller on small screens */
+  }
+  .divider-invisible {
+    width: 75%;
   }
   .options-selection {
     width: 400px; /* Slightly smaller on small screens */
@@ -971,5 +1190,4 @@
     margin-top: 15px;
     max-width: 400px;
   } */
-
 }

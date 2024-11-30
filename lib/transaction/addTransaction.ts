@@ -12,9 +12,9 @@ require('dotenv').config();
 interface TransactionIndividualDetail {
   nameOfTransactionIndividual: string,
   descriptionOfTransactionIndividual: string,
-  typeOfTransactionIndividual: string,
+  // typeOfTransactionIndividual: string,
   amountOfTransactionIndividual: number,
-  individualTransactionCurrency: string
+  // individualTransactionCurrency: string
   }
 
 export const addTransaction = async ( 

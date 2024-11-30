@@ -44,10 +44,11 @@ const CategoryBadge = ({category}: CategoryBadgeProps) => {
 
 interface TransactionsTableProps {
     userID: string;
+    typeOfTable: string
     // Other props if needed
   }
 
-const TransactionsTable = ({userID} : TransactionsTableProps) => {
+const TransactionsTable = ({userID, typeOfTable} : TransactionsTableProps) => {
     const [userTransactionsData, setUserTransactionsData] = useState<Transaction[]>([]);
     const [transactionData, setTransactionsData] = useState<Transaction>();
     const [isLoading, setIsLoading] = useState(false);
@@ -150,7 +151,7 @@ const TransactionsTable = ({userID} : TransactionsTableProps) => {
         // }
 
     return(
-        <Table>
+        <Table className="ml-6">
             <TableHeader>
                 <TableRow>
                     <TableHead className="px-2">Transaction ID</TableHead>

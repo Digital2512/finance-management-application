@@ -246,9 +246,9 @@ const currencyCodes = [
 const transactionIndividualDetailsSchema = z.object({
   nameOfTransactionIndividual: z.string().default('Undefined'),
   descriptionOfTransactionIndividual: z.string().default('Undefined'),
-  typeOfTransactionIndividual: z.enum(['Income', 'Expense']),
+  // typeOfTransactionIndividual: z.enum(['Income', 'Expense']),
   amountOfTransactionIndividual: z.number().min(0),
-  individualTransactionCurrency: z.enum(currencyCodes)
+  // individualTransactionCurrency: z.enum(currencyCodes)
 });
 export const transactionFormSchema = () => z.object({
   // transactionID: type === 'edit' ? z.string().min(1, {message: 'Old Transaction ID is required'}) : z.string().optional(),

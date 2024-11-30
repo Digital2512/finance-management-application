@@ -174,9 +174,9 @@ const transactionSchema = new mongoose.Schema({
     transactionCurrency: {type: String, enum: currencyCodes, required: true},
     transactionIndividualDetails: {
         descriptionOfTransactionIndividual: {type: String, default: 'Undefined'},
-        typeOfTransactionIndividual: {type: String, enum: ['Income', 'Expense']},
+        // typeOfTransactionIndividual: {type: String, enum: ['Income', 'Expense']},
         amountOfTransactionIndividual: {type: Number, default: 0, required: true},
-        individualTransactionCurrency: {type: String, enum: currencyCodes, required: true}
+        // individualTransactionCurrency: {type: String, enum: currencyCodes, required: true}
     },
     transactionType: {type: String, enum: ['One-Time', 'Recurring'], default: 'One-Time', required: true},
     transactionPlannedCycle: {type: String, enum: ['None', 'Daily', 'Weekly', 'Monthly', 'Yearly'], default: 'None', required: true},

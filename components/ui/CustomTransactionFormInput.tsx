@@ -15,7 +15,7 @@ import "react-datepicker/dist/react-datepicker.css" // Make sure this CSS is imp
 
 // Define the component
 const CustomTransactionFormInput = <FormSchemaType extends z.ZodType<any, any>>(
-  {control, typeInfo, labelInfo, placeholderInfo, formType}: 
+  {control, typeInfo, labelInfo, placeholderInfo, formType, optionsGiven, options}: 
   CustomTransactionInputProps<FormSchemaType>) => {
 
   
@@ -38,7 +38,26 @@ const CustomTransactionFormInput = <FormSchemaType extends z.ZodType<any, any>>(
           <FormLabel className='transaction-form-label'>{labelInfo}</FormLabel>
           <div className='flex w-full flex-col'>
             <FormControl>
-              {typeInfo === 'dateOfTransaction' || typeInfo === 'transactionPlannedCycleDate' ? (
+            {options ? (
+                /* Dropdown logic goes here */
+                <Controller
+                  name={typeInfo}
+                  control={control}
+                  render={({ field }) => (
+                    <select {...field} className="input-class w-full h-[40px]">
+                      <option value="" disabled>
+                      {placeholderInfo}
+                      </option>
+                      {options?.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.value}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                />
+              ) : typeInfo === "dateOfTransaction" ||
+                typeInfo === "transactionPlannedCycleDate" ? (
                 <div className="relative">
                   <Controller
                     name={typeInfo}
@@ -47,15 +66,23 @@ const CustomTransactionFormInput = <FormSchemaType extends z.ZodType<any, any>>(
                       <>
                         <DatePicker
                           placeholderText={placeholderInfo}
-                          selected={formType === 'edit' && field.value ? new Date(field.value) : new Date()}
+                          selected={
+                            formType === "edit" && field.value
+                              ? new Date(field.value)
+                              : null
+                          }
                           onChange={(date) => handleDateChange(field, date)}
                           dateFormat="dd-MM-yyyy"
                           showFullMonthYearPicker
-                          className="input-class w-[300px] h-[40px] max-md:w-[445px] h-[40px]"
-                          // value={formType === 'edit' ? field.value : null}
+                          className="input-class w-[300px] h-[40px] max-md:w-[445px]"
                         />
                         <span className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-                          <Image src={'/icons/calendar-icon.svg'} width={20} height={20} alt='Calendar Icon'/>
+                          <Image
+                            src={"/icons/calendar-icon.svg"}
+                            width={20}
+                            height={20}
+                            alt="Calendar Icon"
+                          />
                         </span>
                       </>
                     )}
@@ -68,10 +95,18 @@ const CustomTransactionFormInput = <FormSchemaType extends z.ZodType<any, any>>(
                   render={({ field }) => (
                     <Input
                       placeholder={placeholderInfo}
-                      className='input-class'
+                      className="input-class"
                       {...field}
-                      value={formType === 'edit' && !isFieldDirty ? field.value : getValues(typeInfo) || ''}
-                      onChange={(e) => field.onChange(isNumericField ? +e.target.value : e.target.value)}
+                      value={
+                        formType === "edit" && !isFieldDirty
+                          ? field.value
+                          : getValues(typeInfo) || ""
+                      }
+                      onChange={(e) =>
+                        field.onChange(
+                          isNumericField ? +e.target.value : e.target.value
+                        )
+                      }
                     />
                   )}
                 />

@@ -3,6 +3,7 @@
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, Plugin } from "chart.js";
 import { Doughnut } from 'react-chartjs-2';
 import { useEffect, useState } from "react";
+import { Label, Pie, PieChart } from "recharts";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
