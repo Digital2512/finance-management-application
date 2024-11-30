@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/select"
 
 import { formatAmount } from "@/lib/utils"
-import { fetchUserTransaction } from "@/lib/transaction/fetchUserTransaction"
+import { fetchUserIncomeExpenseTransaction } from "@/lib/transaction/fetchUserIncomeExpenseTransaction"
 
 // Sample data
 
@@ -46,7 +46,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-const ChartComponent = ({ userID }: IncomeExpenseAreaChartProps) => {
+const IncomeExpenseAreaChart = ({ userID }: IncomeExpenseAreaChartProps) => {
 
   const[isLoading, setIsLoading] = useState(false);
   const [userTransactionsData, setUserTransactionsData] = useState<Transaction[]>([]);
@@ -59,7 +59,7 @@ const ChartComponent = ({ userID }: IncomeExpenseAreaChartProps) => {
         if (loggedInUserID) {
           console.log('Logged In User ID Use Effect', loggedInUserID);
             try {
-                const response = await axios.get('/api/transaction/fetchUserTransaction', {
+                const response = await axios.get('/api/transaction/fetchUserIncomeExpenseTransactions', {
                     params: { userID: loggedInUserID }
                 });
 
@@ -334,4 +334,4 @@ const ChartComponent = ({ userID }: IncomeExpenseAreaChartProps) => {
   )
 }
 
-export default ChartComponent
+export default IncomeExpenseAreaChart

@@ -166,19 +166,19 @@ const currencies = [
 const currencyCodes = currencies.map(currency => currency.code);
 
 const loanSchema = new mongoose.Schema({
-    loanDetails: {
-        loanAmount: {type: Number,  default: 0, required: true},
-        loanCurrency: {type: String, enum: currencyCodes}
-    },
-    interestRate: {
-        interestoRateAmout: {type: Number, default: 0, required: true},
-        typeOfInterest: {type: String, enum: ['Daily', 'Weekly', 'Monthly', 'Yearly'], required: true}
-    },
-    category: {type: String, required: true},
-    loanGivenDate: {type: Date, default: Date.now},
-    description: {type: String},
-    receiver: {type: mongoose.Schema.ObjectId, ref: 'User', default: 'Undefined', required: true},//might need to change to string to avoid user not found error due to the sende/receiver not being a registered user in the database
-    sender: {type: mongoose.Schema.ObjectId, ref: 'User', default: 'Undefined', required: true}//might need to change to string to avoid user not found error due to the sende/receiver not being a registered user in the database
+    userID: {type: mongoose.Schema.Types.ObjectId, required: true},
+    loanName: {type: String, required:true},
+    loanCategory: {type: String, required:true},
+    dateOfLoan: {type: Date, default: Date.now},
+    loanDescription: {type: String, required: true},
+    loanAmount: {type: Number,  default: 0, required: true},
+    loanCurrency: {type: String, enum: currencyCodes},
+    loanTermYear: {type: Number, required: true},
+    loanTermMonth: {type: Number, required: true},
+    interestoRateAmout: {type: Number, default: 0, required: true},
+    typeOfInterest: {type: String, enum: ['Daily', 'Weekly', 'Monthly', 'Yearly'], required: true},
+    receiverID: {type: mongoose.Schema.ObjectId, ref: 'User', default: 'Undefined', required: true},
+    senderID: {type: mongoose.Schema.ObjectId, ref: 'User', default: 'Undefined', required: true}
 });
 
 const Loan = mongoose.model('Loan', loanSchema);

@@ -535,7 +535,7 @@ declare type Transaction = {
   userID: string;
   transactionName: string;
   transactionCategory: string;
-  dateOfTransaction: string;
+  dateOfTransaction: Date;
   transactionDescription: string;
   receiverID: string;
   senderID: string;
@@ -545,9 +545,48 @@ declare type Transaction = {
   transactionIndividualDetails: transactionIndividualDetails[]; 
   transactionCycleType: string;
   transactionPlannedCycle: string;
-  transactionPlannedCycleDate: string | null;
+  transactionPlannedCycleDate: Date;
   totalAmountOfTransaction: number;
   transactionProofURL: string;
+  __v: number;
+}
+
+declare type Loan = {
+  _id: string;
+  userID: string;
+  loanName: string;
+  loanCategory: string;
+  dateOfLoan: string;
+  loanDescription: string;
+  loanAmount: number;
+  loanCurrency: string;
+  loanTermYear: number;
+  loanTermMonth: number;
+  interestoRateAmount: number;
+  typeOfInterest: string;
+  receiverID: string;
+  senderID: string;
+  __v: number;
+}
+
+declare type Debt = {
+  _id: string;
+  userID: string;
+  debtName: string;
+  debtCategory: string;
+  dateOfDebt: string;
+  debtDescription: string;
+  debtAmount: number;
+  startingDate: string;
+  endingDate: string;
+  debtInterestRateType: string;
+  debtInterestRate: number;
+  debtType: string;
+  debtPayerGroup?: string;
+  debtPaymentPlan: string;
+  debtPaymentAmount: String;
+  receiverID: string;
+  senderID: string;
   __v: number;
 }
 

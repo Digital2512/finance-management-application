@@ -17,7 +17,7 @@ import { useRouter } from "next/navigation";
 import { deleteTransaction } from "@/lib/transaction/deleteTransaction"
 import { editTransaction } from "@/lib/transaction/editTransaction"
 import { fetchTransaction } from "@/lib/transaction/fetchTransaction"
-import { fetchUserTransaction } from "@/lib/transaction/fetchUserTransaction"
+import { fetchUserIncomeExpenseTransaction } from "@/lib/transaction/fetchUserIncomeExpenseTransaction"
 import axios, { AxiosRequestConfig } from "axios"
 import { useState, useEffect } from "react"
 
@@ -44,11 +44,10 @@ const CategoryBadge = ({category}: CategoryBadgeProps) => {
 
 interface TransactionsTableProps {
     userID: string;
-    typeOfTable: string
     // Other props if needed
   }
 
-const TransactionsTable = ({userID, typeOfTable} : TransactionsTableProps) => {
+const TransactionsLoanTable = ({userID} : TransactionsTableProps) => {
     const [userTransactionsData, setUserTransactionsData] = useState<Transaction[]>([]);
     const [transactionData, setTransactionsData] = useState<Transaction>();
     const [isLoading, setIsLoading] = useState(false);
@@ -64,16 +63,16 @@ const TransactionsTable = ({userID, typeOfTable} : TransactionsTableProps) => {
             console.log('Logged In User ID Use Effect', loggedInUserID);
             if (loggedInUserID) {
                 try {
-                    const response = await axios.get('/api/transaction/fetchUserTransaction', {
+                    const response = await axios.get('/api/transaction/fetchUserLoanTransactions', {
                         params: { userID: loggedInUserID }
                     });
     
                     console.log('User Transactions Response Function:', response);
-                    console.log('User Transactions Data Function:', response.data.userTransactionsData); 
+                    console.log('User Transactions Data Function:', response.data.userLoanTransactionsData); 
                     setUserTransactionsData(response.data.userTransactionsData); 
                     // return {userTransactionsData: response.data.userTransactionData};
                 } catch (error) {
-                    console.error("Error fetching user transactions:", error);
+                    console.error("Error fetching user loan transactions:", error);
                 }finally{
                     setIsLoading(false);
                 }
@@ -225,4 +224,4 @@ const TransactionsTable = ({userID, typeOfTable} : TransactionsTableProps) => {
         </Table>
     )
 }
-export default TransactionsTable
+export default TransactionsLoanTable

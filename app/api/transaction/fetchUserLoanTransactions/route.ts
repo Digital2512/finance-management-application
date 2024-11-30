@@ -1,7 +1,8 @@
 import { connectToDatabase } from "@/lib/database";
 import { NextResponse, NextRequest } from 'next/server';
 import authMiddleware from '@/middleware/authMiddleware';
-import { fetchUserTransaction } from "@/lib/transaction/fetchUserTransaction";
+import { fetchUserIncomeExpenseTransaction } from "@/lib/transaction/fetchUserIncomeExpenseTransaction";
+import { fetchUserLoanTransaction } from "@/lib/transaction/fetchUserLoanTransactions";
 
 
 export async function GET(request: NextRequest) {
@@ -14,14 +15,14 @@ export async function GET(request: NextRequest) {
         console.log('Fetching User Transactions for:', userID);
 
         if(userID){
-            const {result, message, userTransactionsData} = await fetchUserTransaction(userID);
+            const {result, message, userLoanTransactionsData} = await fetchUserLoanTransaction(userID);
             
-            console.log('Transaction Info: ', userTransactionsData);
+            console.log('Transaction Info: ', userLoanTransactionsData);
     
             console.log('----------------------------------------------------------------------------------------------------------------------------------------------------');
 
             if(result){
-                return NextResponse.json({ message: message, userTransactionsData: userTransactionsData }, { status: 200 });
+                return NextResponse.json({ message: message, userTransactionsData: userLoanTransactionsData }, { status: 200 });
               }else{
                 return NextResponse.json({ message: message }, { status: 400 });
               }

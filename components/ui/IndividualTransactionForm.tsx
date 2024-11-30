@@ -122,6 +122,10 @@ const IndividualTransactionForm = ({ type, oldTransactionID }: IndividualTransac
                 const fetchedData = response.data.existingTransactionData;
                 console.log('Fetched Data: ', fetchedData);
 
+                fetchedData.dateOfTransaction = new Date(fetchedData.dateOfTransaction);
+                fetchedData.transactionPlannedCycleDate = new Date(fetchedData.transactionPlannedCycleDate);
+                console.log('Fetched Data After: ', fetchedData);
+
                 Object.keys(fetchedData).forEach((key) => {
                     if (key !== 'transactionIndividualDetails') {
                         form.setValue(key as keyof z.infer<typeof formSchema>, fetchedData[key]);
