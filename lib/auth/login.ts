@@ -36,11 +36,13 @@ export const loginUser = async (username: string, password: string) => {
 
           if(token){
             console.log("Login is successful");
+            // return {result: true, token: token, message: 'Login Successful', loggedInUserInfo: foundUser.username}
             return {result: true, token: token, message: 'Login Successful', loggedInUserInfo: foundUser.username}
           }
 
           console.log("Login is unsuccessful");
-            return {result: true, token: token, message: 'Login Unsuccessful', loggedInUserInfo: foundUser.username}
+          // return {result: true, token: token, message: 'Login Successful', loggedInUserInfo: foundUser.username}
+            return {result: true, token: token, message: 'Login Successful', loggedInUserInfo: foundUser.username}
 
   }catch(error){
     console.error('Login error:', error);

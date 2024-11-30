@@ -5,9 +5,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import RightSidebar from '@/components/ui/RightSidebar';
 import HeaderBox from '@/components/ui/HeaderBox';
-import ExpenseBox from '@/components/ui/ExpenseBox';
-import DebtsBox from '@/components/ui/DebtsBox';
-import SavingsBox from '@/components/ui/SavingsBox';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
 import 'swiper/css';
@@ -18,6 +15,8 @@ import { useRouter } from 'next/navigation';
 import { getUserInfo } from '@/lib/actions/user.actions';
 import { count } from 'console';
 import { date } from 'zod';
+import BoxOverview from '@/components/ui/BoxOverview';
+import DoughnutChartTextOverview from '@/components/ui/DoughnutChartOverviewText';
 
 const Home = () => {
     const router = useRouter();
@@ -27,12 +26,18 @@ const Home = () => {
     useEffect(() => {
         const fetchUserInfo = async() => {
             try{
-                const loggedInUserID = sessionStorage.getItem('loggedInUser');
+                const loggedInUserInfo = sessionStorage.getItem('loggedInUsername');
 
-                if(loggedInUserID){
-                    const userInfo = await getUserInfo(loggedInUserID);
+                if(loggedInUserInfo){
+                    const userInfo = await getUserInfo(loggedInUserInfo);
 
                     // console.log('User Info: ', JSON.stringify(userInfo, null, 2));
+
+                    if(userInfo){
+                        sessionStorage.setItem('loggedInUserID', userInfo._id);
+                    }else{
+                        console.log('User Info not found');
+                    }
 
                     setLoggedInUserInfo(userInfo);
                 }else{
@@ -188,6 +193,148 @@ const Home = () => {
         { category: 'Shopping', amount: 250 },
     ];
 
+    const boxTextExpenseData: BoxOverviewTextData[] = [
+        {
+          name: "Groceries",
+          category: "Food and Beverage",
+          amount: 300,
+          fillColor: "#FFA07A", // Light Salmon
+        },
+        {
+          name: "Dining Out",
+          category: "Food and Beverage",
+          amount: 150,
+          fillColor: "#FF6347", // Tomato
+        },
+        {
+          name: "Movies",
+          category: "Entertainment",
+          amount: 75,
+          fillColor: "#FFD700", // Gold
+        },
+        {
+          name: "Streaming Subscriptions",
+          category: "Entertainment",
+          amount: 50,
+          fillColor: "#FF8C00", // Dark Orange
+        },
+        {
+          name: "Rent",
+          category: "Living Expense",
+          amount: 1200,
+          fillColor: "#4682B4", // Steel Blue
+        },
+        {
+          name: "Utilities",
+          category: "Living Expense",
+          amount: 200,
+          fillColor: "#5F9EA0", // Cadet Blue
+        },
+        {
+          name: "Career Training",
+          category: "Career",
+          amount: 500,
+          fillColor: "#32CD32", // Lime Green
+        },
+        {
+          name: "Books",
+          category: "Career",
+          amount: 100,
+          fillColor: "#00FF7F", // Spring Green
+        },
+        {
+          name: "New Gadgets",
+          category: "Wants",
+          amount: 400,
+          fillColor: "#8A2BE2", // Blue Violet
+        },
+        {
+          name: "Travel",
+          category: "Wants",
+          amount: 300,
+          fillColor: "#9370DB", // Medium Purple
+        },
+      ];
+
+      const BoxTextSavingsData: BoxOverviewTextData[] = [
+        {
+          name: "Emergency Fund",
+          category: "Emergency Savings",
+          amount: 5000,
+          fillColor: "#2E8B57", // Sea Green
+        },
+        {
+          name: "Retirement Fund",
+          category: "Long-term Savings",
+          amount: 10000,
+          fillColor: "#4682B4", // Steel Blue
+        },
+        {
+          name: "Travel Fund",
+          category: "Short-term Savings",
+          amount: 3000,
+          fillColor: "#FF6347", // Tomato
+        },
+        {
+          name: "Education Fund",
+          category: "Education Savings",
+          amount: 8000,
+          fillColor: "#DAA520", // Goldenrod
+        },
+        {
+          name: "House Downpayment",
+          category: "Major Purchases",
+          amount: 20000,
+          fillColor: "#6A5ACD", // Slate Blue
+        },
+        {
+          name: "General Savings",
+          category: "Other Savings",
+          amount: 7000,
+          fillColor: "#8A2BE2", // Blue Violet
+        },
+      ];         
+
+      const BoxTextDebtData: BoxOverviewTextData[] = [
+        {
+          name: "Credit Card 1",
+          category: "Credit Cards",
+          amount: 1500,
+          fillColor: "#FF4500", // Orange Red
+        },
+        {
+          name: "Credit Card 2",
+          category: "Credit Cards",
+          amount: 800,
+          fillColor: "#DC143C", // Crimson
+        },
+        {
+          name: "Student Loan",
+          category: "Education Loans",
+          amount: 5000,
+          fillColor: "#4169E1", // Royal Blue
+        },
+        {
+          name: "Car Loan",
+          category: "Auto Loans",
+          amount: 7000,
+          fillColor: "#32CD32", // Lime Green
+        },
+        {
+          name: "Mortgage",
+          category: "Home Loans",
+          amount: 15000,
+          fillColor: "#8B0000", // Dark Red
+        },
+        {
+          name: "Personal Loan",
+          category: "Personal Loans",
+          amount: 3000,
+          fillColor: "#FFD700", // Gold
+        },
+      ];
+      
+
     return (
         <section className='home'>
             <div className='home-content'>
@@ -212,31 +359,47 @@ const Home = () => {
                         className='w-full lg:max-w-[600px] custom-swiper'
                     >
                         <SwiperSlide>
-                            <ExpenseBox
+                            <BoxOverview
                                 accounts={[]}
                                 totalBanks={1}
-                                totalLeftToSpendBalance={totalLeftToSpendBalanceAmount}
-                                expenseData={fakeExpenses}
+                                totalLeftBalance={totalLeftToSpendBalanceAmount}
+                                boxData={fakeExpenses}
+                                boxTextData={boxTextExpenseData}
+                                typeBox='Expense'
                             />
                         </SwiperSlide> 
 
                         <SwiperSlide>
-                            <SavingsBox
+                            <BoxOverview
                                 accounts={[]}
                                 totalBanks={1}
-                                totalLeftToSaveBalance={totalLeftToSaveBalanceAmount}
-                                savingsData={fakeSavings}
+                                totalLeftBalance={totalLeftToSaveBalanceAmount}
+                                boxData={fakeSavings}
+                                boxTextData={BoxTextSavingsData}
+                                typeBox='Savings'
                             />
                         </SwiperSlide>
 
                         <SwiperSlide>
-                            <DebtsBox
+                            <BoxOverview
                                 accounts={[]}
                                 totalBanks={1}
-                                totalLeftToPayBalance={totalLeftToPayDebtBalanceAmount}
-                                debtsData={fakeDebts}
+                                totalLeftBalance={totalLeftToPayDebtBalanceAmount}
+                                boxData={fakeDebts}
+                                boxTextData={BoxTextDebtData}
+                                typeBox='Debt'
                             />
                         </SwiperSlide>
+                        {/* <SwiperSlide>
+                            <DoughnutChartTextOverview doughnutChartData={boxTextExpenseData} chartOverviewType='expense'/>
+                        </SwiperSlide>
+                        <SwiperSlide>
+                            <DoughnutChartTextOverview doughnutChartData={BoxTextSavingsData} chartOverviewType='savings'/>
+                        </SwiperSlide>
+                        <SwiperSlide>
+                            <DoughnutChartTextOverview doughnutChartData={BoxTextDebtData} chartOverviewType='debt'/>
+                        </SwiperSlide> */}
+                        
                      </Swiper>
                 </header>
                 <h2>Recent Transactions</h2>

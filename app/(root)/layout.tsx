@@ -21,10 +21,10 @@ export default function RootLayout({
       try{
 
         //maybe find an alternative to local storage
-        const loggedInUserID = sessionStorage.getItem('loggedInUser');
+        const loggedInUser = sessionStorage.getItem('loggedInUsername');
 
-        if(loggedInUserID){
-          const userInfo = await getUserInfo(loggedInUserID);
+        if(loggedInUser){
+          const userInfo = await getUserInfo(loggedInUser);
 
           // console.log('User Info: ', JSON.stringify(userInfo, null, 2));
 

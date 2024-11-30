@@ -10,5 +10,5 @@ const groupSchema = new mongoose.Schema({
     ]    
 });
 
-const Loan = mongoose.model('Loan', loanSchema);
-module.exports = Loan;
+const Group = mongoose.model('Group', groupSchema);
+module.exports = Group;

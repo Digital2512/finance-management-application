@@ -1,4 +1,6 @@
+// const { ObjectId } = require('mongodb');
 const mongoose = require('mongoose');
+const { string } = require('zod');
 
 const currencies = [
     { code: "AED", name: "United Arab Emirates Dirham" },
@@ -166,43 +168,50 @@ const currencies = [
 const currencyCodes = currencies.map(currency => currency.code);
 
 const transactionSchema = new mongoose.Schema({
-    category: {type: String, required:true},
-    date: {type: Date, default: Date.now},
-    description: {type: String, required: true},
-    receiver: {type: mongoose.Schema.ObjectId, ref: 'User', default: 'Undefined', required: true},//might need to change to string to avoid user not found error due to the sende/receiver not being a registered user in the database
-    sender: {type: mongoose.Schema.ObjectId, ref: 'User', default: 'Undefined', required: true},//might need to change to string to avoid user not found error due to the sende/receiver not being a registered user in the database
+    userID: {type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User'},
+    transactionName: {type: String, required:true},
+    transactionCategory: {type: String, required:true},
+    dateOfTransaction: {type: Date, default: Date.now},
+    transactionDescription: {type: String, required: true},
+    // receiverID: {type: mongoose.Schema.ObjectId, ref: 'User', default: 'Undefined', required: true},//might need to change to string to avoid user not found error due to the sende/receiver not being a registered user in the database
+    // senderID: {type: mongoose.Schema.ObjectId, ref: 'User', default: 'Undefined', required: true},//might need to change to string to avoid user not found error due to the sende/receiver not being a registered user in the database
+    receiverID: {type: String, default: 'Undefined', required: true},//might need to change to string to avoid user not found error due to the sende/receiver not being a registered user in the database
+    senderID: {type: String, default: 'Undefined', required: true},//might need to change to string to avoid user not found error due to the sende/receiver not being a registered user in the database
     transactionCurrency: {type: String, enum: currencyCodes, required: true},
-    transactionIndividualDetails: {
+    transactionType: {type: String, enum: ['Income', 'Expense'], default: 'Expense', required: true},
+    transactionStatus: {type: String, enum: ['Not Paid', 'Pending', 'Done'], default: 'Not Paid', required: true},
+    transactionIndividualDetails: [{
+        nameOfTransactionIndividual: {type: String, default: 'Undefined'},
         descriptionOfTransactionIndividual: {type: String, default: 'Undefined'},
-        typeOfTransactionIndividual: {type: String, enum: ['Income', 'Expense']},
+        // typeOfTransactionIndividual: {type: String, enum: ['Income', 'Expense']},
         amountOfTransactionIndividual: {type: Number, default: 0, required: true},
-        individualTransactionCurrency: {type: String, enum: currencyCodes, required: true}
-    },
-    transactionType: {type: String, enum: ['One-Time', 'Recurring'], default: 'One-Time', required: true},
+        // individualTransactionCurrency: {type: String, enum: currencyCodes, required: true}
+    }],
+    transactionCycleType: {type: String, enum: ['One-Time', 'Recurring'], default: 'One-Time', required: true},
     transactionPlannedCycle: {type: String, enum: ['None', 'Daily', 'Weekly', 'Monthly', 'Yearly'], default: 'None', required: true},
     transactionPlannedCycleDate: {type: Date},
     totalAmountOfTransaction: {type: Number, default: 0},
     transactionProofURL: {type: String, default: 'Empty Proof Of Transaction'} //Store the URL of the transaction proof's picture
 });
 
-let totalAmount = 0
+// let totalAmount = 0
 
-transactionSchema.pre('save', function(next) {
-    if(this.transactionIndividualDetails && Array.isArray(this.transactionIndividualDetails)){
-        this.transactionIndividualDetails.forEach(detail => {
-            detail.individualTransactionCurrency = this.transactionCurrency;
-        });
+// transactionSchema.pre('save', function(next) {
+//     if(this.transactionIndividualDetails && Array.isArray(this.transactionIndividualDetails)){
+//         this.transactionIndividualDetails.forEach(detail => {
+//             detail.individualTransactionCurrency = this.transactionCurrency;
+//         });
 
-        totalAmount += detail.amountOfTransactionIndividual;
-    }
+//         totalAmount += detail.amountOfTransactionIndividual;
+//     }
 
-    if(totalAmount === this.totalAmountOfTransaction){
-        next();
-    }else{
-        const error = new Error('Please check the total amount from the transaction shown again. Thank you');
-        return next(error);
-    }
-});
+//     if(totalAmount === this.totalAmountOfTransaction){
+//         next();
+//     }else{
+//         const error = new Error('Please check the total amount from the transaction shown again. Thank you');
+//         return next(error);
+//     }
+// });
 
-const Transaction = mongoose.model('Transactions', transactionSchema);
+var Transaction = mongoose.models.Transaction || mongoose.model('Transaction', transactionSchema);
 module.exports = Transaction;

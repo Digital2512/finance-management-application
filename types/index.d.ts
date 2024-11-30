@@ -77,24 +77,24 @@ declare type Account = {
   accountSharableId: string;
 };
 
-declare type Transaction = {
-  id: string;
-  $id: string;
-  name: string;
-  paymentChannel: string;
-  type: string;
-  accountId: string;
-  amount: number;
-  pending: boolean;
-  category: string;
-  date: string;
-  image: string;
-  type: string;
-  $createdAt: string;
-  channel: string;
-  senderBankId: string;
-  receiverBankId: string;
-};
+// declare type TransactionDetails = {
+//   transactionID: string;
+//   // $id: string;
+//   name: string;
+//   // paymentChannel: string;
+//   type: string;
+//   accountId: string;
+//   amount: number;
+//   pending: boolean;
+//   category: string;
+//   date: string;
+//   image: string;
+//   // type: string;
+//   $createdAt: string;
+//   // channel: string;
+//   senderAccountID: string;
+//   receiverAccountID: string;
+// };
 
 declare type Bank = {
   $id: string;
@@ -292,10 +292,36 @@ declare interface ExpenseBoxProps {
   expenseData: Expenses[];
 }
 
-  type Expenses = {
-    category: string;
-    amount: number;
-  };
+type Expenses = {
+  category: string;
+  amount: number;
+};
+
+type BoxOverviewData = {
+  category: string;
+  amount: number;
+};
+
+type BoxOverviewTextData = {
+  name: string,
+  category: string, 
+  amount: number,
+  fillColor: string,
+}  
+
+declare interface DoughnutChartProps {
+  doughnutChartData: BoxOverviewTextData[];
+  chartOverviewType: string,
+}
+
+declare interface BoxOverviewProps {
+  accounts: Account[];
+  totalBanks: number;
+  totalLeftBalance: number;
+  boxData: BoxOverviewData[];
+  boxTextData: BoxOverviewTextData[];
+  typeBox: string;
+}
 
 declare interface SavingsBoxProps {
   accounts: Account[];
@@ -304,10 +330,10 @@ declare interface SavingsBoxProps {
   savingsData: Savings[];
 }
 
-    type Savings = {
-      category: string;
-      amount: number;
-  };
+type Savings = {
+  category: string;
+  amount: number;
+};
 
 declare interface DebtsBoxProps {
   accounts: Account[];
@@ -373,17 +399,17 @@ declare interface CategoryBadgeProps {
 }
 
 declare interface TransactionTableProps {
-  transactions: Transaction[];
+  Transactions: Transaction[];
 }
 
 declare interface CategoryProps {
   category: CategoryCount;
 }
 
-declare interface DoughnutChartProps {
-  totalExpenseBalance: number,
-  totalCurrentMonthDebtBalance: number
-}
+// declare interface DoughnutChartProps {
+//   totalExpenseBalance: number,
+//   totalCurrentMonthDebtBalance: number
+// }
 
 declare interface PaymentTransferFormProps {
   accounts: Account[];
@@ -485,4 +511,111 @@ declare interface CustomInputProps<schemaType> {
   typeInfo: FieldPath<z.infer<typeof schemaType>>,
   labelInfo: string,
   placeholderInfo: string
+}
+
+declare interface CustomTransactionInputProps<schemaType> {
+  control: Control<z.infer<typeof schemaType>>,
+  typeInfo: FieldPath<z.infer<typeof schemaType>>,
+  labelInfo: string,
+  placeholderInfo: string,
+  formType: string,
+  optionsGiven?: boolean,
+  options?: {value: string}[]
+}
+declare interface transactionIndividualDetails {
+  nameOfTransactionIndividual: string;
+  descriptionOfTransactionIndividual: string;
+  // typeOfTransactionIndividual: string;
+  amountOfTransactionIndividual: number;
+  // individualTransactionCurrency: string;
+};
+
+declare type Transaction = {
+  _id: string;
+  userID: string;
+  transactionName: string;
+  transactionCategory: string;
+  dateOfTransaction: Date;
+  transactionDescription: string;
+  receiverID: string;
+  senderID: string;
+  transactionCurrency: string;
+  transactionType: string;
+  transactionStatus: string;
+  transactionIndividualDetails: transactionIndividualDetails[]; 
+  transactionCycleType: string;
+  transactionPlannedCycle: string;
+  transactionPlannedCycleDate: Date;
+  totalAmountOfTransaction: number;
+  transactionProofURL: string;
+  __v: number;
+}
+
+declare type Loan = {
+  _id: string;
+  userID: string;
+  loanName: string;
+  loanCategory: string;
+  dateOfLoan: string;
+  loanDescription: string;
+  loanAmount: number;
+  loanCurrency: string;
+  loanTermYear: number;
+  loanTermMonth: number;
+  interestoRateAmount: number;
+  typeOfInterest: string;
+  receiverID: string;
+  senderID: string;
+  __v: number;
+}
+
+declare type Debt = {
+  _id: string;
+  userID: string;
+  debtName: string;
+  debtCategory: string;
+  dateOfDebt: string;
+  debtDescription: string;
+  debtAmount: number;
+  startingDate: string;
+  endingDate: string;
+  debtInterestRateType: string;
+  debtInterestRate: number;
+  debtType: string;
+  debtPayerGroup?: string;
+  debtPaymentPlan: string;
+  debtPaymentAmount: String;
+  receiverID: string;
+  senderID: string;
+  __v: number;
+}
+
+declare type ChartDataItem = {
+  date: string;
+  name: string;
+  type: string;
+  amount: number;
+}
+
+declare type AreaChartDataItem = {
+  date: string;
+  income: number;
+  expense: number;
+}
+
+declare interface IncomeExpenseAreaChartProps {
+  userID: string;
+  // chartData: Array<ChartDataItem>;
+    // settedTimeRange?: "7 Days" | "30 Days" | "90 Days";
+}
+
+declare type floatingButtonOptionItem = {  
+  label: string;
+  value: string;
+  route: string;
+  icon: string;
+}
+
+declare interface floatingButtonProps {  
+  floatingButtonOptions : floatingButtonOptionItem[]
 }

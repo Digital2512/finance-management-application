@@ -615,9 +615,16 @@
   @apply max-md: sm:p-4 xl:p-6 2xl:w-[355px]; */
 }
 
-.divider {
+.divider-line {
   border: none;
   border-top: 4px solid #000; 
+  margin: 1em; 
+  width: 80%;
+}
+
+.divider-invisible {
+  border: none;
+  border-top: 4px; 
   margin: 1em; 
   width: 80%;
 }
@@ -741,22 +748,6 @@
   margin-bottom: 5px;
 }
 
-@media (max-width: 900px) {
-  .leaderboardProfile .profile-container {
-    width: 400px; /* Slightly smaller on small screens */
-  }
-  .socialListProfile .profile-container {
-    width: 400px; /* Slightly smaller on small screens */
-  }
-  .divider {
-    width: 75%; /* Slightly smaller on small screens */
-  }
-  .options-selection {
-    width: 400px; /* Slightly smaller on small screens */
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-}
 /* 
 @layer base {
   :root {
@@ -822,3 +813,381 @@
     @apply bg-background text-foreground;
   }
 } */
+
+.transaction-form-layout{
+  /* margin-top: 150px; */
+  /* margin-left: 50px; */
+  display: flex;
+  flex-direction: column;
+  /* padding-bottom: 20px; */
+}
+
+.transaction-form-row-layout{
+  display: flex;
+  column-gap: 50px;
+  flex-direction: row;
+}
+
+.transaction-form {
+  /* @apply flex min-h-screen w-full max-w-[420px] flex-col justify-center gap-5 py-10 md:gap-8; */
+  margin-top: 30px;
+  margin-left: 50px;
+}
+
+.transaction-form-item {
+  margin-top: 10px;
+  max-width: 500px;
+}
+
+.transaction-label {
+  @apply text-14 w-full max-w-[280px] font-medium text-gray-700;
+}
+
+.transaction-btn {
+  @apply text-16 rounded-lg border border-bankGradient bg-bank-gradient font-semibold text-white shadow-form;
+  margin-top: 20px;
+  max-width: 850px;
+}
+
+.transaction-column-first-item {
+  width: 500px;
+}
+
+.transaction-column-second-item {
+  width: 300px;
+}
+
+.transaction-column-singular-item {
+  width: 850px;
+}
+
+/* .transaction-form-date {
+  margin-top: 15px;
+  max-width: 500px;
+} */
+
+.transaction-table {
+  width: 100%;
+  padding-top: 20px; /* Adjust the value as needed */
+
+  /* border-collapse: separate; */
+  /* border-spacing: 10px;  */
+}
+
+.transaction-table th {
+  text-align: left; /* Centers content horizontally */
+  padding: 8px;
+  border: 1px solid #ddd; /* Adds a light gray border around each cell */
+}
+
+.transaction-table .input-td {
+  text-align: center; /* Centers content horizontally */
+  /* padding: 8px; */
+  border: 1px solid #ddd; /* Adds a light gray border around each cell */
+}
+
+.transaction-table .button-td {
+  border: none;
+}
+
+.transaction-table .remove-button {
+  background-color: #f44336; /* Red background for Remove button */
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  /* visibility: collapse; */
+  opacity: 0;
+}
+
+.transaction-table .remove-button:hover {
+  /* visibility: visible; */
+  background-color: #d32f2f; /* Darker red on hover */
+  /* group hover */
+  opacity: 100;
+}
+
+.transaction-table input {
+  width: 100%; /* Ensures the input takes up the full width of the cell */
+  text-align: center; /* Centers the input text */
+  padding: 5px;
+  border: 1px solid #ddd;
+  /* border-radius: 4px; */
+}
+
+/* Add a hover effect for rows to make it more interactive */
+.transaction-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+.transaction-table button[type="button"] {
+  width: 100%;
+}
+
+  /* .floating-button-menu{
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    width: 60px;
+    height: 250px;
+    gap:5px;
+  }
+
+  .floating-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 360px;
+    background-color: blue;
+    width: 60px;
+    height: 60px;
+    font-size: 25px;
+    font-weight: 400px;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+  } */
+
+  /* .floating-button-menu{
+    display: none;
+    margin-top: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    overflow: hidden;
+    border: #000;
+    border-width: 2px;
+  } */
+
+  /* .floating-button-menu ul{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  } */
+
+  /* .floating-button-menu ul li{
+    padding: 10px 20px;
+    color: #fff;
+    cursor: pointer;
+  } */
+
+  /* .floating-button-menu ul li:hover{
+    color: #5c5c7b;
+  } */
+
+  /* .floating-button-menu:hover .menu{
+    display: block;
+  } */
+   /* .floating-button-item{
+    z-index: 1000;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items:center;
+    border-radius: 360px;
+    background-color: blue;
+    width: 60px;
+    height: 60px;
+   }
+
+   .floating-button-item img{
+    transition: all 0.3s ease;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+   }
+
+   .floating-button-item:hover{
+    width: 200px;
+    height:60px;
+    border-radius: 8px;
+    margin-right: 130px;
+   }
+
+   .floating-button-item .floating-button-label{
+    visibility: hidden;
+    opacity: 0;
+    white-space: nowrap;
+   }
+
+   .floating-button-item:hover .floating-button-label{
+    visibility: visible;
+    opacity: 1;
+   }
+
+   .floating-button-item:hover img {
+    margin-right: 8px; 
+  } */
+
+   /* .floating-button-link{
+    visibility: hidden;
+   } */
+
+  /* @media (max-width: 1090px) {
+    .transaction-table{
+      width: 100px;
+    }
+  } */
+
+  .floating-button-menu {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-end;
+    width: 60px;
+    height: 250px;
+    gap:5px;
+    /* background-color: black; */
+  }
+  
+  .floating-button {
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%; /* Circle shape */
+    background-color: blue;
+    width: 60px;
+    height: 60px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .floating-button-item {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 60px;  /* Circle width */
+    height: 60px; /* Circle height */
+    border-radius: 360px;
+    background-color: blue;
+    overflow: hidden; /* Prevents overflow */
+    transition: all 0.3s ease;
+  }
+  
+  .floating-button-item a {
+    /* visibility: hidden;
+    opacity: 0; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    transition: all 0.3s ease;
+  }
+  
+  /* The image should stay centered in the circle */
+  .floating-button-item img {
+    position: absolute;
+    width: 30px; /* Icon size */
+    height: 30px;
+    border-radius: 50%; /* Circular icon */
+    transition: all 0.3s ease;
+  }
+  
+  /* Text will be hidden initially */
+  .floating-button-item .floating-button-label {    
+    visibility: hidden;
+    opacity: 0;
+    margin-left: 8px; /* Space between icon and label */
+    transition: all 0.3s ease;
+    white-space: nowrap; /* Prevents text from wrapping */
+    color: white;
+    /* font-weight: 30px; */
+    /* font-weight: bold; */
+  }
+  
+  
+  .floating-button-item:hover {
+    /* width: ;  */
+    width: max-content;
+    height: 60px;
+    border-radius: 8px; 
+    /* margin-right: 80px; */
+  }
+  
+  .floating-button-item:hover .floating-button-label {
+    position: relative;
+    visibility: visible;
+    opacity: 1;
+    margin-left: 10px;    
+    order: -1;
+  }
+
+  .floating-button-item:hover a {
+    visibility: visible;
+    opacity: 1;
+  }
+  
+  .floating-button-item:hover img{
+    position: relative;
+    /* left: 40px; */
+    margin-right: 10px;
+    margin-left: 10px;
+  }
+  
+
+@media (max-width: 900px) {
+  .transaction-form {
+    /* @apply flex min-h-screen w-full max-w-[420px] flex-col justify-center gap-5 py-10 md:gap-8; */
+    margin-top: 30px;
+    margin-left: 30px;
+  }
+  .leaderboardProfile .profile-container {
+    width: 400px; /* Slightly smaller on small screens */
+  }
+  .socialListProfile .profile-container {
+    width: 400px; /* Slightly smaller on small screens */
+  }
+  .divider-line {
+    width: 75%; /* Slightly smaller on small screens */
+  }
+  .divider-invisible {
+    width: 75%;
+  }
+  .options-selection {
+    width: 400px; /* Slightly smaller on small screens */
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .transaction-form-row-layout{
+    /* display: flex; */
+    /* column-gap: 40px; */
+    flex-direction: column;
+  }
+
+  .transaction-form-item {
+    margin-top: 15px;
+    max-width: 445px;
+  }
+  
+  .transaction-btn {
+    max-width: 445px;
+  }
+
+  .transaction-column-first-item {
+    width: 445px;
+  }
+
+  .transaction-column-second-item {
+    width: 445px;
+  }
+
+  .transaction-column-singular-item {
+    width: 445px;
+  }
+
+  /* .transaction-form-date {
+    margin-top: 15px;
+    max-width: 400px;
+  } */
+}

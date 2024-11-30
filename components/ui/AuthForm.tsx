@@ -15,7 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import CustomFormInput from './CustomFormInput'
+import CustomAuthFormInput from './CustomAuthFormInput'
 import { authFormSchema } from '@/lib/utils'
 import axios from 'axios'
 import 'react-datepicker/dist/react-datepicker.css';
@@ -108,10 +108,10 @@ const AuthForm = ({ type }: { type: string }) => {
                 console.log(response);
                 
                 if(response.status === 200) {
-                    setUser(response.data.loggedInUser);
+                    // setUser(response.data.loggedInUserInfo);
                     setUser(response.data);
                     alert('Login successful');
-                    sessionStorage.setItem('loggedInUser', response.data.loggedInUserInfo)
+                    sessionStorage.setItem('loggedInUsername', response.data.loggedInUserInfo)
                     router.push('/')
                 } else {
                     setErrorMessage('Login unsuccessful');
@@ -165,29 +165,29 @@ const AuthForm = ({ type }: { type: string }) => {
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 px-4">
                         <div className='flex gap-4'>
-                            <CustomFormInput control={form.control} typeInfo='username' labelInfo='Username' placeholderInfo='Enter your username' />
-                            <CustomFormInput control={form.control} typeInfo='password' labelInfo='Password' placeholderInfo='Enter your password' />
+                            <CustomAuthFormInput control={form.control} typeInfo='username' labelInfo='Username' placeholderInfo='Enter your username' />
+                            <CustomAuthFormInput control={form.control} typeInfo='password' labelInfo='Password' placeholderInfo='Enter your password' />
                         </div>
                         {type === 'register' && (
                             <>
                             <div className="flex gap-4">
-                                <CustomFormInput control={form.control} typeInfo='firstName' labelInfo='First Name' placeholderInfo='Enter your First Name' />
-                                <CustomFormInput control={form.control} typeInfo='lastName' labelInfo='Last Name' placeholderInfo='Enter your Last Name' />
+                                <CustomAuthFormInput control={form.control} typeInfo='firstName' labelInfo='First Name' placeholderInfo='Enter your First Name' />
+                                <CustomAuthFormInput control={form.control} typeInfo='lastName' labelInfo='Last Name' placeholderInfo='Enter your Last Name' />
                             </div>
-                            <CustomFormInput control={form.control} typeInfo='email' labelInfo='Email' placeholderInfo='Enter your Email' />
-                            <CustomFormInput control={form.control} typeInfo='addressLine1' labelInfo='Address Line 1' placeholderInfo='Enter your Address Line 1' />
-                            <CustomFormInput control={form.control} typeInfo='addressLine2' labelInfo='Address Line 2' placeholderInfo='Enter your Address Line 2' />
-                            <CustomFormInput control={form.control} typeInfo='addressLine3' labelInfo='Address Line 3' placeholderInfo='Enter your Address Line 3' />
+                            <CustomAuthFormInput control={form.control} typeInfo='email' labelInfo='Email' placeholderInfo='Enter your Email' />
+                            <CustomAuthFormInput control={form.control} typeInfo='addressLine1' labelInfo='Address Line 1' placeholderInfo='Enter your Address Line 1' />
+                            <CustomAuthFormInput control={form.control} typeInfo='addressLine2' labelInfo='Address Line 2' placeholderInfo='Enter your Address Line 2' />
+                            <CustomAuthFormInput control={form.control} typeInfo='addressLine3' labelInfo='Address Line 3' placeholderInfo='Enter your Address Line 3' />
                             <div className='flex gap-4'>
-                                <CustomFormInput control={form.control} typeInfo='city' labelInfo='City' placeholderInfo='Enter your City' />
-                                <CustomFormInput control={form.control} typeInfo='state' labelInfo='State' placeholderInfo='Enter your State' />
+                                <CustomAuthFormInput control={form.control} typeInfo='city' labelInfo='City' placeholderInfo='Enter your City' />
+                                <CustomAuthFormInput control={form.control} typeInfo='state' labelInfo='State' placeholderInfo='Enter your State' />
                             </div>
                             <div className='flex gap-4'>
-                                <CustomFormInput control={form.control} typeInfo='postalCode' labelInfo='Postal Code' placeholderInfo='Enter your Postal Code' />
-                                <CustomFormInput control={form.control} typeInfo='country' labelInfo='Country' placeholderInfo='Enter your Country' />
+                                <CustomAuthFormInput control={form.control} typeInfo='postalCode' labelInfo='Postal Code' placeholderInfo='Enter your Postal Code' />
+                                <CustomAuthFormInput control={form.control} typeInfo='country' labelInfo='Country' placeholderInfo='Enter your Country' />
                             </div>
-                            <CustomFormInput control={form.control} typeInfo='dateOfBirth' labelInfo='Date of Birth' placeholderInfo='Enter your Date of Birth' />
-                            <CustomFormInput control={form.control} typeInfo='selectedPlan' labelInfo='Plan' placeholderInfo='Enter your Selected Plan' />
+                            <CustomAuthFormInput control={form.control} typeInfo='dateOfBirth' labelInfo='Date of Birth' placeholderInfo='Enter your Date of Birth' />
+                            <CustomAuthFormInput control={form.control} typeInfo='selectedPlan' labelInfo='Plan' placeholderInfo='Enter your Selected Plan' />
                             </>
                         )}
 
