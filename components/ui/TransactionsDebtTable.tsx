@@ -63,7 +63,7 @@ const TransactionsDebtTable = ({userID} : TransactionsTableProps) => {
             console.log('Logged In User ID Use Effect', loggedInUserID);
             if (loggedInUserID) {
                 try {
-                    const response = await axios.get('/api/transaction/fetchUserIncomeExpenseTransaction', {
+                    const response = await axios.get('/api/transaction/income-expense/fetchUserTransaction', {
                         params: { userID: loggedInUserID }
                     });
     
@@ -106,7 +106,7 @@ const TransactionsDebtTable = ({userID} : TransactionsTableProps) => {
         console.log('Transaction Use Effect: ', transactionID);
             if (transactionID) {
                 try {
-                    const response = await axios.post('/api/transaction/delete', {transactionID: transactionID});
+                    const response = await axios.post('/api/transaction/income-expense/delete', {transactionID: transactionID});
 
                     // console.log('Delete Transactions Response Function:', response);
                     // console.log('Delete Transactions Response Function Transaction ID:', response.data.deleteTransactionID);

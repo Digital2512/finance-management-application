@@ -59,7 +59,7 @@ const IncomeExpenseAreaChart = ({ userID }: IncomeExpenseAreaChartProps) => {
         if (loggedInUserID) {
           console.log('Logged In User ID Use Effect', loggedInUserID);
             try {
-                const response = await axios.get('/api/transaction/fetchUserIncomeExpenseTransactions', {
+                const response = await axios.get('/api/transaction/income-expense/fetchUserTransactions', {
                     params: { userID: loggedInUserID }
                 });
 

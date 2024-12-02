@@ -169,17 +169,19 @@ const loanSchema = new mongoose.Schema({
     userID: {type: mongoose.Schema.Types.ObjectId, required: true},
     loanName: {type: String, required:true},
     loanCategory: {type: String, required:true},
-    dateOfLoan: {type: Date, default: Date.now},
+    startingDateOfLoan: {type: Date, default: Date.now},
     loanDescription: {type: String, required: true},
     loanAmount: {type: Number,  default: 0, required: true},
     loanCurrency: {type: String, enum: currencyCodes},
     loanTermYear: {type: Number, required: true},
     loanTermMonth: {type: Number, required: true},
-    interestoRateAmout: {type: Number, default: 0, required: true},
-    typeOfInterest: {type: String, enum: ['Daily', 'Weekly', 'Monthly', 'Yearly'], required: true},
-    receiverID: {type: mongoose.Schema.ObjectId, ref: 'User', default: 'Undefined', required: true},
-    senderID: {type: mongoose.Schema.ObjectId, ref: 'User', default: 'Undefined', required: true}
+    interestRateAmount: {type: Number, default: 0, required: true},
+    typeOfInterest: {type: String, enum: ['Daily', 'Weekly', 'Monthly', 'Yearly'], default: 'Monthly', required: true},
+    receiverID: {type: String, default: 'Undefined', required: true},
+    senderID: {type: String, default: 'Undefined', required: true},
+    loanStatus: {type: String, enum: ['Not Paid', 'In Progress', 'Paid Full'], default: 'Not Paid'},
+    loanProofOfURL: {type: String, default: 'Empty', required: true}
 });
 
-const Loan = mongoose.model('Loan', loanSchema);
+var Loan = mongoose.models.Loan || mongoose.model('Loan', loanSchema);
 module.exports = Loan;

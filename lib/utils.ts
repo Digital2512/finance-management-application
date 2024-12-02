@@ -283,3 +283,26 @@ export const transactionFormSchema = () => z.object({
 //     message: "Total amount mismatch or calculation error",
 //   });
 
+//seeing if want to put the starting date for reminders to ask the other person to pay
+export const loanTransactionFormSchema = () => z.object({
+  // transactionID: type === 'edit' ? z.string().min(1, {message: 'Old Transaction ID is required'}) : z.string().optional(),
+  loanName: z.string().min(1, {message: 'Name is required'}),
+  loanCategory: z.string().min(1, {message: 'Category is required'}),
+  startingDateOfLoan: z.date().default(new Date()),
+  loanDescription: z.string().min(1, {message: 'Description is required'}),
+  loanCurrency: z.enum(currencyCodes),
+  loanAmount: z.number().default(0),
+  loanTermYear: z.number().default(0),
+  loanTermMonth: z.number().default(0),
+  interestRateAmount: z.number().default(0),
+  typeOfInterest: z.enum(['Daily', 'Weekly', 'Monthly', 'Yearly']).default('Monthly'),
+  receiverID: z.string().min(1, {message: 'Receiver ID is required'}),
+  senderID: z.string().min(1, {message: 'Sender ID is required'}),
+  loanStatus: z.enum(['Not Paid', 'In Progress', 'Paid Full']).default('Not Paid'),
+  // transactionType: z.enum(['Income', 'Expense']).default('Expense'),
+  // transactionStatus: z.enum(['Not Paid', 'Pending', 'Paid']).default('Not Paid'),
+  // transactionPlannedCycleType: z.enum(['One-Time', 'Recurring']).default('One-Time'),
+  // transactionPlannedCycle: z.enum(['None', 'Daily', 'Weekly', 'Monthly', 'Yearly']).default('None'),
+  // transactionPlannedCycleDate: z.date().optional(),
+  loanProofOfURL: z.string().default('Empty'),
+});

@@ -519,9 +519,9 @@ declare interface CustomTransactionInputProps<schemaType> {
   labelInfo: string,
   placeholderInfo: string,
   formType: string,
-  optionsGiven?: boolean,
   options?: {value: string}[]
 }
+
 declare interface transactionIndividualDetails {
   nameOfTransactionIndividual: string;
   descriptionOfTransactionIndividual: string;
@@ -556,13 +556,14 @@ declare type Loan = {
   userID: string;
   loanName: string;
   loanCategory: string;
-  dateOfLoan: string;
+  startingDateOfLoan: string;
   loanDescription: string;
   loanAmount: number;
   loanCurrency: string;
   loanTermYear: number;
   loanTermMonth: number;
-  interestoRateAmount: number;
+  loanStatus: string;
+  interestRateAmount: number;
   typeOfInterest: string;
   receiverID: string;
   senderID: string;

@@ -14,13 +14,13 @@ import {
 import "react-datepicker/dist/react-datepicker.css" // Make sure this CSS is imported
 
 // Define the component
-const CustomTransactionFormInput = <FormSchemaType extends z.ZodType<any, any>>(
+const CustomLoanTransactionFormInput = <FormSchemaType extends z.ZodType<any, any>>(
   {control, typeInfo, labelInfo, placeholderInfo, formType, options}: 
   CustomTransactionInputProps<FormSchemaType>) => {
 
   
   const {setValue, getValues, formState: {dirtyFields}} = useFormContext();
-  const isNumericField = typeInfo === 'totalAmountOfTransaction';
+  const isNumericField = ['loanAmount', 'loanTermYear', 'loanTermMonth', 'interestRateAmount'].includes(typeInfo);
 
   const handleDateChange = (field: any, date: Date | null) => {
     const formattedDate = date ? new Date(date) : null;
@@ -56,25 +56,24 @@ const CustomTransactionFormInput = <FormSchemaType extends z.ZodType<any, any>>(
                     </select>
                   )}
                 />
-              ) : typeInfo === "dateOfTransaction" ||
-                typeInfo === "transactionPlannedCycleDate" ? (
+              ) : typeInfo === "startingDateOfLoan" ? (
                 <div className="relative">
                   <Controller
                     name={typeInfo}
-                    control={control}
+                    control={control} 
                     render={({ field }) => (
                       <>
                         <DatePicker
                           placeholderText={placeholderInfo}
-                          selected={
-                            formType === "edit" && field.value
-                              ? new Date(field.value)
-                              : null
+                          selected={ new Date(field.value)
+                            // formType === "edit" && field.value
+                            //   ? new Date(field.value)
+                            //   : null
                           }
                           onChange={(date) => handleDateChange(field, date)}
                           dateFormat="dd-MM-yyyy"
                           showFullMonthYearPicker
-                          className="input-class w-[300px] h-[40px] max-md:w-[445px]"
+                          className="input-class w-[500px] h-[40px] max-md:w-[445px]"
                         />
                         <span className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
                           <Image
@@ -120,4 +119,4 @@ const CustomTransactionFormInput = <FormSchemaType extends z.ZodType<any, any>>(
   )
 }
 
-export default CustomTransactionFormInput
+export default CustomLoanTransactionFormInput
