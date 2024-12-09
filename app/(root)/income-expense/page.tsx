@@ -7,7 +7,7 @@ import DoughnutChartOverviewTextComponent from "@/components/ui/DoughnutChartOve
 import IncomeExpenseAreaChart from '@/components/ui/IncomeExpenseAreaChart';
 import FloatingButton from '@/components/ui/FloatingButton';
 
-const incomeExpensePage = () => {
+const IncomeExpensePage = () => {
 
   const loggedInUserID = sessionStorage.getItem('loggedInUserID');
 
@@ -29,4 +29,4 @@ const incomeExpensePage = () => {
   )
 }
 
-export default incomeExpensePage
+export default IncomeExpensePage

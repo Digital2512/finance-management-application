@@ -6,29 +6,32 @@ import { connectToDatabase } from '@/lib/database';
 import { signToken } from '../jwt';
 import authMiddleware from '@/middleware/authMiddleware';
 import mongoose from 'mongoose';
-import Loan from '@/models/loansModel';
+import Debt from '@/models/debtsModel';
 import { addLoanTransaction } from './addLoanTransaction';
 require('dotenv').config();
 
-export const editLoanTransaction = async ( 
+export const editDebtTransaction = async ( 
     userID: string,
-    oldLoanTransactionID: string, 
-    newLoanName: string,
-    newLoanCategory: string,
-    newStartingDateOfLoan: Date,
-    newLoanDescription: string,
-    newLoanCurrency: string,
-    newLoanAmount: string,
-    newLoanTermYear: string,
-    newLoanTermMonth: string,
+    oldDebtTransactionID: string, 
+    newDebtName: string,
+    newDebtCategory: string,
+    newStartingDateOfDebt: Date,
+    newDebtDescription: string,
+    newDebtCurrency: string,
+    newDebtAmount: string,
+    // newDebtTermYear: string,
+    // newDebtTermMonth: string,
     newInterestRate: string,
     newInterestRateType: string,
     newReceiverID: string,
     newSenderID: string,
-    newLoanStatus: string,
-    newLoanProofOfURL: string,
+    newDebtPayerGroup: string,
+    newDebtPaymentPlan: string,
+    newDebtRegularPaymentAmount: string,
+    newDebtStatus: string,
+    newDebtProofOfURL: string,
 ) => {
-    console.log('Edit Transaction:', { userID, oldLoanTransactionID, newLoanName, newLoanCategory, newStartingDateOfLoan }); // Log the incoming data
+    console.log('Edit Transaction:', { userID, oldDebtTransactionID, newDebtName, newDebtCategory, newStartingDateOfDebt }); // Log the incoming data
 
     const connected = await connectToDatabase();
 
@@ -41,12 +44,12 @@ export const editLoanTransaction = async (
 
     console.log('Database is connected');
     try {
-      const existingTransaction = await Loan.findOne({_id: oldLoanTransactionID});
-      if (!existingTransaction) {
+      const existingDebtTransaction = await Debt.findOne({_id: oldDebtTransactionID});
+      if (!existingDebtTransaction) {
         console.log('No record of this transaction is found');
         return { result: false, message: 'Transaction is not in Database' };
       }else{
-        const deleteOldTransaction = await Loan.deleteOne({_id: oldLoanTransactionID})
+        const deleteOldTransaction = await Debt.deleteOne({_id: oldDebtTransactionID})
 
         if(!deleteOldTransaction){
             console.log('Failed to delete the transaction');
@@ -54,34 +57,37 @@ export const editLoanTransaction = async (
         }
       }
 
-      const addNewLoan = new Loan({
+      const addNewDebt = new Debt({
         userID: userID,
-        loanName: newLoanName,
-        loanCategory: newLoanCategory,
-        startingDateOfLoan: newStartingDateOfLoan,
-        loanDescription: newLoanDescription,
-        loanCurrency: newLoanCurrency,
-        loanAmount: newLoanAmount,
-        loanTermYear: newLoanTermYear,
-        loanTermMonth: newLoanTermMonth,
-        loanStatus: newLoanStatus,
+        debtName: newDebtName,
+        debtCategory: newDebtCategory,
+        startingDateOfDebt: newStartingDateOfDebt,
+        debtDescription: newDebtDescription,
+        debtCurrency: newDebtCurrency,
+        debtAmount: newDebtAmount,
+        // debtTermYear: newDebtTermYear,
+        // debtTermMonth: newDebtTermMonth,
         interestRate: newInterestRate,
         interestRateType: newInterestRateType,
         receiverID: newReceiverID,
         senderID: newSenderID,
-        loanProofOfURL: newLoanProofOfURL,
+        debtPayerGroup: newDebtPayerGroup,
+        debtPaymentPlan: newDebtPaymentPlan,
+        debtRegularPaymentAmount: newDebtRegularPaymentAmount,
+        debtStatus: newDebtStatus,
+        debtProofOfURL: newDebtProofOfURL,
       });
 
-      await addNewLoan.save();
+      await addNewDebt.save();
 
       // console.log('CREATED USER -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------');
 
-      const token = authMiddleware({ userID: addNewLoan._id, username: addNewLoan.name, expiresInAmount: '1h'}, 'sign');
+      const token = authMiddleware({ userID: addNewDebt._id, username: addNewDebt.debtName, expiresInAmount: '1h'}, 'sign');
       console.log('Edit Transaction Token: ' + token);
 
       if(token){
         console.log("Edit Transaction successful");
-        return { result: true, token: token, message: 'Edit Transaction Successful', deletedTransactionID: oldLoanTransactionID, newTransactionID: addNewLoan._id};
+        return { result: true, token: token, message: 'Edit Transaction Successful', deletedTransactionID: oldDebtTransactionID, newTransactionID: addNewDebt._id};
       }
 
       console.log("Edit Transaction unsuccessful");

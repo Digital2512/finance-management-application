@@ -861,6 +861,13 @@
   width: 850px;
 }
 
+.quick-calculation-box{
+  height: 500px;
+  border: #000;
+  border-radius: 2px;
+  border-width: 2px;
+}
+
 /* .transaction-form-date {
   margin-top: 15px;
   max-width: 500px;

@@ -8,7 +8,7 @@ import mongoose from 'mongoose';
 // import mongoose from 'mongoose';
 require('dotenv').config();
 
-export const fetchUserIncomeExpenseTransaction = async ( userID: string ) => {
+export const fetchUserDebtTransaction = async ( userID: string ) => {
     console.log('Fetching User Debt Transactions with User ID:', { userID }); // Log the incoming data
 
     const connected = await connectToDatabase();
@@ -23,13 +23,13 @@ export const fetchUserIncomeExpenseTransaction = async ( userID: string ) => {
     console.log('Database is connected');
     try {
         const userIDObject = new mongoose.Types.ObjectId(userID)
-        const userTransactionsData = await Debt.find({userID: userIDObject});
-      if (!userTransactionsData) {
+        const userDebtTransactionsData = await Debt.find({userID: userIDObject});
+      if (!userDebtTransactionsData) {
         console.log('No record of User Debt Transactions is found');
         return { result: false, message: 'User Debt Transactions is not in Database' };
       }else{
-        console.log('User Debt Transactions: ', userTransactionsData);
-        return { result: true, message: 'User Debt Transactions fetched', userTransactionsData: userTransactionsData};
+        console.log('User Debt Transactions: ', userDebtTransactionsData);
+        return { result: true, message: 'User Debt Transactions fetched', userDebtTransactionsData: userDebtTransactionsData};
       }
   } catch (error) {
     console.log("Fetch User Transaction unsuccessful");

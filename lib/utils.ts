@@ -291,11 +291,23 @@ export const loanTransactionFormSchema = () => z.object({
   startingDateOfLoan: z.date().default(new Date()),
   loanDescription: z.string().min(1, {message: 'Description is required'}),
   loanCurrency: z.enum(currencyCodes),
-  loanAmount: z.number().default(0),
-  loanTermYear: z.number().default(0),
-  loanTermMonth: z.number().default(0),
-  interestRateAmount: z.number().default(0),
-  typeOfInterest: z.enum(['Daily', 'Weekly', 'Monthly', 'Yearly']).default('Monthly'),
+  loanAmount: z.preprocess(
+    (value) => parseFloat(value as string),
+    z.number().positive("Must be a positive number").default(0)
+  ),
+  loanTermYear: z.preprocess(
+    (value) => parseFloat(value as string),
+    z.number().positive("Must be a positive number").default(0)
+  ),
+  loanTermMonth: z.preprocess(
+    (value) => parseFloat(value as string),
+    z.number().positive("Must be a positive number").default(0)
+  ),
+  interestRate: z.preprocess(
+    (value) => parseFloat(value as string),
+    z.number().positive("Must be a positive number").default(0)
+  ),
+  interestRateType: z.enum(['Daily', 'Weekly', 'Monthly', 'Yearly']).default('Monthly'),
   receiverID: z.string().min(1, {message: 'Receiver ID is required'}),
   senderID: z.string().min(1, {message: 'Sender ID is required'}),
   loanStatus: z.enum(['Not Paid', 'In Progress', 'Paid Full']).default('Not Paid'),
@@ -305,4 +317,35 @@ export const loanTransactionFormSchema = () => z.object({
   // transactionPlannedCycle: z.enum(['None', 'Daily', 'Weekly', 'Monthly', 'Yearly']).default('None'),
   // transactionPlannedCycleDate: z.date().optional(),
   loanProofOfURL: z.string().default('Empty'),
+});
+
+export const debtTransactionFormSchema = () => z.object({
+  // transactionID: type === 'edit' ? z.string().min(1, {message: 'Old Transaction ID is required'}) : z.string().optional(),
+  debtName: z.string().min(1, {message: 'Name is required'}),
+  debtCategory: z.string().min(1, {message: 'Category is required'}),
+  startingDateOfDebt: z.date().default(new Date()),
+  debtDescription: z.string().min(1, {message: 'Description is required'}),
+  debtCurrency: z.enum(currencyCodes),
+  debtAmount: z.preprocess(
+    (value) => parseFloat(value as string), 
+    z.number().positive("Must be a positive number").default(0)
+  ),
+  debtTermYear: z.number().default(0),
+  debtTermMonth: z.number().default(0),
+  interestRate: z.preprocess(
+    (value) => parseFloat(value as string), 
+    z.number().positive("Must be a positive number").default(0)
+  ),
+  interestRateType: z.enum(['Daily', 'Weekly', 'Monthly', 'Yearly']).default('Monthly'),
+  receiverID: z.string().min(1, {message: 'Receiver ID is required'}),
+  senderID: z.string().min(1, {message: 'Sender ID is required'}),
+  // debtPayerGroup: type === "Group" ? z.string().min(1, {message: 'Group is required'}) : z.string(),
+  debtPayerGroup: z.string().min(1, {message: 'Group is required'}),
+  debtPaymentPlan: z.enum(['Daily', 'Weekly', 'Biweekly', 'Monthly', 'Quarterly', 'Yearly']),
+  debtRegularPaymentAmount: z.preprocess(
+    (value) => parseFloat(value as string), 
+    z.number().positive("Must be a positive number").default(0)
+  ),
+  debtStatus: z.enum(['Not Paid', 'In Progress', 'Paid Full']).default('Not Paid'),
+  debtProofOfURL: z.string().default('Empty'),
 });

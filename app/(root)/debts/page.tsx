@@ -1,9 +1,13 @@
+'use client'
+
+import TransactionsDebtTable from '@/components/ui/TransactionsDebtTable'
 import React from 'react'
 
-const page = () => {
+const DebtsPage = () => {
+  const loggedInUserID = sessionStorage.getItem('loggedInUserID');
   return (
-    <div>page</div>
+    <TransactionsDebtTable userID={loggedInUserID || ''}/>
   )
 }
 
-export default page
+export default DebtsPage

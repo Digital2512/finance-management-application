@@ -168,11 +168,11 @@ const TransactionsLoanTable = ({userID} : TransactionsTableProps) => {
                     const status = getTransactionStatus (new Date(l.startingDateOfLoan))
                     const amount = formatAmount(l.loanAmount)
 
-                    const isHighInterest = l.interestRateAmount >= 15;
-                    const isLowInterest = l.interestRateAmount < 15;
+                    const isHighInterest = l.interestRate >= 15;
+                    const isLowInterest = l.interestRate < 15;
 
-                    const isHighCummulative = l.typeOfInterest === 'Daily' || 'Weekly';
-                    const isLowCummulative = l.typeOfInterest === 'Monthly' || 'Yearly';
+                    const isHighCummulative = l.interestRateType === 'Daily' || 'Weekly';
+                    const isLowCummulative = l.interestRateType === 'Monthly' || 'Yearly';
 
                     const expensiveUrgent = isHighInterest && isHighCummulative;
                     const expensiveNotUrgent = isHighInterest && isLowCummulative;
@@ -194,19 +194,15 @@ const TransactionsLoanTable = ({userID} : TransactionsTableProps) => {
                             </TableCell>
 
                             <TableCell className = {`pl-2 pr-10`}>
-                                {l.interestRateAmount}%
+                                {l.interestRate}%
                             </TableCell>
 
                             <TableCell className = {`pl-2 pr-10`}>
                                 {l.loanStatus}
                             </TableCell>
 
-                            <TableCell className = {`pl-2 pr-10`}>
-                                {l.typeOfInterest}
-                            </TableCell>
-
                             <TableCell className = {`pl-2 pr-10 max-md:hidden`}>
-                                {l.typeOfInterest}
+                                {l.interestRateType}
                             </TableCell>
                             
                             <TableCell className = {`pl-2 pr-10 max-md:hidden`}>

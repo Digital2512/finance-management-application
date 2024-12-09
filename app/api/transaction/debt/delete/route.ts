@@ -2,14 +2,15 @@
 import { NextResponse, NextRequest } from 'next/server';
 import authMiddleware from '@/middleware/authMiddleware';
 import { deleteTransaction } from '@/lib/transaction/deleteTransaction';
+import { deleteDebtTransaction } from '@/lib/transaction/deleteDebtTransaction';
 
 export async function POST(request: NextRequest) {
   try {
     const { transactionID } = await request.json(); 
     console.log('Not Deleted Transaction: ' + transactionID); 
-    const {result, message, deletedTransactionID} = await deleteTransaction(transactionID);
+    const {result, message, deletedDebtTransactionID} = await deleteDebtTransaction(transactionID);
 
-    console.log('Deleted Transaction: ' + deletedTransactionID);
+    console.log('Deleted Transaction: ' + deletedDebtTransactionID);
 
     console.log('----------------------------------------------------------------------------------------------------------------------------------------------------');
     
@@ -20,7 +21,7 @@ export async function POST(request: NextRequest) {
     // console.log('Result: ' + result);
 
     if(result){
-      return NextResponse.json({ message: message, deleteTransactionID: deletedTransactionID }, { status: 200 });
+      return NextResponse.json({ message: message, deletedDebtTransactionID: deletedDebtTransactionID }, { status: 200 });
     }else{
       return NextResponse.json({ message: message }, { status: 400 });
     }

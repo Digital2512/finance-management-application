@@ -563,8 +563,8 @@ declare type Loan = {
   loanTermYear: number;
   loanTermMonth: number;
   loanStatus: string;
-  interestRateAmount: number;
-  typeOfInterest: string;
+  interestRate: number;
+  interestRateType: string;
   receiverID: string;
   senderID: string;
   __v: number;
@@ -572,22 +572,24 @@ declare type Loan = {
 
 declare type Debt = {
   _id: string;
-  userID: string;
-  debtName: string;
-  debtCategory: string;
-  dateOfDebt: string;
-  debtDescription: string;
-  debtAmount: number;
-  startingDate: string;
-  endingDate: string;
-  debtInterestRateType: string;
-  debtInterestRate: number;
-  debtType: string;
-  debtPayerGroup?: string;
-  debtPaymentPlan: string;
-  debtPaymentAmount: String;
-  receiverID: string;
-  senderID: string;
+  userID: string,
+  debtName: string,
+  debtCategory: string,
+  startingDateOfDebt: Date,
+  debtDescription: string,
+  debtCurrency: string,
+  debtAmount: number,
+  debtTermYear: number,
+  debtTermMonth: number,
+  interestRate: number,
+  interestRateType: string,
+  receiverID: string,
+  senderID: string,
+  debtPayerGroup: string,
+  debtPaymentPlan: string,
+  debtRegularPaymentAmount: number,
+  debtStatus: string,
+  debtProofOfURL: string,
   __v: number;
 }
 

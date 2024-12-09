@@ -17,8 +17,8 @@ export async function POST(request: NextRequest) {
         loanAmount,
         loanTermYear,
         loanTermMonth,
-        interestRateAmount,
-        typeOfInterest,
+        interestRate,
+        interestRateType,
         receiverID,
         senderID,
         loanStatus,
@@ -34,8 +34,8 @@ export async function POST(request: NextRequest) {
       amountOfLoan:${loanAmount}
       loanTermYear:${loanTermYear}
       loanTermMonth:${loanTermMonth}
-      interestRateAmount:${interestRateAmount}
-      typeOfInterest:${typeOfInterest}
+      interestRate:${interestRate}
+      interestRateType:${interestRateType}
       receiverID:${receiverID}
       senderID:${senderID}
       loanStatus:${loanStatus}
@@ -53,8 +53,8 @@ export async function POST(request: NextRequest) {
       loanAmount,
       loanTermYear,
       loanTermMonth,
-      interestRateAmount,
-      typeOfInterest,
+      interestRate,
+      interestRateType,
       receiverID,
       senderID,
       loanStatus,

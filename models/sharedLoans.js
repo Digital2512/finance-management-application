@@ -171,8 +171,8 @@ const loanSchema = new mongoose.Schema({
         loanCurrency: {type: String, enum: currencyCodes}
     },
     interestRate: {
-        interestoRateAmout: {type: Number, default: 0, required: true},
-        typeOfInterest: {type: String, enum: ['Daily', 'Weekly', 'Monthly', 'Yearly'], required: true}
+        interestRate: {type: Number, default: 0, required: true},
+        interestRateType: {type: String, enum: ['Daily', 'Weekly', 'Monthly', 'Yearly'], required: true}
     },
     category: {type: String, required: true},
     loanGivenDate: {type: Date, default: Date.now},

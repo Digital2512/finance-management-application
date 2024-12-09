@@ -3,50 +3,70 @@ import { NextResponse, NextRequest } from 'next/server';
 import { addTransaction } from '@/lib/transaction/addTransaction';
 import authMiddleware from '@/middleware/authMiddleware';
 import mongoose from 'mongoose';
+import { addDebtTransaction } from '@/lib/transaction/addDebtTransaction';
 
 export async function POST(request: NextRequest) {
   try {
     const { 
-        userID,
-        transactionName,
-        transactionCategory,
-        dateOfTransaction,
-        transactionDescription,
-        receiverID,
-        senderID,
-        transactionCurrency,
-        transactionIndividualDetails,
-        transactionType,
-        transactionStatus,
-        transactionCycleType,
-        transactionPlannedCycle,
-        transactionPlannedCycleDate,
-        transactionProofURL,
-        totalAmountOfTransaction } = await request.json();  
+      userID,
+      debtName,
+      debtCategory,
+      startingDateOfDebt,
+      debtDescription,
+      debtCurrency,
+      debtAmount,
+      // debtTermYear,
+      // debtTermMonth,
+      interestRate,
+      interestRateType,
+      receiverID,
+      senderID,
+      debtPayerGroup,
+      debtPaymentPlan,
+      debtRegularPaymentAmount,
+      debtStatus,
+      debtProofOfURL
+     } = await request.json();  
 
-    console.log(`Transaction Data: UserID: ${userID}, Transaction Name: ${transactionName}, Transaction Category: ${transactionCategory}, 
-      Date of Transaction: ${dateOfTransaction}, Transaction Description: ${transactionDescription}, Receiver ID: ${receiverID}, Sender ID: ${senderID}, 
-      Transaction Currency: ${transactionCurrency}, Transaction Type: ${transactionType}, Transaction Planned Cycle: ${transactionPlannedCycle},
-      Transaction Planned Cycle Date: ${transactionPlannedCycleDate}, Transaction Proof Of URL: ${transactionProofURL}, Total Amount: ${totalAmountOfTransaction}`);
+    console.log(`Transaction Data: 
+      ${userID}
+      ${debtName}
+      ${debtCategory}
+      ${startingDateOfDebt}
+      ${debtDescription}
+      ${debtCurrency}
+      ${debtAmount}
+      ${interestRate}
+      ${interestRateType}
+      ${receiverID}
+      ${senderID}
+      ${debtPayerGroup}
+      ${debtPaymentPlan}
+      ${debtRegularPaymentAmount}
+      ${debtStatus}
+      ${debtProofOfURL}
+      `);
     
     console.log('User ID Route: ', userID);
-    const {result, token, message, addTransactionID} = await addTransaction(
-        userID,
-        transactionName,
-        transactionCategory,
-        dateOfTransaction,
-        transactionDescription,
-        receiverID,
-        senderID,
-        transactionCurrency,
-        transactionIndividualDetails,
-        transactionType,
-        transactionStatus,
-        transactionCycleType,
-        transactionPlannedCycle,
-        transactionPlannedCycleDate,
-        transactionProofURL,
-        totalAmountOfTransaction);
+    const {result, token, message, addTransactionID} = await addDebtTransaction(
+      userID,
+      debtName,
+      debtCategory,
+      startingDateOfDebt,
+      debtDescription,
+      debtCurrency,
+      debtAmount,
+      // debtTermYear,
+      // debtTermMonth,
+      interestRate,
+      interestRateType,
+      receiverID,
+      senderID,
+      debtPayerGroup,
+      debtPaymentPlan,
+      debtRegularPaymentAmount,
+      debtStatus,
+      debtProofOfURL);
 
     console.log('New Transaction Info: ' + addTransactionID);
 

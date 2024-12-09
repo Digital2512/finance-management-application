@@ -3,20 +3,21 @@ import { NextResponse, NextRequest } from 'next/server';
 import authMiddleware from '@/middleware/authMiddleware';
 import { editTransaction } from '@/lib/transaction/editTransaction';
 import { fetchTransaction } from "@/lib/transaction/fetchTransaction";
+import { fetchDebtTransaction } from "@/lib/transaction/fetchDebtTransaction";
 
 
 export async function GET(request: NextRequest) {
   console.log('Fetch Transaction Info Request JSON: ', request);
     try {
       const { searchParams } = new URL(request.url); // Extract query parameters
-      const transactionID = searchParams.get('transactionID'); // Get transactionID
+      const transactionID = searchParams.get('debtTransactionID'); // Get transactionID
       
       if (!transactionID) {
           return NextResponse.json({ message: 'Transaction ID is missing' }, { status: 400 });
       }
     
       console.log('Fetch Transaction Info ID: ', transactionID);
-      const {result, message, existingTransactionData} = await fetchTransaction(transactionID);
+      const {result, message, existingTransactionData} = await fetchDebtTransaction(transactionID);
   
       console.log('Fetch Transaction Info: ', existingTransactionData);
   

@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, {useMemo} from 'react'
 import { useEffect, useState } from "react";
 import Link from 'next/link'
 import Image from 'next/image'
@@ -24,6 +24,7 @@ import { connectToDatabase } from '@/lib/database'
 import { useRouter } from 'next/navigation'
 import { fetchTransaction } from '@/lib/transaction/fetchTransaction';
 import CustomTransactionFormInput from './CustomTransactionFormInput';
+import { formatAmount } from '@/lib/utils';
 
 interface IndividualTransactionsDetailsProps{
     type: string,
@@ -61,14 +62,49 @@ const IndividualLoanTransactionForm = ({ type, oldLoanTransactionID }: Individua
             loanAmount: 0,
             loanTermYear: 0,
             loanTermMonth: 0,
-            interestRateAmount: 0,
-            typeOfInterest: "Monthly",
+            interestRate: 0,
+            interestRateType: "Monthly",
             receiverID: "",
             senderID: "",
             loanStatus: "Not Paid",
             loanProofOfURL: "Empty",
         },
     });
+
+    const {watch} = form;
+
+    const loanAmount = String(watch('loanAmount')) || '0';
+    const interestRate = String(watch('interestRate')) || '0';
+    const interestRateType = watch('interestRateType') || 'Monthly';
+    const loanTermYear = String(watch('loanTermYear')) || '0';
+    const loanTermMonth = String(watch('loanTermMonth')) || '0';
+
+    const loanAmountNumber = parseFloat(loanAmount);
+    const interestRateNumber = parseFloat(interestRate);    
+    const loanTermYearNumber = parseFloat(loanTermYear);
+    const loanTermMonthNumber = parseFloat(loanTermMonth);
+
+
+    const totalLoanTermYears = useMemo(() => {
+        return loanTermYearNumber + loanTermMonthNumber / 12;
+    }, [loanTermMonthNumber, loanTermYearNumber])
+
+    const totalInterest = useMemo(() => {
+        if(interestRateType === 'Yearly') {
+            return loanAmountNumber * (interestRateNumber / 100) * totalLoanTermYears;
+        }else if(interestRateType === 'Monthly'){
+            return loanAmountNumber * (interestRateNumber / 100) * totalLoanTermYears * 12;
+        }else if(interestRateType === 'Weekly'){
+            return loanAmountNumber * (interestRateNumber / 100) * totalLoanTermYears * 52;
+        }else if(interestRateType === 'Daily'){
+            return loanAmountNumber * (interestRateNumber / 100) * totalLoanTermYears * 365;
+        }
+        return 0;
+    }, [loanAmountNumber, interestRateNumber, interestRateType, totalLoanTermYears]);
+
+    const totalAmountAfter = useMemo(() => {
+        return loanAmountNumber + totalInterest
+    }, [loanAmountNumber, totalInterest]);
 
     useEffect(() => {
         const fetchTransactionData = async (oldLoanTransactionID: string) => {
@@ -84,8 +120,7 @@ const IndividualLoanTransactionForm = ({ type, oldLoanTransactionID }: Individua
                 const fetchedData = response.data.existingTransactionData;
                 console.log('Fetched Data: ', fetchedData);
 
-                fetchedData.dateOfTransaction = new Date(fetchedData.dateOfTransaction);
-                fetchedData.transactionPlannedCycleDate = new Date(fetchedData.transactionPlannedCycleDate);
+                fetchedData.startingDateOfLoan = new Date(fetchedData.startingDateOfLoan);
                 console.log('Fetched Data After: ', fetchedData);
 
                 Object.keys(fetchedData).forEach((key) => {
@@ -159,8 +194,8 @@ const IndividualLoanTransactionForm = ({ type, oldLoanTransactionID }: Individua
                     loanAmount: data.loanAmount,
                     loanTermYear: data.loanTermYear,
                     loanTermMonth: data.loanTermMonth,
-                    interestRateAmount: data.interestRateAmount,
-                    typeOfInterest: data.typeOfInterest,
+                    interestRate: data.interestRate,
+                    interestRateType: data.interestRateType,
                     receiverID: data.receiverID,
                     senderID: data.senderID,
                     loanStatus: data.loanStatus,
@@ -202,8 +237,8 @@ const IndividualLoanTransactionForm = ({ type, oldLoanTransactionID }: Individua
                     newLoanAmount: data.loanAmount,
                     newLoanTermYear: data.loanTermYear,
                     newLoanTermMonth: data.loanTermMonth,
-                    newInterestRateAmount: data.interestRateAmount,
-                    newTypeOfInterest: data.typeOfInterest,
+                    newInterestRate: data.interestRate,
+                    newInterestRateType: data.interestRateType,
                     newReceiverID: data.receiverID,
                     newSenderID: data.senderID,
                     newLoanStatus: data.loanStatus,
@@ -264,41 +299,67 @@ const IndividualLoanTransactionForm = ({ type, oldLoanTransactionID }: Individua
                         <div className='transaction-column-first-item'>
                             <CustomLoanTransactionFormInput control={form.control} typeInfo='loanName' labelInfo='Loan Name' placeholderInfo='Enter your loan name' formType='edit'/>
                             <CustomLoanTransactionFormInput control={form.control} typeInfo='loanCategory' labelInfo='Loan Category' placeholderInfo='Enter your loan category' formType='edit'/>
-                            <CustomLoanTransactionFormInput control={form.control} typeInfo='loanDescription' labelInfo='Loan Description' placeholderInfo='Enter your loan Description' formType='edit'/>
+                            <CustomLoanTransactionFormInput control={form.control} typeInfo='loanDescription' labelInfo='Loan Description' placeholderInfo='Enter your loan Description' formType='edit'/>                            
 
-                            <CustomLoanTransactionFormInput control={form.control} typeInfo='interestRateAmount' labelInfo='Interest Rate Amount' placeholderInfo='Enter your Loan Interest Rate Amount' formType='edit' />
-                            <CustomLoanTransactionFormInput control={form.control} typeInfo='typeOfInterest' labelInfo='Types of Intest Rates' placeholderInfo='Enter your Loan Type of Interest Rates' formType='edit' options={
-                                [
-                                    {value: "Daily"},
-                                    {value: "Weekly"},
-                                    {value: "Monthly"},
-                                    {value: "Yearly"}
-                                ]
-                            }/>
+                            <div className='flex flex-row gap-[30px]'>
+                                <div className='w-[235px]'>
+                                    <CustomLoanTransactionFormInput control={form.control} typeInfo='interestRate' labelInfo='Interest Rate Amount' placeholderInfo='Enter your Loan Interest Rate Amount' formType='edit' />
+                                </div>
+                                <div className='w-[235px]'>
+                                    <CustomLoanTransactionFormInput control={form.control} typeInfo='interestRateType' labelInfo='Types of Interest Rates' placeholderInfo='Enter your Loan Type of Interest Rates' formType='edit' options={
+                                        [
+                                            {value: "Daily"},
+                                            {value: "Weekly"},
+                                            {value: "Monthly"},
+                                            {value: "Yearly"}
+                                        ]
+                                    }/>
+                                </div>
+
+                            </div>
+                            
+                            <div className='flex flex-row gap-[30px]'>
+                            <div className='w-[235px]'>
+                                <CustomLoanTransactionFormInput control={form.control} typeInfo='loanTermYear' labelInfo='Loan Term Year' placeholderInfo='Enter your Year Term' formType='edit'/>
+                            </div>
+                            <div className='w-[235px]'>
+                                <CustomLoanTransactionFormInput control={form.control} typeInfo='loanTermMonth' labelInfo='Loan Term Month' placeholderInfo='Enter your Month Term' formType='edit'/>                            
+                            </div>
+                            </div>
+                            <CustomLoanTransactionFormInput control={form.control} typeInfo='loanStatus' labelInfo='Loan Status' placeholderInfo='Enter your Transaction Status' formType='edit'
+                                options={[
+                                    {value: 'Not Paid'},
+                                    {value: 'In Progress'},
+                                    {value: 'Done'}
+                                ]}/>
+                                <CustomLoanTransactionFormInput control={form.control} typeInfo='loanProofOfURL' labelInfo='Loan Proof of URL' placeholderInfo='Enter your Loan Proof URL' formType='edit'/>
                             </div>
                             <div className='transaction-column-second-item'>
+                            <CustomLoanTransactionFormInput control={form.control} typeInfo='startingDateOfLoan' labelInfo='Starting Date of Loan' placeholderInfo='Enter your Date of Transaction' formType='edit'/>
+
                             <CustomLoanTransactionFormInput control={form.control} typeInfo='receiverID' labelInfo='Receiver ID' placeholderInfo='Enter your Receiver ID' formType='edit'/>
                             <CustomLoanTransactionFormInput control={form.control} typeInfo='senderID' labelInfo='Sender ID' placeholderInfo='Enter your Sender ID' formType='edit'/>
 
-                            <CustomLoanTransactionFormInput control={form.control} typeInfo='loanTermYear' labelInfo='Loan Term Year' placeholderInfo='Enter your Year Term' formType='edit'/>
-                            <CustomLoanTransactionFormInput control={form.control} typeInfo='loanTermMonth' labelInfo='Loan Term Month' placeholderInfo='Enter your Month Term' formType='edit'/>                            
-
                             <CustomLoanTransactionFormInput control={form.control} typeInfo='loanCurrency' labelInfo='Loan Currency' placeholderInfo='Enter your Transaction Currency' formType='edit' options={currencyOptions}/>                            
                             <CustomLoanTransactionFormInput control={form.control} typeInfo='loanAmount' labelInfo='Loan Amount' placeholderInfo='Total Amount' formType='edit'/>                                                    
+
+                            <div className='mt-[50px]'>
+                                <div className='mt-[20px]'>
+                                    Total Amount Before Interest: {formatAmount(loanAmountNumber)}
+                                </div>
+                                <div className='mt-[20px]'>
+                                    Total Amount After Interest: {formatAmount(totalAmountAfter)}
+                                </div>
+                                <div className='mt-[20px]'>
+                                    Total Interest Received: {formatAmount(totalInterest)}
+                                </div>
+                            </div>
                             </div>
                         </div>
-                            <CustomLoanTransactionFormInput control={form.control} typeInfo='startingDateOfLoan' labelInfo='Starting Date of Loan' placeholderInfo='Enter your Date of Transaction' formType='edit'/>
-                            <CustomLoanTransactionFormInput control={form.control} typeInfo='loanStatus' labelInfo='Loan Status' placeholderInfo='Enter your Transaction Status' formType='edit'
-                            options={[
-                                {value: 'Not Paid'},
-                                {value: 'In Progress'},
-                                {value: 'Done'}
-                            ]}/>
-                        <CustomLoanTransactionFormInput control={form.control} typeInfo='loanProofOfURL' labelInfo='Loan Proof of URL' placeholderInfo='Enter your Loan Proof URL' formType='edit'/>
                             {/*  */}
                         {/* TODO: Have to make it so that the individual details has a button which can be dyanmic and add or decrease based on the details */}
 
-                        <Button type="submit" disabled={isLoading}>
+                        <Button type="submit" disabled={isLoading} className='mt-[25px]'>
                             {isLoading ? 'Submitting...' : 'Submit'}
                         </Button>
                     </form>
@@ -318,28 +379,50 @@ const IndividualLoanTransactionForm = ({ type, oldLoanTransactionID }: Individua
                             <CustomLoanTransactionFormInput control={form.control} typeInfo='loanCategory' labelInfo='Loan Category' placeholderInfo='Enter your loan category' formType='add'/>
                             <CustomLoanTransactionFormInput control={form.control} typeInfo='loanDescription' labelInfo='Loan Description' placeholderInfo='Enter your loan Description' formType='add'/>
 
-                            <CustomLoanTransactionFormInput control={form.control} typeInfo='interestRateAmount' labelInfo='Interest Rate Amount' placeholderInfo='Enter your Loan Interest Rate Amount' formType='add' />
-                            <CustomLoanTransactionFormInput control={form.control} typeInfo='typeOfInterest' labelInfo='Types of Intest Rates' placeholderInfo='Enter your Loan Type of Interest Rates' formType='add' options={
-                                [
-                                    {value: "Daily"},
-                                    {value: "Weekly"},
-                                    {value: "Monthly"},
-                                    {value: "Yearly"}
-                                ]
-                            }/>
+                            <div className='flex flex-row gap-[30px]'>
+                                <div className='w-[250px]'>
+                                    <CustomLoanTransactionFormInput control={form.control} typeInfo='interestRate' labelInfo='Interest Rate Amount' placeholderInfo='Enter your Loan Interest Rate Amount' formType='add' />
+                                </div>
+                                <div className='w-[250px]'>
+                                    <CustomLoanTransactionFormInput control={form.control} typeInfo='interestRateType' labelInfo='Types of Interest Rates' placeholderInfo='Enter your Loan Type of Interest Rates' formType='add' options={
+                                    [
+                                        {value: "Daily"},
+                                        {value: "Weekly"},
+                                        {value: "Monthly"},
+                                        {value: "Yearly"}
+                                    ]
+                                }/>
+                                </div>
+                            </div>
+
+                            <div className='flex flex-row gap-[30px]'>
+                            <div className='w-[250px]'>
+                                <CustomLoanTransactionFormInput control={form.control} typeInfo='loanTermYear' labelInfo='Loan Term Year' placeholderInfo='Enter your Year Term' formType='add'/>
+                            </div>
+                            <div className='w-[250px]'>
+                                <CustomLoanTransactionFormInput control={form.control} typeInfo='loanTermMonth' labelInfo='Loan Term Month' placeholderInfo='Enter your Month Term' formType='add'/>                            
+                            </div>
+                            </div>
                             </div>
                             <div className='transaction-column-second-item'>
+                            <CustomLoanTransactionFormInput control={form.control} typeInfo='startingDateOfLoan' labelInfo='Starting Date of Loan' placeholderInfo='Enter your Date of Transaction' formType='add'/>
                             <CustomLoanTransactionFormInput control={form.control} typeInfo='receiverID' labelInfo='Receiver ID' placeholderInfo='Enter your Receiver ID' formType='add'/>
                             <CustomLoanTransactionFormInput control={form.control} typeInfo='senderID' labelInfo='Sender ID' placeholderInfo='Enter your Sender ID' formType='add'/>
 
-                            <CustomLoanTransactionFormInput control={form.control} typeInfo='loanTermYear' labelInfo='Loan Term Year' placeholderInfo='Enter your Year Term' formType='add'/>
-                            <CustomLoanTransactionFormInput control={form.control} typeInfo='loanTermMonth' labelInfo='Loan Term Month' placeholderInfo='Enter your Month Term' formType='add'/>                            
-
                             <CustomLoanTransactionFormInput control={form.control} typeInfo='loanCurrency' labelInfo='Loan Currency' placeholderInfo='Enter your Transaction Currency' formType='add' options={currencyOptions}/>                            
                             <CustomLoanTransactionFormInput control={form.control} typeInfo='loanAmount' labelInfo='Loan Amount' placeholderInfo='Total Amount' formType='add'/>                                                    
+
+                            <div>
+                                Total Amount Before Interest: ${loanAmountNumber}
+                            </div>
+                            <div>
+                                Total Amount After Interest: ${totalAmountAfter}
+                            </div>
+                            <div>
+                                Total Interest: ${totalInterest}
+                            </div>
                             </div>
                         </div>
-                            <CustomLoanTransactionFormInput control={form.control} typeInfo='startingDateOfLoan' labelInfo='Starting Date of Loan' placeholderInfo='Enter your Date of Transaction' formType='add'/>
                             <CustomLoanTransactionFormInput control={form.control} typeInfo='loanStatus' labelInfo='Loan Status' placeholderInfo='Enter your Transaction Status' formType='add'
                             options={[
                                 {value: 'Not Paid'},

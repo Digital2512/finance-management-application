@@ -3,65 +3,74 @@ import { NextResponse, NextRequest } from 'next/server';
 import { addTransaction } from '@/lib/transaction/addTransaction';
 import authMiddleware from '@/middleware/authMiddleware';
 import { editTransaction } from '@/lib/transaction/editTransaction';
+import { editDebtTransaction } from '@/lib/transaction/editDebtTransaction';
 
 export async function POST(request: NextRequest) {
   try {
     const { 
         userID,
-        oldTransactionID,
-        newTransactionName,
-        newTransactionCategory,
-        newDateOfTransaction,
-        newTransactionDescription,
+        oldDebtTransactionID,
+        newDebtName,
+        newDebtCategory,
+        newStartingDateOfDebt,
+        newDebtDescription,
+        newDebtCurrency,
+        newDebtAmount,
+        // newDebtTermYear,
+        // newDebtTermMonth,
+        newInterestRate,
+        newInterestRateType,
         newReceiverID,
         newSenderID,
-        newTransactionCurrency,
-        newTransactionIndividualDetails,
-        newTransactionType,
-        newTransactionStatus,
-        newTransactionCycleType,
-        newTransactionPlannedCycle,
-        newTransactionPlannedCycleDate,
-        newTransactionProofURL,
-        newTotalAmountOfTransaction } = await request.json(); 
+        newDebtPayerGroup,
+        newDebtPaymentPlan,
+        newDebtRegularPaymentAmount,
+        newDebtStatus,
+        newDebtProofOfURL
+    } = await request.json(); 
         console.log('Edit Transaction API Data being received: ',
           userID,
-          oldTransactionID,
-          newTransactionName,
-          newTransactionCategory,
-          newDateOfTransaction,
-          newTransactionDescription,
+          oldDebtTransactionID,
+          newDebtName,
+          newDebtCategory,
+          newStartingDateOfDebt,
+          newDebtDescription,
+          newDebtCurrency,
+          newDebtAmount,
+          // newDebtTermYear,
+          // newDebtTermMonth,
+          newInterestRate,
+          newInterestRateType,
           newReceiverID,
           newSenderID,
-          newTransactionCurrency,
-          newTransactionIndividualDetails,
-          newTransactionType,
-          newTransactionStatus,
-          newTransactionCycleType,
-          newTransactionPlannedCycle,
-          newTransactionPlannedCycleDate,
-          newTransactionProofURL,
-          newTotalAmountOfTransaction
+          newDebtPayerGroup,
+          newDebtPaymentPlan,
+          newDebtRegularPaymentAmount,
+          newDebtStatus,
+          newDebtProofOfURL
         );
-    const {result, token, message, deletedTransactionID, newTransactionID} = await editTransaction(userID,
-        oldTransactionID,
-        newTransactionName,
-        newTransactionCategory,
-        newDateOfTransaction,
-        newTransactionDescription,
-        newReceiverID,
-        newSenderID,
-        newTransactionCurrency,
-        newTransactionIndividualDetails,
-        newTransactionType,
-        newTransactionStatus,
-        newTransactionCycleType,
-        newTransactionPlannedCycle,
-        newTransactionPlannedCycleDate,
-        newTransactionProofURL,
-        newTotalAmountOfTransaction);
+    const {result, token, message, deletedTransactionID, newTransactionID} = await editDebtTransaction(
+      userID,
+      oldDebtTransactionID,
+      newDebtName,
+      newDebtCategory,
+      newStartingDateOfDebt,
+      newDebtDescription,
+      newDebtCurrency,
+      newDebtAmount,
+      // newDebtTermYear,
+      // newDebtTermMonth,
+      newInterestRate,
+      newInterestRateType,
+      newReceiverID,
+      newSenderID,
+      newDebtPayerGroup,
+      newDebtPaymentPlan,
+      newDebtRegularPaymentAmount,
+      newDebtStatus,
+      newDebtProofOfURL);
 
-    console.log('Old Transaction Info: ' + oldTransactionID);
+    console.log('Old Transaction Info: ' + oldDebtTransactionID);
     console.log('Deleted Transaction Info: ' + deletedTransactionID);
     console.log('New Transaction Info: ' + newTransactionID);
 

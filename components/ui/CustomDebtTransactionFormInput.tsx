@@ -14,13 +14,13 @@ import {
 import "react-datepicker/dist/react-datepicker.css" // Make sure this CSS is imported
 
 // Define the component
-const CustomLoanTransactionFormInput = <FormSchemaType extends z.ZodType<any, any>>(
+const CustomDebtTransactionFormInput = <FormSchemaType extends z.ZodType<any, any>>(
   {control, typeInfo, labelInfo, placeholderInfo, formType, options}: 
   CustomTransactionInputProps<FormSchemaType>) => {
 
   
   const {setValue, getValues, formState: {dirtyFields}} = useFormContext();
-  const isNumericField = ['loanAmount', 'loanTermYear', 'loanTermMonth', 'interestRate'].includes(typeInfo);
+  const isNumericField = ['debtAmount', 'interestRate', 'debtRegularPaymentAmount'].includes(typeInfo);
 
   const handleDateChange = (field: any, date: Date | null) => {
     const formattedDate = date ? new Date(date) : null;
@@ -56,7 +56,7 @@ const CustomLoanTransactionFormInput = <FormSchemaType extends z.ZodType<any, an
                     </select>
                   )}
                 />
-              ) : typeInfo === "startingDateOfLoan" ? (
+              ) : typeInfo === "startingDateOfDebt" ? (
                 <div className="relative">
                   <Controller
                     name={typeInfo}
@@ -101,18 +101,23 @@ const CustomLoanTransactionFormInput = <FormSchemaType extends z.ZodType<any, an
                           ? field.value
                           : getValues(typeInfo) || ""
                       }
-                      onChange={(e) =>{
-                        const inputValue = e.target.value;
+                      // onChange={(e) =>
+                      //   field.onChange(
+                      //     isNumericField ? +e.target.value : e.target.value
+                      //   )
+                      // }
 
+                      onChange={(e) => {
+                        const inputValue = e.target.value;
+                        
                         if(isNumericField){
                           if(/^-?\d*\.?\d*$/.test(inputValue) || inputValue === ''){
                             field.onChange(inputValue);
                           }
                         }else{
-                          field.onChange(inputValue)
+                          field.onChange(inputValue);
                         }
-                      }
-                      }
+                      }}
                     />
                   )}
                 />
@@ -126,4 +131,4 @@ const CustomLoanTransactionFormInput = <FormSchemaType extends z.ZodType<any, an
   )
 }
 
-export default CustomLoanTransactionFormInput
+export default CustomDebtTransactionFormInput

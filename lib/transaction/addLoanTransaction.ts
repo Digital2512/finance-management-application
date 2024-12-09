@@ -19,8 +19,8 @@ export const addLoanTransaction = async (
   loanAmount:string,
   loanTermYear:string,
   loanTermMonth:string,
-  interestRateAmount:string,
-  typeOfInterest:string,
+  interestRate:string,
+  interestRateType:string,
   receiverID:string,
   senderID:string,
   loanStatus:string,
@@ -36,8 +36,8 @@ export const addLoanTransaction = async (
       loanAmount,
       loanTermYear,
       loanTermMonth,
-      interestRateAmount,
-      typeOfInterest,
+      interestRate,
+      interestRateType,
       receiverID,
       senderID,
       loanStatus,
@@ -53,8 +53,8 @@ export const addLoanTransaction = async (
       ${loanAmount}
       ${loanTermYear}
       ${loanTermMonth}
-      ${interestRateAmount}
-      ${typeOfInterest}
+      ${interestRate}
+      ${interestRateType}
       ${receiverID}
       ${senderID}
       ${loanStatus}
@@ -75,8 +75,8 @@ export const addLoanTransaction = async (
         loanName, 
         loanCategory,
         loanDescription,
-        interestRateAmount,
-        typeOfInterest, 
+        interestRate,
+        interestRateType, 
         receiverID,
         senderID,
         loanTermYear,
@@ -110,8 +110,8 @@ export const addLoanTransaction = async (
           loanTermYear: loanTermYear,
           loanTermMonth: loanTermMonth,
           loanStatus: loanStatus,
-          interestRateAmount: interestRateAmount,
-          typeOfInterest: typeOfInterest,
+          interestRate: interestRate,
+          interestRateType: interestRateType,
           receiverID: receiverID,
           senderID: senderID,
           loanProofOfURL: loanProofOfURL,
