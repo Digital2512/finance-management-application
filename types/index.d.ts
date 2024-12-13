@@ -593,6 +593,21 @@ declare type Debt = {
   __v: number;
 }
 
+declare type Repayment = {
+  _id: string;
+  userID:string,
+  debtID: string,
+  senderID: string,
+  receiverID: string,
+  dateOfRepayment: Date,
+  typeOfRepayment: string,
+  repaymentStatus: string,
+  repaymentCurrency: string,
+  repaymentAmount: number,
+  repaymentProofOfURL: string,
+  __v: number;
+}
+
 declare type ChartDataItem = {
   date: string;
   name: string;

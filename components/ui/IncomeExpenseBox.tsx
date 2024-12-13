@@ -1,14 +1,13 @@
 import React from 'react'
-import IncomeExpense
 
 // interface IncomeExpenseBoxProps = {
 //     income: number,
 //     expense: number,
 // }
 
-const IncomeExpenseBox = ({income, expense}: IncomeExpenseBoxProps) => {
+const IncomeExpenseBox = () => {
   return (
-    
+    <div></div> 
   )
 }
 

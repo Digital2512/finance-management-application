@@ -349,3 +349,18 @@ export const debtTransactionFormSchema = () => z.object({
   debtStatus: z.enum(['Not Paid', 'In Progress', 'Paid Full']).default('Not Paid'),
   debtProofOfURL: z.string().default('Empty'),
 });
+
+export const repaymentTransactionFormSchema = () => z.object({
+  debtID: z.string().min(1, {message: 'Debt ID is required'}),
+  senderID: z.string().min(1, {message: 'Sender ID is required'}),
+  receiverID: z.string().min(1, {message: 'Receiver ID is required'}),
+  dateOfRepayment: z.date().default(new Date()),
+  typeOfRepayment: z.enum(['Normal', 'Extra']).default('Normal'),
+  repaymentStatus: z.enum(['Not Paid', 'Pending', 'Paid']).default('Not Paid'),
+  repaymentCurrency: z.enum(currencyCodes),
+  repaymentAmount: z.preprocess(
+    (value) => parseFloat(value as string), 
+    z.number().positive("Must be a positive number").default(0)
+  ),
+  repaymentProofOfURL: z.string().default('Empty')
+});
