@@ -47,14 +47,14 @@ interface TransactionsTableProps {
     // Other props if needed
   }
 
-const TransactionsRepaymentTable = ({userID} : TransactionsTableProps) => {
-    const [userTransactionsData, setUserTransactionsData] = useState<Repayment[]>([]);
-    const [transactionData, setTransactionsData] = useState<Repayment>();
+const TransactionsSavingsTable = ({userID} : TransactionsTableProps) => {
+    const [userTransactionsData, setUserTransactionsData] = useState<Savings[]>([]);
+    const [transactionData, setTransactionsData] = useState<Savings>();
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
 
     const onEdit = (transactionID: string) => {
-        router.push(`/debts/individual-repayment-transaction-details?repaymentTransactionID=${transactionID}`);
+        router.push(`/savings/individual-savings-transaction-details?savingsTransactionID=${transactionID}`);
     }
 
     useEffect(() => {
@@ -63,16 +63,16 @@ const TransactionsRepaymentTable = ({userID} : TransactionsTableProps) => {
             console.log('Logged In User ID Use Effect', loggedInUserID);
             if (loggedInUserID) {
                 try {
-                    const response = await axios.get('/api/transaction/repayment/fetchUserTransactions', {
+                    const response = await axios.get('/api/transaction/savings/fetchUserTransactions', {
                         params: { userID: loggedInUserID }
                     });
     
-                    console.log('User Repayment Transactions Response Function:', response);
-                    console.log('User Repayment Transactions Data Function:', response.data.userRepaymentTransactionsData); 
-                    setUserTransactionsData(response.data.userRepaymentTransactionsData); 
+                    console.log('User Savings Transactions Response Function:', response);
+                    console.log('User Savings Transactions Data Function:', response.data.userSavingsTransactionsData); 
+                    setUserTransactionsData(response.data.userSavingsTransactionsData); 
                     // return {userTransactionsData: response.data.userTransactionData};
                 } catch (error) {
-                    console.error("Error fetching user transactions:", error);
+                    console.error("Error fetching user loan transactions:", error);
                 }finally{
                     setIsLoading(false);
                 }
@@ -106,7 +106,7 @@ const TransactionsRepaymentTable = ({userID} : TransactionsTableProps) => {
         console.log('Transaction Use Effect: ', transactionID);
             if (transactionID) {
                 try {
-                    const response = await axios.post('/api/transaction/repayment/delete', {transactionID: transactionID});
+                    const response = await axios.post('/api/transaction/savings/delete', {transactionID: transactionID});
 
                     // console.log('Delete Transactions Response Function:', response);
                     // console.log('Delete Transactions Response Function Transaction ID:', response.data.deleteTransactionID);
@@ -153,20 +153,21 @@ const TransactionsRepaymentTable = ({userID} : TransactionsTableProps) => {
         <Table className="ml-6">
             <TableHeader>
                 <TableRow>
-                    <TableHead className="px-2">Repayment Transaction ID</TableHead>
-                    <TableHead className="px-2">Amount</TableHead>
-                    <TableHead className="px-2">Sender ID</TableHead>
-                    <TableHead className="px-2">Receiver ID</TableHead>
-                    <TableHead className="px-2">Type Of Repayment</TableHead>
-                    {/* <TableHead className="px-2 max-md:hidden">Category</TableHead>
-                    <TableHead className="px-2 max-md:hidden">Receiver ID</TableHead>
+                    <TableHead className="px-2">Savings Transaction ID</TableHead>
+                    <TableHead className="px-2">Goal Amount</TableHead>
+                    <TableHead className="px-2">Goal Deposit Amount</TableHead>
+                    <TableHead className="px-2">Goal Deposit Frequency</TableHead>
+                    <TableHead className="px-2 max-md:hidden">Goal Savings Term</TableHead>
+                    <TableHead className="px-2 max-md:hidden">Status</TableHead>
+                    <TableHead className="px-2 max-md:hidden">Category</TableHead>
+                    {/* <TableHead className="px-2 max-md:hidden">Receiver ID</TableHead>
                     <TableHead className="px-2 max-md:hidden">Sender ID</TableHead> */}
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {userTransactionsData.map((r: Repayment) => {
-                    const status = getTransactionStatus (new Date(r.dateOfRepayment))
-                    const amount = formatAmount(r.repaymentAmount)
+                {userTransactionsData.map((s: Savings) => {
+                    const status = getTransactionStatus (new Date(s.startingDateOfSavings))
+                    const amount = formatAmount(s.savingsTotalAmount)
 
                     // const isHighInterest = l.interestRate >= 15;
                     // const isLowInterest = l.interestRate < 15;
@@ -180,35 +181,51 @@ const TransactionsRepaymentTable = ({userID} : TransactionsTableProps) => {
                     // const notExpensiveNotUrgent = isLowInterest && isLowCummulative;
 
                     return(
-                        <TableRow key={r._id} className="">
-                            <TableCell className="max-w-[100px] pl-2 pr-10">
+                        <TableRow key={s._id} className="">
+                            <TableCell className="max-w-[250px] pl-2 pr-10">
                             <div className="flex items-center gap-3">
                                     <h1 className="text-14 truncate font-semibold text-[#344054]">
-                                        {r.debtID}
+                                        {removeSpecialCharacters(s.savingsName)}
                                     </h1>
                                 </div>
                             </TableCell>
 
                             <TableCell className = {`pl-2 pr-10 font-semibold text-[#f04438]`}>
-                                {formatAmount(r.repaymentAmount)}
+                                {formatAmount(s.savingsTotalAmount)}
                             </TableCell>
 
                             <TableCell className = {`pl-2 pr-10`}>
-                            {r.repaymentCategory}
-                                {r.senderID}
+                                {formatAmount(s.savingsGoalDepositAmount)}%
                             </TableCell>
 
                             <TableCell className = {`pl-2 pr-10`}>
-                                {r.senderID}
+                                {s.savingsDepositAmountType}
                             </TableCell>
 
-                            <TableCell className = {`pl-2 pr-10`}>
-                                {r.receiverID}
+                            <TableCell className = {`pl-2 pr-10 max-md:hidden`}>
+                            {s.savingsGoalTermYear} Years
+                            <br/>
+                            {s.savingsGoalTermMonth} Months
+                            </TableCell>
+                            
+                            <TableCell className = {`pl-2 pr-10 max-md:hidden`}>
+                                {s.savingsStatus}
                             </TableCell>
 
+                            <TableCell className = {`pl-2 pr-10 max-md:hidden`}>
+                                {s.savingsCategory}
+                            </TableCell>
+
+                            {/* <TableCell className = {`pl-2 pr-10 max-md:hidden`}>
+                                {l.receiverID}
+                            </TableCell>
+
+                            <TableCell className = {`pl-2 pr-10 max-md:hidden`}>
+                                {l.senderID}
+                            </TableCell> */}
                             <TableCell className="pl-2 pr-10 max-md:hidden">
-                                <button onClick={() => onEdit(r._id)} className="text-blue-500 hover:underline mr-2">Edit</button>
-                                <button onClick={() => onDelete(r._id)} className="text-blue-500 hover:underline mr-2">Delete</button>
+                                <button onClick={() => onEdit(s._id)} className="text-blue-500 hover:underline mr-2">Edit</button>
+                                <button onClick={() => onDelete(s._id)} className="text-blue-500 hover:underline mr-2">Delete</button>
                             </TableCell>
                         </TableRow>
                     )
@@ -217,4 +234,4 @@ const TransactionsRepaymentTable = ({userID} : TransactionsTableProps) => {
         </Table>
     )
 }
-export default TransactionsRepaymentTable
+export default TransactionsSavingsTable

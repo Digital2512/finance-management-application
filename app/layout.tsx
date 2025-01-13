@@ -9,7 +9,7 @@ const inter = Inter({
 });
 
 const ibmPlexSerif = IBM_Plex_Serif({
-  subsets: ["latin"],
+  subsets: ["latin", "cyrillic"], // Add cyrillic subset if needed
   variable: "--font-ibm-plex-serif",
   weight: ["100", "200", "300", "400", "500", "600", "700"]
 });

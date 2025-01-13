@@ -58,7 +58,8 @@ const IndividualRepaymentTransactionForm = ({ type, oldRepaymentTransactionID }:
             receiverID: '',
             senderID: '',
             typeOfRepayment: 'Normal',
-            repaymentStatus: 'Not Paid',
+            repaymentCategory: 'Savings',
+            repaymentStatus: 'Not Deposited',
             dateOfRepayment: new Date(),
             repaymentCurrency: 'USD',
             repaymentAmount: 0,
@@ -167,7 +168,7 @@ const IndividualRepaymentTransactionForm = ({ type, oldRepaymentTransactionID }:
     // Submit handler for form
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
         console.log('Submit button clicked');
-        console.log('Data being sent: Debt ID: ', data.debtID, 'Type of Repayment: ', data.typeOfRepayment);
+        console.log('Data being sent: Debt ID: ', data.debtID, 'Type of Repayment: ', data.typeOfRepayment, 'Repayment Category: ', data.repaymentCategory);
         setIsLoading(true);
         // setErrorMessage(null);
 
@@ -187,6 +188,7 @@ const IndividualRepaymentTransactionForm = ({ type, oldRepaymentTransactionID }:
                     receiverID: data.receiverID,
                     dateOfRepayment: data.dateOfRepayment,
                     typeOfRepayment: data.typeOfRepayment,
+                    repaymentCategory: data.repaymentCategory,
                     repaymentStatus: data.repaymentStatus,
                     repaymentCurrency: data.repaymentCurrency,
                     repaymentAmount: data.repaymentAmount,
@@ -225,6 +227,7 @@ const IndividualRepaymentTransactionForm = ({ type, oldRepaymentTransactionID }:
                     newReceiverID: data.receiverID,
                     newDateOfRepayment: data.dateOfRepayment,
                     newTypeOfRepayment: data.typeOfRepayment,
+                    newRepaymentCategory: data.repaymentCategory,
                     newRepaymentStatus: data.repaymentStatus,
                     newRepaymentCurrency: data.repaymentCurrency,
                     newRepaymentAmount: data.repaymentAmount,
@@ -289,6 +292,10 @@ const IndividualRepaymentTransactionForm = ({ type, oldRepaymentTransactionID }:
                                 {value: 'Normal'},
                                 {value: 'Extra'}                                
                             ]}/>
+                            <CustomRepaymentHistoryFormInput control={form.control} typeInfo='repaymentCategory' labelInfo='Type of Repayment' placeholderInfo='Enter your repayment type' formType='edit' options={[
+                                {value: 'Savings'},
+                                {value: 'Debt'}                                
+                            ]}/>
 
                             <div className='flex flex-row gap-[30px]'>
                                 <div className='w-[235px]'>
@@ -308,9 +315,9 @@ const IndividualRepaymentTransactionForm = ({ type, oldRepaymentTransactionID }:
                                 <CustomRepaymentHistoryFormInput control={form.control} typeInfo='senderID' labelInfo='Sender ID' placeholderInfo='Enter your Sender ID' formType='edit'/>
                                 <CustomRepaymentHistoryFormInput control={form.control} typeInfo='repaymentStatus' labelInfo='Repayment Status' placeholderInfo='Enter your repayment status' formType='edit' options={
                                 [
-                                    {value: 'Not Paid'},
+                                    {value: 'Not Deposited'},
                                     {value: 'Pending'},
-                                    {value: 'Paid'}
+                                    {value: 'Deposited'}
                                 ]
                             }/>
                             </div>
@@ -337,6 +344,10 @@ const IndividualRepaymentTransactionForm = ({ type, oldRepaymentTransactionID }:
                                 {value: 'Normal'},
                                 {value: 'Extra'}                                
                             ]}/>
+                            <CustomRepaymentHistoryFormInput control={form.control} typeInfo='repaymentCategory' labelInfo='Type of Repayment' placeholderInfo='Enter your repayment type' formType='edit' options={[
+                                {value: 'Savings'},
+                                {value: 'Debt'}                                
+                            ]}/>
 
                             <div className='flex flex-row gap-[30px]'>
                                 <div className='w-[235px]'>
@@ -356,9 +367,9 @@ const IndividualRepaymentTransactionForm = ({ type, oldRepaymentTransactionID }:
                                 <CustomRepaymentHistoryFormInput control={form.control} typeInfo='senderID' labelInfo='Sender ID' placeholderInfo='Enter your Sender ID' formType='add'/>
                                 <CustomRepaymentHistoryFormInput control={form.control} typeInfo='repaymentStatus' labelInfo='Repayment Status' placeholderInfo='Enter your repayment status' formType='add' options={
                                 [
-                                    {value: 'Not Paid'},
+                                    {value: 'Not Deposited'},
                                     {value: 'Pending'},
-                                    {value: 'Paid'}
+                                    {value: 'Deposited'}
                                 ]
                             }/>
                             </div>

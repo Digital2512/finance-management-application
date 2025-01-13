@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { string, number } = require('zod');
 
 const currencies = [
     { code: "AED", name: "United Arab Emirates Dirham" },
@@ -165,19 +166,23 @@ const currencies = [
 
 const currencyCodes = currencies.map(currency => currency.code);
 
-const repaymentHistorySchema = mongoose.Schema({
-    userID: {type: mongoose.Schema.ObjectId, ref: 'User', required: true},
-    debtID: {type: mongoose.Schema.ObjectId, ref: 'Debt', required: true},
-    senderID: {type: String, default: 'Undefined', required: true},
+const savingsSchema = new mongoose.Schema({
+    userID: {type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true},
+    savingsName: {type: String, required:true},
+    savingsCategory: {type: String, required:true},
+    dateOfSavings: {type: Date, default: Date.now, required: true},
+    savingsDescription: {type: String, required: true},
+    savingsTotalAmount: {type: Number,  default: 0, required: true},
+    savingsCurrency: {type: String, enum: currencyCodes, required: true},
+    savingsGoalTermYear: {type: Number, required: true},
+    savingsGoalTermMonth: {type: Number, required: true},
+    savingsGoalDepositAmount: {type: Number, default: 0, required: true},
+    savingsDepositAmountType: {type: String, enum: ['Daily', 'Weekly', 'Monthly', 'Yearly'], default: 'Monthly', required: true},
     receiverID: {type: String, default: 'Undefined', required: true},
-    dateOfRepayment: {type: Date, required: true},
-    typeOfRepayment: {type: String, enum: ['Normal', 'Extra'], required: true, default: 'Normal'},
-    repaymentCategory: {type: String, enum: ['Debt', 'Savings'], required: true, default: 'Savings'},
-    repaymentStatus: {type: String, enum: ['Not Paid', 'Pending', 'Paid'], required: true, default: 'Not Paid'},
-    repaymentCurrency: {type: String, enum: currencyCodes, required: true},
-    repaymentAmount: {type: Number, required: true},
-    repaymentProofOfURL: {type: String, default: 'Empty', required: true}
+    senderID: {type: String, default: 'Undefined', required: true},
+    savingsStatus: {type: String, enum: ['Not Saved', 'In Progress', 'Saved'], default: 'Not Saved'},
+    savingsProofOfURL: {type: String, default: 'Empty', required: true}
 });
 
-var Repayment = mongoose.models.Repayment ||  mongoose.model('Repayment', repaymentHistorySchema);
-module.exports = Repayment;
+var Savings = mongoose.models.Savings || mongoose.model('Savings', savingsSchema);
+module.exports = Savings;

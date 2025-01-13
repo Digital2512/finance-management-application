@@ -4,46 +4,62 @@ import { addTransaction } from '@/lib/transaction/addTransaction';
 import authMiddleware from '@/middleware/authMiddleware';
 import mongoose from 'mongoose';
 import { addLoanTransaction } from '@/lib/transaction/addLoanTransaction';
+import { addSavingsTransaction } from '@/lib/transaction/addSavingsTransaction';
 
 export async function POST(request: NextRequest) {
   try {
     const { 
-        userID,
-        debtID,
-        senderID,
-        receiverID,
-        dateOfRepayment,
-        typeOfRepayment,
-        repaymentStatus,
-        repaymentCurrency,
-        repaymentAmount,
-        repaymentProofOfURL} = await request.json();  
+      userID,
+      savingsName,
+      savingsCategory,
+      dateOfSavings,
+      savingsDescription,
+      savingsCurrency,
+      savingsTotalAmount,
+      savingsGoalTermYear,
+      savingsGoalTermMonth,
+      savingsGoalDepositAmount,
+      savingsDepositAmountType,
+      receiverID,
+      senderID,
+      savingsStatus,
+      savingsProofOfURL} = await request.json();  
 
     console.log(`Transaction Data: 
-      userID:${userID}
-      debtID: ${debtID}
-      senderID: ${senderID}
-      receiverID: ${receiverID}
-      dateOfRepayment: ${dateOfRepayment}
-      typeOfRepayment: ${typeOfRepayment}
-      repaymentStatus: ${repaymentStatus}
-      repaymentCurrency: ${repaymentCurrency}
-      repaymentAmount: ${repaymentAmount}
-      repaymentProofOfURL: ${repaymentProofOfURL}
+      userID: ${userID},
+      savingsName: ${savingsName},
+      savingsCategory: ${savingsCategory},
+      dateOfSavings: ${dateOfSavings},
+      savingsDescription: ${savingsDescription},
+      savingsCurrency: ${savingsCurrency},
+      savingsTotalAmount: ${savingsTotalAmount},
+      savingsGoalTermYear: ${savingsGoalTermYear},
+      savingsGoalTermMonth: ${savingsGoalTermMonth},
+      savingsGoalDepositAmount: ${savingsGoalDepositAmount},
+      savingsDepositAmountType: ${savingsDepositAmountType},
+      receiverID: ${receiverID},
+      senderID: ${senderID},
+      savingsStatus: ${savingsStatus},
+      savingsProofOfURL: ${savingsProofOfURL},
       `);
     
     console.log('User ID Route: ', userID);
-    const {result, token, message, addTransactionID} = await (
+    const {result, token, message, addTransactionID} = await addSavingsTransaction(
       userID,
-      debtID,
-      senderID,
+      savingsName,
+      savingsCategory,
+      dateOfSavings,
+      savingsDescription,
+      savingsCurrency,
+      savingsTotalAmount,
+      savingsGoalTermYear,
+      savingsGoalTermMonth,
+      savingsGoalDepositAmount,
+      savingsDepositAmountType,
       receiverID,
-      dateOfRepayment,
-      typeOfRepayment,
-      repaymentStatus,
-      repaymentCurrency,
-      repaymentAmount,
-      repaymentProofOfURL
+      senderID,
+      savingsStatus,
+      savingsProofOfURL
     );
 
     console.log('New Transaction Info: ' + addTransactionID);

@@ -297,29 +297,41 @@ type Expenses = {
   amount: number;
 };
 
-type BoxOverviewData = {
-  category: string;
-  amount: number;
-};
+// type DoughnutChartData = {
+//   category: string;
+//   amount: number;
+// };
 
-type BoxOverviewTextData = {
+type DoughnutChartData = {
+  category: string, 
+  amount: number,
+}  
+
+type DoughnutChartTextData = {
   name: string,
   category: string, 
   amount: number,
-  fillColor: string,
+}  
+
+type DoughnutChartPercentageData = {
+  name: string,
+  category: string, 
+  amount: number,
+  date? : Date,
 }  
 
 declare interface DoughnutChartProps {
-  doughnutChartData: BoxOverviewTextData[];
-  chartOverviewType: string,
+  doughnutChartData: DoughnutChartData[],
+  doughnutChartPercentageData?: DoughnutChartPercentageData[],
+  doughnutChartDataType: string,
 }
 
 declare interface BoxOverviewProps {
   accounts: Account[];
   totalBanks: number;
-  totalLeftBalance: number;
-  boxData: BoxOverviewData[];
-  boxTextData: BoxOverviewTextData[];
+  // totalLeftBalance: number;
+  boxData: DoughnutChartData[];
+  boxTextData?: DoughnutChartTextData[];
   typeBox: string;
 }
 
@@ -327,10 +339,10 @@ declare interface SavingsBoxProps {
   accounts: Account[];
   totalBanks: number;
   totalLeftToSaveBalance: number;
-  savingsData: Savings[];
+  savingsData: SavingsBox[];
 }
 
-type Savings = {
+type SavingsBox = {
   category: string;
   amount: number;
 };
@@ -570,6 +582,27 @@ declare type Loan = {
   __v: number;
 }
 
+declare type Savings = {
+  _id: string;
+  userID: string,
+  savingsName: string,
+  savingsCategory: string,
+  startingDateOfSavings: Date,
+  savingsDescription: string,
+  savingsCurrency: string,
+  savingsTotalAmount: number,
+  savingsGoalTermYear: number,
+  savingsGoalTermMonth: number,
+  savingsGoalDepositAmount: number,
+  savingsDepositAmountType: string,
+  receiverID: string,
+  senderID: string,
+  savingsStatus: string,
+  savingsProofOfURL: string,
+  __v: number;
+}
+
+
 declare type Debt = {
   _id: string;
   userID: string,
@@ -601,6 +634,7 @@ declare type Repayment = {
   receiverID: string,
   dateOfRepayment: Date,
   typeOfRepayment: string,
+  repaymentCategory: string,
   repaymentStatus: string,
   repaymentCurrency: string,
   repaymentAmount: number,
@@ -615,13 +649,19 @@ declare type ChartDataItem = {
   amount: number;
 }
 
-declare type AreaChartDataItem = {
+declare type AreaCharIncomeExpensetDataItem = {
   date: string;
   income: number;
   expense: number;
 }
 
-declare interface IncomeExpenseAreaChartProps {
+declare type AreaChartSavingsDebtstDataItem = {
+  date: string;
+  savings: number;
+  debts: number;
+}
+
+declare interface AreaChartProps {
   userID: string;
   // chartData: Array<ChartDataItem>;
     // settedTimeRange?: "7 Days" | "30 Days" | "90 Days";

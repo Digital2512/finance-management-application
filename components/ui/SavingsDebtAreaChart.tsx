@@ -33,40 +33,42 @@ import { fetchUserIncomeExpenseTransaction } from "@/lib/transaction/fetchUserIn
 // Sample data
 
 const chartConfig = {
-  visitors: {
-    label: "Visitors",
+  amount: {
+    label: "Amount",
   },
-  income: {
-    label: "Income",
+  savings: {
+    label: "Savings",
     color: "#32CD32",
   },
-  expense: {
-    label: "Expense",
+  debts: {
+    label: "Debts",
     color: "#FF0000",
   },
 } satisfies ChartConfig
 
-const IncomeExpenseAreaChart = ({ userID }: AreaChartProps) => {
+const SavingsDebtAreaChart = ({ userID }: AreaChartProps) => {
 
   const[isLoading, setIsLoading] = useState(false);
-  const [userTransactionsData, setUserTransactionsData] = useState<Transaction[]>([]);
+  const [userSavingsTransactionsData, setUserSavingsTransactionsData] = useState<Savings[]>([]);
+  const [userDebtsTransactionsData, setUserDebtsTransactionsData] = useState<Debt[]>([]);
+  const [userRepaymentsTransactionsData, setUserRepaymentsTransactionsData] = useState<Repayment[]>([]);
   const [userTransactionsChartData, setUserTransactionsChartData] = useState<ChartDataItem[]>([]);
   const [timeRange, setTimeRange] = useState("90d")
 
   useEffect(() => {
-    const fetchUserTransactions = async (loggedInUserID: string) => {
+    const fetchUserSavingsTransactions = async (loggedInUserID: string) => {
       setIsLoading(true);
         if (loggedInUserID) {
           console.log('Logged In User ID Use Effect', loggedInUserID);
             try {
-                const response = await axios.get('/api/transaction/income-expense/fetchUserTransactions', {
+                const response = await axios.get('/api/transaction/savings/fetchUserTransactions', {
                     params: { userID: loggedInUserID }
                 });
 
                 console.log('User Transactions Response Function:', response);
-                console.log('User Transactions Data Function:', response.data.userTransactionsData); 
-                if(response.data.userTransactionsData){
-                  setUserTransactionsData(response.data.userTransactionsData); 
+                console.log('User Transactions Data Function:', response.data.userSavingsTransactionsData); 
+                if(response.data.userSavingsTransactionsData){
+                  setUserSavingsTransactionsData(response.data.userSavingsTransactionsData); 
                 }else{
                   console.log("User Transactions Data Retrieval Failed");
                 }
@@ -84,20 +86,97 @@ const IncomeExpenseAreaChart = ({ userID }: AreaChartProps) => {
 
     if (userID) {
         console.log('User ID AC:', userID);
-        fetchUserTransactions(userID);
+        fetchUserSavingsTransactions(userID);
     } else {
         console.log('No Logged In User ID');
         setIsLoading(false);
     }
   }, []); // Ensure only runs once
 
-  console.log('User Transactions Data AC:', userTransactionsData);
+  useEffect(() => {
+    const fetchUserSavingsTransactions = async (loggedInUserID: string) => {
+      setIsLoading(true);
+        if (loggedInUserID) {
+          console.log('Logged In User ID Use Effect', loggedInUserID);
+            try {
+                const response = await axios.get('/api/transaction/savings/fetchUserTransactions', {
+                    params: { userID: loggedInUserID }
+                });
+
+                console.log('User Transactions Response Function:', response);
+                console.log('User Transactions Data Function:', response.data.userDebtTransactionsData); 
+                if(response.data.userDebtTransactionsData){
+                  setUserDebtsTransactionsData(response.data.userDebtTransactionsData); 
+                }else{
+                  console.log("User Transactions Data Retrieval Failed");
+                }
+                // return {userTransactionsData: response.data.userTransactionData};
+            } catch (error) {
+                console.error("Error fetching user transactions:", error);
+            }finally{
+                setIsLoading(false);
+            }
+        } else {
+            console.log("Error: No logged-in user ID found in session storage.");
+            setIsLoading(false);
+        }
+    };
+
+    if (userID) {
+        console.log('User ID AC:', userID);
+        fetchUserSavingsTransactions(userID);
+    } else {
+        console.log('No Logged In User ID');
+        setIsLoading(false);
+    }
+  }, []); // Ensure only runs once
+
+  useEffect(() => {
+    const fetchUserRepaymentTransactions = async (loggedInUserID: string) => {
+      setIsLoading(true);
+        if (loggedInUserID) {
+          console.log('Logged In User ID Use Effect', loggedInUserID);
+            try {
+                const response = await axios.get('/api/transaction/repayment/fetchUserTransactions', {
+                    params: { userID: loggedInUserID }
+                });
+
+                console.log('User Transactions Response Function:', response);
+                console.log('User Transactions Data Function:', response.data.userRepaymentTransactionsData); 
+                if(response.data.userRepaymentTransactionsData){
+                  setUserRepaymentsTransactionsData(response.data.userRepaymentTransactionsData); 
+                }else{
+                  console.log("User Transactions Data Retrieval Failed");
+                }
+                // return {userTransactionsData: response.data.userTransactionData};
+            } catch (error) {
+                console.error("Error fetching user transactions:", error);
+            }finally{
+                setIsLoading(false);
+            }
+        } else {
+            console.log("Error: No logged-in user ID found in session storage.");
+            setIsLoading(false);
+        }
+    };
+
+    if (userID) {
+        console.log('User ID AC:', userID);
+        fetchUserRepaymentTransactions(userID);
+    } else {
+        console.log('No Logged In User ID');
+        setIsLoading(false);
+    }
+  }, []); // Ensure only runs once
+
+  console.log('User Savings Transaction Data AC:', userSavingsTransactionsData);
+  console.log('User Debts Transaction Data AC:', userDebtsTransactionsData);
 
   if (isLoading) {
       return <p>Loading...</p>; // Show loading message while fetching data
   }
 
-  if (!userTransactionsData || userTransactionsData.length === 0) {
+  if (!userSavingsTransactionsData || userSavingsTransactionsData.length === 0 || !userDebtsTransactionsData || userDebtsTransactionsData.length === 0) {
       return <p>No transactions found</p>; // Show a message if no data is found
   }
 
@@ -145,21 +224,20 @@ const IncomeExpenseAreaChart = ({ userID }: AreaChartProps) => {
   //   return acc;
   // }, []);
 
-  const transformedData = userTransactionsData.reduce((acc: AreaChartDataItem[], curr) => {
-    const date = new Date(curr.dateOfTransaction).toISOString().split("T")[0]; // Group by date (YYYY-MM-DD)
+  const transformedData = userRepaymentsTransactionsData.reduce((acc: AreaChartSavingsDebtstDataItem[], curr) => {
+    const date = new Date(curr.dateOfRepayment).toISOString().split("T")[0]; // Group by date (YYYY-MM-DD)
     
     // Find or create the date entry
     let entry = acc.find(item => item.date === date);
     if (!entry) {
-      entry = { date, income: 0, expense: 0 };
+      entry = { date, savings: 0, debts: 0};
       acc.push(entry);
     }
   
-    // Add to income or expense
-    if (curr.transactionType === "Income") {
-      entry.income += curr.totalAmountOfTransaction;
-    } else if (curr.transactionType === "Expense") {
-      entry.expense += curr.totalAmountOfTransaction;
+    if (curr.repaymentCategory === "Savings") {
+      entry.savings += curr.repaymentAmount;
+    } else if (curr.repaymentCategory === "Debt") {
+      entry.debts += curr.repaymentAmount;
     }
   
     return acc;
@@ -206,9 +284,8 @@ const IncomeExpenseAreaChart = ({ userID }: AreaChartProps) => {
     return itemDate >= startDate
   })
 
-  const totalIncome = filteredData.reduce((sum, item) => sum + item.income, 0);
-  const totalExpense = filteredData.reduce((sum, item) => sum + item.expense, 0);
-  const remainingTotal = totalIncome-totalExpense;
+  const totalSavings = filteredData.reduce((sum, item) => sum + item.savings, 0);
+  const totalDebts = filteredData.reduce((sum, item) => sum + item.debts, 0);
 
   return (
     <Card className="w-[975px] m-6">
@@ -319,19 +396,19 @@ const IncomeExpenseAreaChart = ({ userID }: AreaChartProps) => {
         </ChartContainer>
         <div className="items-center justify-center gap-4">
           <div className="mb-1 text-lg font-bold">Total</div>
-          <div className="mb-2">Total Income: {formatAmount(totalIncome)}</div>
-          <div className="mb-2">Total Expense: {formatAmount(totalExpense)}</div>
+          <div className="mb-2">Total Income: {formatAmount(totalSavings)}</div>
+          <div className="mb-2">Total Expense: {formatAmount(totalDebts)}</div>
 
-          <div>
+          {/* <div>
             Remaining Total: {" "}
             <span className={`font-bold ${remainingTotal>= 0 ? "text-green-600": "text-red-600"}`}>
               {formatAmount(remainingTotal)}
             </span>
-          </div>
+          </div> */}
         </div>
       </CardContent>
     </Card>
   )
 }
 
-export default IncomeExpenseAreaChart
+export default SavingsDebtAreaChart

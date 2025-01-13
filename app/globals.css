@@ -1060,8 +1060,8 @@
     justify-content: center;
     border-radius: 50%; /* Circle shape */
     background-color: blue;
-    width: 60px;
-    height: 60px;
+    min-width: 60px;
+    min-height: 60px;
     color: white;
     cursor: pointer;
     transition: all 0.3s ease;

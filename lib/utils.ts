@@ -319,6 +319,35 @@ export const loanTransactionFormSchema = () => z.object({
   loanProofOfURL: z.string().default('Empty'),
 });
 
+export const savingsTransactionFormSchema = () => z.object({
+  savingsName: z.string().min(1, {message: 'Name is required'}),
+  savingsCategory: z.string().min(1, {message: 'Category is required'}),
+  dateOfSavings: z.date().default(new Date()),
+  savingsDescription: z.string().min(1, {message: 'Description is required'}),
+  savingsCurrency: z.enum(currencyCodes),
+  savingsTotalAmount: z.preprocess(
+    (value) => parseFloat(value as string),
+    z.number().positive("Must be a positive number").default(0)
+  ),
+  savingsGoalTermYear: z.preprocess(
+    (value) => parseFloat(value as string),
+    z.number().positive("Must be a positive number").default(0)
+  ),
+  savingsGoalTermMonth: z.preprocess(
+    (value) => parseFloat(value as string),
+    z.number().positive("Must be a positive number").default(0)
+  ),
+  savingsGoalDepositAmount: z.preprocess(
+    (value) => parseFloat(value as string),
+    z.number().positive("Must be a positive number").default(0)
+  ),
+  savingsDepositAmountType: z.enum(['Daily', 'Weekly', 'Monthly', 'Yearly']).default('Monthly'),
+  receiverID: z.string().min(1, {message: 'Receiver ID is required'}),
+  senderID: z.string().min(1, {message: 'Sender ID is required'}),
+  savingsStatus: z.enum(['Not Saved', 'Pending', 'Saved Full']).default('Not Saved'),
+  savingsProofOfURL: z.string().default('Empty'),
+});
+
 export const debtTransactionFormSchema = () => z.object({
   // transactionID: type === 'edit' ? z.string().min(1, {message: 'Old Transaction ID is required'}) : z.string().optional(),
   debtName: z.string().min(1, {message: 'Name is required'}),
@@ -356,7 +385,8 @@ export const repaymentTransactionFormSchema = () => z.object({
   receiverID: z.string().min(1, {message: 'Receiver ID is required'}),
   dateOfRepayment: z.date().default(new Date()),
   typeOfRepayment: z.enum(['Normal', 'Extra']).default('Normal'),
-  repaymentStatus: z.enum(['Not Paid', 'Pending', 'Paid']).default('Not Paid'),
+  repaymentCategory: z.enum(['Savings', 'Debt']).default('Savings'),
+  repaymentStatus: z.enum(['Not Deposited', 'Pending', 'Deposited']).default('Not Deposited'),
   repaymentCurrency: z.enum(currencyCodes),
   repaymentAmount: z.preprocess(
     (value) => parseFloat(value as string), 
@@ -364,3 +394,5 @@ export const repaymentTransactionFormSchema = () => z.object({
   ),
   repaymentProofOfURL: z.string().default('Empty')
 });
+
+

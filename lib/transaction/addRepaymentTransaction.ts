@@ -17,6 +17,7 @@ export const addRepaymentTransaction = async (
   receiverID: string,
   dateOfRepayment: Date,
   typeOfRepayment: string,
+  repaymentCategory: string,
   repaymentStatus: string,
   repaymentCurrency: string,
   repaymentAmount: string,
@@ -29,6 +30,7 @@ export const addRepaymentTransaction = async (
       receiverID,
       dateOfRepayment,
       typeOfRepayment,
+      repaymentCategory,
       repaymentStatus,
       repaymentCurrency,
       repaymentAmount,
@@ -41,6 +43,7 @@ export const addRepaymentTransaction = async (
       ${receiverID}
       ${dateOfRepayment}
       ${typeOfRepayment}
+      ${repaymentCategory}
       ${repaymentStatus}
       ${repaymentCurrency}
       ${repaymentAmount}
@@ -56,7 +59,7 @@ export const addRepaymentTransaction = async (
 
     console.log('Database is connected');
     try {
-      const existingLoanTransaction = await Repayment.findOne({ 
+      const existingRepaymentTransaction = await Repayment.findOne({ 
         userID,
         debtID, 
         senderID,
@@ -64,7 +67,7 @@ export const addRepaymentTransaction = async (
         dateOfRepayment
        });
        console.log('Duplication Process Conducted');
-      if (existingLoanTransaction) {
+      if (existingRepaymentTransaction) {
         console.log('Duplicate transaction found');
         return { result: false, message: 'Transaction is already in Database' };
       }
@@ -85,6 +88,7 @@ export const addRepaymentTransaction = async (
           receiverID: receiverID,
           dateOfRepayment: dateOfRepayment,
           typeOfRepayment: typeOfRepayment,
+          repaymentCategory: repaymentCategory,
           repaymentStatus: repaymentStatus,
           repaymentCurrency: repaymentCurrency,
           repaymentAmount: repaymentAmount,

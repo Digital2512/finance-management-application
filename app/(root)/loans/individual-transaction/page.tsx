@@ -17,7 +17,7 @@ const individualLoanTransactionDetails = ({type} : IndividualLoanTransactionDeta
     {loanTransactionID ? (
       <IndividualLoanTransactionForm type='edit' oldLoanTransactionID={loanTransactionID}/>
     ):(
-    <IndividualLoanTransactionForm type='add'></IndividualLoanTransactionForm>
+    <IndividualLoanTransactionForm type='add'/>
     )
     }
     </>

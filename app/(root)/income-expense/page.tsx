@@ -3,7 +3,7 @@
 import TransactionsTable from '@/components/ui/TransactionsIncomeExpenseTable'
 import React, {useState, useEffect} from 'react'
 import axios from 'axios';
-import DoughnutChartOverviewTextComponent from "@/components/ui/DoughnutChartOverviewText";
+import DoughnutChartOverviewTextComponent from "@/components/ui/DoughnutChartTextOverview";
 import IncomeExpenseAreaChart from '@/components/ui/IncomeExpenseAreaChart';
 import FloatingButton from '@/components/ui/FloatingButton';
 
@@ -13,10 +13,11 @@ const IncomeExpensePage = () => {
 
   //find new icons
   const options = [
-    { label: 'Add Transactions', value: 'addTransactions', route: '/income-expense/individual-transaction-details', icon: "/icons/logo-wallet-blue.svg"},
-    { label: 'Add Loans', value: 'addLoans', route: '/loans', icon: "/icons/logo-wallet-blue.svg"},
-    { label: 'Add Debts', value: 'addDebts', route: '/debts', icon: "/icons/logo-wallet-blue.svg"},
-  ];
+    {label: 'Add Repayment', value: 'addRepaymentTransactions', route: '/debts', icon: "/icons/logo-wallet-blue.svg"},
+    {label: 'Add Debt', value: 'addDebtsTransactions', route: '/debts', icon: "/icons/logo-wallet-blue.svg"},
+    {label: 'Add Savings', value: 'addSavingsTransactions', route: '/savings', icon: "/icons/logo-wallet-blue.svg"},
+    {label: 'Add Income and Expense Transactions', value: 'addIncomeExpenseTransactions', route: '/income-expense/individual-transaction', icon: "/icons/logo-wallet-blue.svg"},
+  ]
 
   return (
     <div className='ml-6'>

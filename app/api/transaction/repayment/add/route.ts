@@ -15,6 +15,7 @@ export async function POST(request: NextRequest) {
         receiverID,
         dateOfRepayment,
         typeOfRepayment,
+        repaymentCategory,
         repaymentStatus,
         repaymentCurrency,
         repaymentAmount,
@@ -27,6 +28,7 @@ export async function POST(request: NextRequest) {
       receiverID: ${receiverID}
       dateOfRepayment: ${dateOfRepayment}
       typeOfRepayment: ${typeOfRepayment}
+      repaymentCategory: ${repaymentCategory}
       repaymentStatus: ${repaymentStatus}
       repaymentCurrency: ${repaymentCurrency}
       repaymentAmount: ${repaymentAmount}
@@ -41,6 +43,7 @@ export async function POST(request: NextRequest) {
       receiverID,
       dateOfRepayment,
       typeOfRepayment,
+      repaymentCategory,
       repaymentStatus,
       repaymentCurrency,
       repaymentAmount,
