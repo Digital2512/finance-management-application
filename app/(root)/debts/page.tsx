@@ -1,5 +1,7 @@
 'use client'
 
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import DoughnutChartOverview from '@/components/ui/DoughnutChartOverview';
 import DoughnutChartTextOverview from '@/components/ui/DoughnutChartTextOverview';
 import FloatingButton from '@/components/ui/FloatingButton';
 import SavingsDebtAreaChart from '@/components/ui/SavingsDebtAreaChart';
@@ -48,9 +50,28 @@ const DebtsPage = () => {
   const loggedInUserID = sessionStorage.getItem('loggedInUserID');
   return (
     <div>
-      {/* <SavingsDebtAreaChart userID={loggedInUserID || ''}/> */}
-      <DoughnutChartTextOverview doughnutChartData={doughnutChartData} doughnutChartPercentageData={doughnutChartPercentageData} doughnutChartDataType='percentage'/>
-      <DoughnutChartTextOverview doughnutChartData={dummyData} doughnutChartDataType='income'/>
+      <Card className='w-[975px] m-6'>
+      <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
+        <div className="grid flex-1 gap-1 text-center sm:text-left">
+          <CardTitle>Income - Expense</CardTitle>
+          <CardDescription>
+            Showing total income-expense ratio for the last 3 months
+          </CardDescription>
+        </div>
+
+        </CardHeader>
+        <CardContent className='max-h-[200px]'>
+          <div className='ml-4 mt-6 mb-6 max-h-[150px]'>
+            <DoughnutChartOverview doughnutChartData={doughnutChartData} doughnutChartPercentageData={doughnutChartPercentageData} doughnutChartDataType='percentage'/>
+          </div>
+        </CardContent>
+      </Card>
+      {/* <DoughnutChartOverview doughnutChartData={dummyData} doughnutChartDataType='income'/> */}
+      {/* <div className='page-chart-overview-box'>
+        <div className='max-h-[130px]'>
+        <DoughnutChartOverview doughnutChartData={doughnutChartData}/>
+        </div>
+      </div> */}
       <TransactionsDebtTable userID={loggedInUserID || ''}/>
       <TransactionsRepaymentTable userID={loggedInUserID || ''}/>
       <FloatingButton floatingButtonOptions={options}/>

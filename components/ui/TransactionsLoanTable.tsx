@@ -98,7 +98,7 @@ const TransactionsLoanTable = ({userID} : TransactionsTableProps) => {
     }
 
     if (!userTransactionsData || userTransactionsData.length === 0) {
-        return <p>No transactions found</p>; // Show a message if no data is found
+        return <p className="ml-6">No transactions found</p>; // Show a message if no data is found
     }
 
     const onDelete = async (transactionID: string) => {
@@ -150,7 +150,7 @@ const TransactionsLoanTable = ({userID} : TransactionsTableProps) => {
         // }
 
     return(
-        <Table className="ml-6">
+        <Table className="ml-6 max-w-[1100px]">
             <TableHeader>
                 <TableRow>
                     <TableHead className="px-2">Loan Transaction ID</TableHead>

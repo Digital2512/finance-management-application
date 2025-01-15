@@ -98,7 +98,7 @@ const TransactionsIncomeExpenseTable = ({userID} : TransactionsTableProps) => {
     }
 
     if (!userTransactionsData || userTransactionsData.length === 0) {
-        return <p>No transactions found</p>; // Show a message if no data is found
+        return <p className="ml-6">No transactions found</p>; // Show a message if no data is found
     }
 
     const onDelete = async (transactionID: string) => {
@@ -150,7 +150,8 @@ const TransactionsIncomeExpenseTable = ({userID} : TransactionsTableProps) => {
         // }
 
     return(
-        <Table className="ml-6">
+        <div className="ml-6 max-w-[1115px]">
+        <Table className="mt-2 mb-2 max-w-[1050px]">
             <TableHeader>
                 <TableRow>
                     <TableHead className="px-2">Transaction ID</TableHead>
@@ -201,7 +202,7 @@ const TransactionsIncomeExpenseTable = ({userID} : TransactionsTableProps) => {
                                 {t.transactionType}
                             </TableCell>
 
-                            <TableCell className="pl-2 pr-10 capitalize min-w-24 max-md:hidden">
+                            <TableCell className="pl-2 pr-5 capitalize min-w-24 max-md:hidden">
                                 <CategoryBadge category={t.transactionCategory} />
                             </TableCell>
 
@@ -213,7 +214,7 @@ const TransactionsIncomeExpenseTable = ({userID} : TransactionsTableProps) => {
                                 {t.receiverID}
                             </TableCell>
 
-                            <TableCell className="pl-2 pr-10 max-md:hidden">
+                            <TableCell className="pl-2 max-md:hidden">
                                 <button onClick={() => onEdit(t._id)} className="text-blue-500 hover:underline mr-2">Edit</button>
                                 <button onClick={() => onDelete(t._id)} className="text-blue-500 hover:underline mr-2">Delete</button>
                             </TableCell>
@@ -222,6 +223,7 @@ const TransactionsIncomeExpenseTable = ({userID} : TransactionsTableProps) => {
                 })}
             </TableBody>
         </Table>
+        </div>
     )
 }
 export default TransactionsIncomeExpenseTable

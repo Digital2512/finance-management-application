@@ -649,7 +649,7 @@ declare type ChartDataItem = {
   amount: number;
 }
 
-declare type AreaCharIncomeExpensetDataItem = {
+declare type AreaChartIncomeExpenseDataItem = {
   date: string;
   income: number;
   expense: number;

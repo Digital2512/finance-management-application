@@ -145,7 +145,7 @@ const IncomeExpenseAreaChart = ({ userID }: AreaChartProps) => {
   //   return acc;
   // }, []);
 
-  const transformedData = userTransactionsData.reduce((acc: AreaChartDataItem[], curr) => {
+  const transformedData = userTransactionsData.reduce((acc: AreaChartIncomeExpenseDataItem[], curr) => {
     const date = new Date(curr.dateOfTransaction).toISOString().split("T")[0]; // Group by date (YYYY-MM-DD)
     
     // Find or create the date entry

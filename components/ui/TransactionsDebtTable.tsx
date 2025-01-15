@@ -98,7 +98,7 @@ const TransactionsDebtTable = ({userID} : TransactionsTableProps) => {
     }
 
     if (!userTransactionsData || userTransactionsData.length === 0) {
-        return <p>No transactions found</p>; // Show a message if no data is found
+        return <p className="ml-6">No transactions found</p>; // Show a message if no data is found
     }
 
     const onDelete = async (transactionID: string) => {
@@ -150,7 +150,7 @@ const TransactionsDebtTable = ({userID} : TransactionsTableProps) => {
         // }
 
     return(
-        <Table className="ml-6">
+        <Table className="ml-6 max-w-[1100px]">
             <TableHeader>
                 <TableRow>
                     <TableHead className="px-2">Debt  Transaction ID</TableHead>
@@ -218,8 +218,12 @@ const TransactionsDebtTable = ({userID} : TransactionsTableProps) => {
                             </TableCell>
 
                             <TableCell className="pl-2 pr-10 max-md:hidden">
-                                <button onClick={() => onEdit(d._id)} className="text-blue-500 hover:underline mr-2">Edit</button>
-                                <button onClick={() => onDelete(d._id)} className="text-blue-500 hover:underline mr-2">Delete</button>
+                                <div>
+                                    <button onClick={() => onEdit(d._id)} className="text-blue-500 hover:underline mr-2">Edit</button>
+                                </div>
+                                <div>
+                                    <button onClick={() => onDelete(d._id)} className="text-blue-500 hover:underline mr-2">Delete</button>
+                                </div>
                             </TableCell>
                         </TableRow>
                     )

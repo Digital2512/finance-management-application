@@ -123,7 +123,7 @@ const DoughnutChartTextOverview = ({
       }
     } satisfies ChartConfig;
     return(
-      <ChartContainer
+      <ChartContainer 
           config={chartPercentageConfig} // Pass the required config
           className="mx-auto aspect-square max-h-[250px]">
           <PieChart>
@@ -265,7 +265,7 @@ const DoughnutChartTextOverview = ({
               innerRadius={60}
               strokeWidth={5}
               // fill={(entry) => entry.fillColor}
-            >
+              >
               {top5CategoriesWithOthers.map((entry, index) => {
                 const key = chartKeys[index] as keyof typeof chartConfig;
                 const configEntry = chartConfig[key];

@@ -71,40 +71,98 @@ const IndividualSavingsTransactionForm = ({ type, oldSavingsTransactionID }: Ind
         },
     });
 
-    // const {watch} = form;
+    const {watch} = form;
 
-    // const loanAmount = String(watch('loanAmount')) || '0';
-    // const interestRate = String(watch('interestRate')) || '0';
-    // const interestRateType = watch('interestRateType') || 'Monthly';
-    // const loanTermYear = String(watch('loanTermYear')) || '0';
-    // const loanTermMonth = String(watch('loanTermMonth')) || '0';
+    const savingsAmount = String(watch('savingsTotalAmount')) || '0';
+    const savingsGoalYear = String(watch('savingsGoalTermYear')) || '0';
+    const savingsGoalMonth = String(watch('savingsGoalTermMonth')) || '0';
+    const savingsGoalDeposit = String(watch('savingsGoalDepositAmount')) || '0';
+    const savingsGoalDepositType = String(watch('savingsDepositAmountType')) || 'Monthly';
 
-    // const loanAmountNumber = parseFloat(loanAmount);
-    // const interestRateNumber = parseFloat(interestRate);    
-    // const loanTermYearNumber = parseFloat(loanTermYear);
-    // const loanTermMonthNumber = parseFloat(loanTermMonth);
+    const savingsAmountNumber = parseFloat(savingsAmount);
+    const savingsGoalYearNumber = parseFloat(savingsGoalYear);
+    const savingsGoalMonthNumber = parseFloat(savingsGoalMonth);
+    const savingsGoalDepositNumber = parseFloat(savingsGoalDeposit);
 
+    const monthlyDepositAmount = useMemo(() => {
+        if(savingsGoalDepositType === 'Yearly'){
+            return savingsGoalDepositNumber / 12;
+        }else if(savingsGoalDepositType === 'Weekly'){
+            return savingsGoalDepositNumber * 4;
+        }else if(savingsGoalDepositType === 'Daily'){
+            return savingsGoalDepositNumber * 30;
+        }else{
+            return savingsGoalDepositNumber;
+        }
+    }, [savingsGoalDepositType, savingsGoalDepositNumber])
 
-    // const totalLoanTermYears = useMemo(() => {
-    //     return loanTermYearNumber + loanTermMonthNumber / 12;
-    // }, [loanTermMonthNumber, loanTermYearNumber])
+    const goalTermMonthConversion = useMemo(() => {
+        if(savingsGoalYearNumber === 0 || savingsGoalMonthNumber === 0){
+            return 0
+        }else{
+            const goalYearToMonth = savingsGoalYearNumber / 12;
+            const totalGoalTermMonth = goalYearToMonth + savingsGoalMonthNumber;
+            return totalGoalTermMonth
+        }
+    }, [savingsGoalYearNumber, savingsGoalMonthNumber])
 
-    // const totalInterest = useMemo(() => {
-    //     if(interestRateType === 'Yearly') {
-    //         return loanAmountNumber * (interestRateNumber / 100) * totalLoanTermYears;
-    //     }else if(interestRateType === 'Monthly'){
-    //         return loanAmountNumber * (interestRateNumber / 100) * totalLoanTermYears * 12;
-    //     }else if(interestRateType === 'Weekly'){
-    //         return loanAmountNumber * (interestRateNumber / 100) * totalLoanTermYears * 52;
-    //     }else if(interestRateType === 'Daily'){
-    //         return loanAmountNumber * (interestRateNumber / 100) * totalLoanTermYears * 365;
-    //     }
-    //     return 0;
-    // }, [loanAmountNumber, interestRateNumber, interestRateType, totalLoanTermYears]);
+    const {numberOfDeposits, remainderAmount, totalDeposited, minimumDeposit, numberOfMonthlyDeposit} = useMemo(() => {
+        if(savingsAmountNumber <= 0 || savingsGoalDepositNumber <= 0){
+            return{
+                numberOfDeposits: 0,
+                remainderAmount: 0,
+                totalDeposited: 0,
+                minimumDeposit: 0,
+            }
+        }
 
-    // const totalAmountAfter = useMemo(() => {
-    //     return loanAmountNumber + totalInterest
-    // }, [loanAmountNumber, totalInterest]);
+        console.log('Amount: ', savingsGoalDepositNumber);
+        console.log('Monthly Deposit: ', monthlyDepositAmount);
+
+        const minimumDeposit = savingsAmountNumber / goalTermMonthConversion;
+
+        if(savingsGoalDepositNumber < minimumDeposit){
+            return{
+                numberOfDeposits: 0,
+                numberOfMonthlyDeposit: 0,
+                totalDeposited: 0,
+                remainderAmount:0,
+                minimumDeposit
+            }
+        }else{
+            const numberOfDepositExact = savingsAmountNumber / savingsGoalDepositNumber;
+            console.log('Number of Deposits Exact: ', numberOfDepositExact);
+
+            const numberOfMonthlyDepositExact = savingsAmountNumber / monthlyDepositAmount;
+            console.log('Number of Monthly Deposits Exact: ', numberOfMonthlyDepositExact);
+            
+            const hasExactRemainder = numberOfDepositExact % 1 !==0;
+            const hasMonthlyRemainder = numberOfMonthlyDepositExact % 1 !==0;
+
+            const numberOfMonthlyDeposit = hasMonthlyRemainder ? Math.ceil(numberOfMonthlyDepositExact) : numberOfMonthlyDepositExact
+
+            const numberOfDeposits = hasExactRemainder ? Math.ceil(numberOfDepositExact) : numberOfDepositExact;
+            console.log('Number of Deposits: ', numberOfDeposits);
+
+            let totalDeposited = 0;
+
+            totalDeposited = savingsAmountNumber;
+
+            console.log('Total Deposited: ', totalDeposited);
+
+            let remainderAmount = 0;
+
+            if(hasExactRemainder){
+                const amountBeforeRemainder = savingsGoalDepositNumber * (numberOfDeposits - 1);
+                console.log('Amount before Remainder: ', amountBeforeRemainder);
+
+                remainderAmount = totalDeposited - amountBeforeRemainder;
+                console.log('Remainder: ', remainderAmount);
+            }
+
+            return {numberOfDeposits, totalDeposited, remainderAmount, minimumDeposit: 0, numberOfMonthlyDeposit}
+        }
+    }, [savingsAmountNumber, savingsGoalDepositNumber, goalTermMonthConversion, monthlyDepositAmount])
 
     useEffect(() => {
         const fetchTransactionData = async (oldSavingsTransactionID: string) => {
@@ -349,6 +407,27 @@ const IndividualSavingsTransactionForm = ({ type, oldSavingsTransactionID }: Ind
                             ]}/>                            
                             <CustomSavingsTransactionFormInput control={form.control} typeInfo='savingsProofOfURL' labelInfo='Savings Proof of URL' placeholderInfo='Enter your Savings Proof of URL' formType='edit'/>
 
+                            <div className='quick-calculation-box'>
+                                <h3>Quick Calculation</h3>
+                                <p>Savings Amount: ${savingsAmountNumber.toFixed(2)}</p>
+                                <p>Regular Deposit : ${savingsGoalDepositNumber.toFixed(2)} ({savingsGoalDepositType})</p>
+                                <p>Monthly Payment: ${monthlyDepositAmount.toFixed(2)}</p>
+                                <p>Number of Deposits: {numberOfDeposits} ({savingsGoalDepositType})</p>
+                                <p>Number of Monthly Deposits: {numberOfMonthlyDeposit}</p>
+                                <p>Last Payment Total: ${remainderAmount.toFixed(2)}</p>
+                                {minimumDeposit > 0 ? 
+                                (
+                                    <>
+                                        <p>Deposit is not enough</p>
+                                        <p>Minimum Deposit: ${minimumDeposit.toFixed(2)}</p>
+
+                                        <p>If you are unable to raise the deposit, consider raising the goal term</p>
+                                    </>
+                                ): (
+                                    <p>Deposit is enough</p>
+                                )}
+                                <p>Total Deposited: ${totalDeposited.toFixed(2)}</p>
+                            </div>
                         </div>
                         </div>
                         </div>
@@ -420,6 +499,27 @@ const IndividualSavingsTransactionForm = ({ type, oldSavingsTransactionID }: Ind
                             ]}/>                            
                             <CustomSavingsTransactionFormInput control={form.control} typeInfo='savingsProofOfURL' labelInfo='Savings Proof of URL' placeholderInfo='Enter your Savings Proof of URL' formType='add'/>
 
+                            <div className='quick-calculation-box'>
+                                <h3>Quick Calculation</h3>
+                                <p>Savings Amount: ${savingsAmountNumber.toFixed(2)}</p>
+                                <p>Regular Deposit : ${savingsGoalDepositNumber.toFixed(2)} ({savingsGoalDepositType})</p>
+                                <p>Monthly Payment: ${monthlyDepositAmount.toFixed(2)}</p>
+                                <p>Number of Deposits: {numberOfDeposits} ({savingsGoalDepositType})</p>
+                                <p>Number of Monthly Deposits: {numberOfMonthlyDeposit}</p>
+                                <p>Last Payment Total: ${remainderAmount.toFixed(2)}</p>
+                                {minimumDeposit > 0 ? 
+                                (
+                                    <>
+                                        <p>Deposit is not enough</p>
+                                        <p>Minimum Deposit: ${minimumDeposit.toFixed(2)}</p>
+
+                                        <p>If you are unable to raise the deposit, consider raising the goal term</p>
+                                    </>
+                                ): (
+                                    <p>Deposit is enough</p>
+                                )}
+                                <p>Total Deposited: ${totalDeposited.toFixed(2)}</p>
+                            </div>
                         </div>
                         </div>
                         </div>
