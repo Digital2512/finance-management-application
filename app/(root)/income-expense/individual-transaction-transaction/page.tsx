@@ -1,7 +1,7 @@
 
 'use client'
 
-import IndividualTransactionForm from '@/components/ui/IndividualTransactionForm'
+import IndividualTransactionForm from '@/components/ui/IndividualIncomeExpenseTransactionForm'
 import React from 'react'
 import { useSearchParams } from 'next/navigation'
 

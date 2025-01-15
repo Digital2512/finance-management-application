@@ -12,6 +12,12 @@ export const sidebarLinks = [
     label: "Income/Expense",
   },
   {
+    imgURL: "/icons/savings-icon-black.svg",
+    chosenImgURL: "/icons/savings-icon-white.svg",
+    route: "/savings",
+    label: "Savings",
+  },
+  {
     imgURL: "/icons/loan-icon-black.svg",
     chosenImgURL: "/icons/loan-icon-white.svg",
     route: "/loans",

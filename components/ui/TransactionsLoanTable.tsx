@@ -48,13 +48,13 @@ interface TransactionsTableProps {
   }
 
 const TransactionsLoanTable = ({userID} : TransactionsTableProps) => {
-    const [userTransactionsData, setUserTransactionsData] = useState<Transaction[]>([]);
-    const [transactionData, setTransactionsData] = useState<Transaction>();
+    const [userTransactionsData, setUserTransactionsData] = useState<Loan[]>([]);
+    const [transactionData, setTransactionsData] = useState<Loan>();
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
 
     const onEdit = (transactionID: string) => {
-        router.push(`/income-expense/individual-transaction-details?transactionID=${transactionID}`);
+        router.push(`/loans/individual-loans-transaction-details?loanTransactionID=${transactionID}`);
     }
 
     useEffect(() => {
@@ -63,13 +63,13 @@ const TransactionsLoanTable = ({userID} : TransactionsTableProps) => {
             console.log('Logged In User ID Use Effect', loggedInUserID);
             if (loggedInUserID) {
                 try {
-                    const response = await axios.get('/api/transaction/fetchUserLoanTransactions', {
+                    const response = await axios.get('/api/transaction/loan/fetchUserTransactions', {
                         params: { userID: loggedInUserID }
                     });
     
-                    console.log('User Transactions Response Function:', response);
-                    console.log('User Transactions Data Function:', response.data.userLoanTransactionsData); 
-                    setUserTransactionsData(response.data.userTransactionsData); 
+                    console.log('User Loan Transactions Response Function:', response);
+                    console.log('User Loan Transactions Data Function:', response.data.userLoanTransactionsData); 
+                    setUserTransactionsData(response.data.userLoanTransactionsData); 
                     // return {userTransactionsData: response.data.userTransactionData};
                 } catch (error) {
                     console.error("Error fetching user loan transactions:", error);
@@ -98,7 +98,7 @@ const TransactionsLoanTable = ({userID} : TransactionsTableProps) => {
     }
 
     if (!userTransactionsData || userTransactionsData.length === 0) {
-        return <p>No transactions found</p>; // Show a message if no data is found
+        return <p className="ml-6">No transactions found</p>; // Show a message if no data is found
     }
 
     const onDelete = async (transactionID: string) => {
@@ -106,7 +106,7 @@ const TransactionsLoanTable = ({userID} : TransactionsTableProps) => {
         console.log('Transaction Use Effect: ', transactionID);
             if (transactionID) {
                 try {
-                    const response = await axios.post('/api/transaction/delete', {transactionID: transactionID});
+                    const response = await axios.post('/api/transaction/loan/delete', {transactionID: transactionID});
 
                     // console.log('Delete Transactions Response Function:', response);
                     // console.log('Delete Transactions Response Function Transaction ID:', response.data.deleteTransactionID);
@@ -150,72 +150,75 @@ const TransactionsLoanTable = ({userID} : TransactionsTableProps) => {
         // }
 
     return(
-        <Table className="ml-6">
+        <Table className="ml-6 max-w-[1100px]">
             <TableHeader>
                 <TableRow>
-                    <TableHead className="px-2">Transaction ID</TableHead>
+                    <TableHead className="px-2">Loan Transaction ID</TableHead>
                     <TableHead className="px-2">Amount</TableHead>
+                    <TableHead className="px-2">Interest Rate</TableHead>
                     <TableHead className="px-2">Status</TableHead>
-                    <TableHead className="px-2">Date</TableHead>
-                    <TableHead className="px-2 max-md:hidden">Type</TableHead>
+                    <TableHead className="px-2 max-md:hidden">Type Of Interest</TableHead>
                     <TableHead className="px-2 max-md:hidden">Category</TableHead>
                     <TableHead className="px-2 max-md:hidden">Receiver ID</TableHead>
                     <TableHead className="px-2 max-md:hidden">Sender ID</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {userTransactionsData.map((t: Transaction) => {
-                    const status = getTransactionStatus (new Date(t.dateOfTransaction))
-                    const amount = formatAmount(t.totalAmountOfTransaction)
+                {userTransactionsData.map((l: Loan) => {
+                    const status = getTransactionStatus (new Date(l.startingDateOfLoan))
+                    const amount = formatAmount(l.loanAmount)
 
-                    const isIncome = t.transactionType === 'Income';
-                    const isExpense = t.transactionType === 'Expense';
+                    const isHighInterest = l.interestRate >= 15;
+                    const isLowInterest = l.interestRate < 15;
+
+                    const isHighCummulative = l.interestRateType === 'Daily' || 'Weekly';
+                    const isLowCummulative = l.interestRateType === 'Monthly' || 'Yearly';
+
+                    const expensiveUrgent = isHighInterest && isHighCummulative;
+                    const expensiveNotUrgent = isHighInterest && isLowCummulative;
+                    const notExpensiveUrgent = isLowInterest && isHighCummulative;
+                    const notExpensiveNotUrgent = isLowInterest && isLowCummulative;
 
                     return(
-                        <TableRow key={t._id} className={`${isExpense || amount[0] === '-' ? 'bg-[#FFFBFA]' : 'bg-[#F6FEF9]'} !over:bg-none !border-b-default`}>
+                        <TableRow key={l._id} className="">
                             <TableCell className="max-w-[250px] pl-2 pr-10">
-                                <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-3">
                                     <h1 className="text-14 truncate font-semibold text-[#344054]">
-                                        {removeSpecialCharacters(t.transactionName)}
+                                        {removeSpecialCharacters(l.loanName)}
                                     </h1>
                                 </div>
                             </TableCell>
 
-                            <TableCell className = {`pl-2 pr-10 font-semibold ${
-                                isExpense || amount[0] === '-' ?
-                                'text-[#f04438]' 
-                                : 'text-[#039855]'
-                                }`}>
-                                {isExpense ? `-${amount}` : isIncome ? `+${amount}`: amount}
+                            <TableCell className = {`pl-2 pr-10 font-semibold text-[#f04438]`}>
+                                {formatAmount(l.loanAmount)}
                             </TableCell>
 
-                            <TableCell className="pl-2 pr-10">
-                                <CategoryBadge category={status}/>
+                            <TableCell className = {`pl-2 pr-10`}>
+                                {l.interestRate}%
                             </TableCell>
 
-                            <TableCell className="min-w-32 pl-2 pr-10">
-                                {formatDateTime(new Date(t.dateOfTransaction)).dateTime}
+                            <TableCell className = {`pl-2 pr-10`}>
+                                {l.loanStatus}
                             </TableCell>
 
-                            <TableCell className="pl-2 pr-10 capitalize min-w-24 max-md:hidden">
-                                {t.transactionType}
+                            <TableCell className = {`pl-2 pr-10 max-md:hidden`}>
+                                {l.interestRateType}
+                            </TableCell>
+                            
+                            <TableCell className = {`pl-2 pr-10 max-md:hidden`}>
+                                {l.loanCategory}
                             </TableCell>
 
-                            <TableCell className="pl-2 pr-10 capitalize min-w-24 max-md:hidden">
-                                <CategoryBadge category={t.transactionCategory} />
+                            <TableCell className = {`pl-2 pr-10 max-md:hidden`}>
+                                {l.receiverID}
                             </TableCell>
 
+                            <TableCell className = {`pl-2 pr-10 max-md:hidden`}>
+                                {l.senderID}
+                            </TableCell>
                             <TableCell className="pl-2 pr-10 max-md:hidden">
-                                {t.senderID}
-                            </TableCell>
-
-                            <TableCell className="pl-2 pr-10 max-md:hidden">
-                                {t.receiverID}
-                            </TableCell>
-
-                            <TableCell className="pl-2 pr-10 max-md:hidden">
-                                <button onClick={() => onEdit(t._id)} className="text-blue-500 hover:underline mr-2">Edit</button>
-                                <button onClick={() => onDelete(t._id)} className="text-blue-500 hover:underline mr-2">Delete</button>
+                                <button onClick={() => onEdit(l._id)} className="text-blue-500 hover:underline mr-2">Edit</button>
+                                <button onClick={() => onDelete(l._id)} className="text-blue-500 hover:underline mr-2">Delete</button>
                             </TableCell>
                         </TableRow>
                     )

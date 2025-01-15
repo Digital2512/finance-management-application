@@ -1,9 +1,17 @@
+'use client'
+
+import IndividualLoanTransactionForm from '@/components/ui/IndividualLoanForm'
+import TransactionsLoanTable from '@/components/ui/TransactionsLoanTable'
+import FloatingButton from '@/components/ui/FloatingButton'
 import React from 'react'
 
-const Loans = () => {
+const LoansPage = () => {
+  const loggedInUserID = sessionStorage.getItem('loggedInUserID');
   return (
-    <div>Loans</div>
+    <div>
+      <TransactionsLoanTable userID={loggedInUserID || ''}></TransactionsLoanTable>
+    </div>
   )
 }
 
-export default Loans
+export default LoansPage

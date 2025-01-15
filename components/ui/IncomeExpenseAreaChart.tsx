@@ -46,7 +46,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-const IncomeExpenseAreaChart = ({ userID }: IncomeExpenseAreaChartProps) => {
+const IncomeExpenseAreaChart = ({ userID }: AreaChartProps) => {
 
   const[isLoading, setIsLoading] = useState(false);
   const [userTransactionsData, setUserTransactionsData] = useState<Transaction[]>([]);
@@ -59,7 +59,7 @@ const IncomeExpenseAreaChart = ({ userID }: IncomeExpenseAreaChartProps) => {
         if (loggedInUserID) {
           console.log('Logged In User ID Use Effect', loggedInUserID);
             try {
-                const response = await axios.get('/api/transaction/fetchUserIncomeExpenseTransactions', {
+                const response = await axios.get('/api/transaction/income-expense/fetchUserTransactions', {
                     params: { userID: loggedInUserID }
                 });
 
@@ -145,7 +145,7 @@ const IncomeExpenseAreaChart = ({ userID }: IncomeExpenseAreaChartProps) => {
   //   return acc;
   // }, []);
 
-  const transformedData = userTransactionsData.reduce((acc: AreaChartDataItem[], curr) => {
+  const transformedData = userTransactionsData.reduce((acc: AreaChartIncomeExpenseDataItem[], curr) => {
     const date = new Date(curr.dateOfTransaction).toISOString().split("T")[0]; // Group by date (YYYY-MM-DD)
     
     // Find or create the date entry

@@ -15,7 +15,7 @@ import "react-datepicker/dist/react-datepicker.css" // Make sure this CSS is imp
 
 // Define the component
 const CustomTransactionFormInput = <FormSchemaType extends z.ZodType<any, any>>(
-  {control, typeInfo, labelInfo, placeholderInfo, formType, optionsGiven, options}: 
+  {control, typeInfo, labelInfo, placeholderInfo, formType, options}: 
   CustomTransactionInputProps<FormSchemaType>) => {
 
   

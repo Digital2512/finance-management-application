@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, {useMemo} from 'react'
 import { useEffect, useState } from "react";
 import Link from 'next/link'
 import Image from 'next/image'
@@ -16,13 +16,15 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import CustomTransactionFormInput from './CustomTransactionFormInput'
-import { transactionFormSchema, authFormSchema } from '@/lib/utils'
+import CustomLoanTransactionFormInput from './CustomLoanTransactionFormInput';
+import { loanTransactionFormSchema } from '@/lib/utils'
 import axios from 'axios'
 import 'react-datepicker/dist/react-datepicker.css';
 import { connectToDatabase } from '@/lib/database'
 import { useRouter } from 'next/navigation'
 import { fetchTransaction } from '@/lib/transaction/fetchTransaction';
+import CustomTransactionFormInput from './CustomTransactionFormInput';
+import { formatAmount } from '@/lib/utils';
 
 interface IndividualTransactionsDetailsProps{
     type: string,
@@ -37,83 +39,79 @@ interface TransactionsIndividualDetails{
     transactionIndividualDetailsAmount: number
 }
 
-const IndividualTransactionForm = ({ type, oldLoanTransactionID }: IndividualTransactionsDetailsProps) => {
+const IndividualLoanTransactionForm = ({ type, oldLoanTransactionID }: IndividualTransactionsDetailsProps) => {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
-    const [transactionIndividualDetails, setTransactionIndividualDetails] = useState<TransactionsIndividualDetails[]>([{
-        transactionIndividualDetailsName: '', 
-        transactionIndividualDetailsDescription: '', 
-        transactionIndividualDetailsType: '', 
-        transactionIndividualDetailsCurrency: '', 
-        transactionIndividualDetailsAmount: 0
-    }])
 
     console.log('Type: ', type);
     console.log('Old Transaction ID: ', oldLoanTransactionID || '');
     // const [errorMessage, setErrorMessage] = useState<string | null>(null);
     // const [user, setUser] = useState<any>(null);
 
-    const formSchema = transactionFormSchema();
-
-    const addTransactionIndividualDetailsRow = () => {
-        setTransactionIndividualDetails([...transactionIndividualDetails, {transactionIndividualDetailsName: '', transactionIndividualDetailsDescription: '', transactionIndividualDetailsType: '', transactionIndividualDetailsCurrency: '', transactionIndividualDetailsAmount: 0}])
-    }
-
-    const deleteTransactionIndividualDetailsRow = (index: number) => {
-        setTransactionIndividualDetails(transactionIndividualDetails.filter((_, i) => i !== index));
-    }
-
-    const handleIndividualTransactionDetailChange = (e: React.ChangeEvent<HTMLInputElement>, index: number, field: keyof TransactionsIndividualDetails, value: string | number) => {
-        if(e){
-            const updatedDetails = transactionIndividualDetails.map((detail, i) => 
-                i === index ? {...detail, [field]: value} : detail
-            );
-                setTransactionIndividualDetails(updatedDetails);
-        }
-    };
+    const formSchema = loanTransactionFormSchema();
 
     // Initialize the form using react-hook-form and Zod resolver
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            transactionName: "",
-            transactionCategory: "",
-            dateOfTransaction: new Date(),
-            transactionDescription: "",
+            loanName: "",
+            loanCategory: "",
+            startingDateOfLoan: new Date(),
+            loanDescription: "",
+            loanCurrency: "USD",
+            loanAmount: 0,
+            loanTermYear: 0,
+            loanTermMonth: 0,
+            interestRate: 0,
+            interestRateType: "Monthly",
             receiverID: "",
             senderID: "",
-            transactionCurrency: "USD",
-            transactionIndividualDetails: [],
-            transactionType: "Expense",
-            transactionStatus: "Not Paid",
-            transactionPlannedCycleType: "One-Time",
-            transactionPlannedCycle: "None",
-            transactionPlannedCycleDate: new Date(),
-            transactionProofOfURL: "Empty",
-            totalAmountOfTransaction: 0
-            // username: "",
-            // email: "",
-            // password: "",
-            // firstName: "",
-            // lastName: "",
-            // addressLine1: "",
-            // addressLine2: "",
-            // addressLine3: "",
-            // city: "",
-            // state: "",
-            // postalCode: "",
-            // dateOfBirth: new Date(), 
-            // country: "",
-            // selectedPlan: ""
+            loanStatus: "Not Paid",
+            loanProofOfURL: "Empty",
         },
     });
+
+    const {watch} = form;
+
+    const loanAmount = String(watch('loanAmount')) || '0';
+    const interestRate = String(watch('interestRate')) || '0';
+    const interestRateType = watch('interestRateType') || 'Monthly';
+    const loanTermYear = String(watch('loanTermYear')) || '0';
+    const loanTermMonth = String(watch('loanTermMonth')) || '0';
+
+    const loanAmountNumber = parseFloat(loanAmount);
+    const interestRateNumber = parseFloat(interestRate);    
+    const loanTermYearNumber = parseFloat(loanTermYear);
+    const loanTermMonthNumber = parseFloat(loanTermMonth);
+
+
+    const totalLoanTermYears = useMemo(() => {
+        return loanTermYearNumber + loanTermMonthNumber / 12;
+    }, [loanTermMonthNumber, loanTermYearNumber])
+
+    const totalInterest = useMemo(() => {
+        if(interestRateType === 'Yearly') {
+            return loanAmountNumber * (interestRateNumber / 100) * totalLoanTermYears;
+        }else if(interestRateType === 'Monthly'){
+            return loanAmountNumber * (interestRateNumber / 100) * totalLoanTermYears * 12;
+        }else if(interestRateType === 'Weekly'){
+            return loanAmountNumber * (interestRateNumber / 100) * totalLoanTermYears * 52;
+        }else if(interestRateType === 'Daily'){
+            return loanAmountNumber * (interestRateNumber / 100) * totalLoanTermYears * 365;
+        }
+        return 0;
+    }, [loanAmountNumber, interestRateNumber, interestRateType, totalLoanTermYears]);
+
+    const totalAmountAfter = useMemo(() => {
+        return loanAmountNumber + totalInterest
+    }, [loanAmountNumber, totalInterest]);
 
     useEffect(() => {
         const fetchTransactionData = async (oldLoanTransactionID: string) => {
             try {
                 setIsLoading(true);
-                const response = await axios.get('/api/transaction/fetchTransaction', {
-                    params: { transactionID: oldLoanTransactionID }, 
+                const response = await axios.get('/api/transaction/loan/fetchTransaction', {
+                    params: { loanTransactionID: oldLoanTransactionID }, 
                 });
     
                 console.log('Fetch Transaction Response: ', response);
@@ -122,8 +120,7 @@ const IndividualTransactionForm = ({ type, oldLoanTransactionID }: IndividualTra
                 const fetchedData = response.data.existingTransactionData;
                 console.log('Fetched Data: ', fetchedData);
 
-                fetchedData.dateOfTransaction = new Date(fetchedData.dateOfTransaction);
-                fetchedData.transactionPlannedCycleDate = new Date(fetchedData.transactionPlannedCycleDate);
+                fetchedData.startingDateOfLoan = new Date(fetchedData.startingDateOfLoan);
                 console.log('Fetched Data After: ', fetchedData);
 
                 Object.keys(fetchedData).forEach((key) => {
@@ -132,15 +129,6 @@ const IndividualTransactionForm = ({ type, oldLoanTransactionID }: IndividualTra
                         // console.log('Updated form values:', form.watch());
                     }
                 });
-
-                setTransactionIndividualDetails(
-                    fetchedData.transactionIndividualDetails.map((detail: any) => ({
-                        transactionIndividualDetailsName: detail.nameOfTransactionIndividual || "",
-                        transactionIndividualDetailsDescription: detail.descriptionOfTransactionIndividual || "",
-                        // transactionIndividualDetailsType: detail.typeOfTransactionIndividual || "",
-                        // transactionIndividualDetailsCurrency: detail.individualTransactionCurrency || "",
-                        transactionIndividualDetailsAmount: detail.amountOfTransactionIndividual || 0,
-                })));
 
                 // setTransactionData(response.data.existingTransactionData);
             } catch (error) {
@@ -184,97 +172,82 @@ const IndividualTransactionForm = ({ type, oldLoanTransactionID }: IndividualTra
     // Submit handler for form
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
         console.log('Submit button clicked');
-        console.log('Data being sent: Name: ', data.transactionName, 'Category: ', data.transactionCategory);
+        console.log('Data being sent: Name: ', data.loanName, 'Category: ', data.loanCategory);
         setIsLoading(true);
         // setErrorMessage(null);
 
         try {
             if (type === 'add') {
                 console.log('Transaction Addition initiated');
-                console.log('Transaction Individual Details: ', transactionIndividualDetails);
-                const formattedTransactionDetails = transactionIndividualDetails.map(detail => ({
-                    nameOfTransactionIndividual: detail.transactionIndividualDetailsName,
-                    descriptionOfTransactionIndividual: detail.transactionIndividualDetailsDescription,
-                    // typeOfTransactionIndividual: detail.transactionIndividualDetailsType,
-                    amountOfTransactionIndividual: detail.transactionIndividualDetailsAmount,
-                    // individualTransactionCurrency: detail.transactionIndividualDetailsCurrency
-                }));                
+
                 const loggedInUserID = sessionStorage.getItem('loggedInUserID');
 
                 console.log('Logged In User ID: ', loggedInUserID);
 
-                const transactionData = {
+                const loanTransactionData = {
                     userID: loggedInUserID,
-                    transactionName: data.transactionName,
-                    transactionCategory: data.transactionCategory,
-                    dateOfTransaction: data.dateOfTransaction,
-                    transactionDescription: data.transactionDescription,
+                    loanName: data.loanName,
+                    loanCategory: data.loanCategory,
+                    startingDateOfLoan: data.startingDateOfLoan,
+                    loanDescription: data.loanDescription,
+                    loanCurrency: data.loanCurrency,
+                    loanAmount: data.loanAmount,
+                    loanTermYear: data.loanTermYear,
+                    loanTermMonth: data.loanTermMonth,
+                    interestRate: data.interestRate,
+                    interestRateType: data.interestRateType,
                     receiverID: data.receiverID,
                     senderID: data.senderID,
-                    transactionCurrency: data.transactionCurrency,
-                    transactionIndividualDetails: formattedTransactionDetails,
-                    transactionType: data.transactionType,
-                    transactionStatus: data.transactionStatus,
-                    transactionCycleType: data.transactionPlannedCycleType,
-                    transactionPlannedCycle: data.transactionPlannedCycle,
-                    transactionPlannedCycleDate: data.transactionPlannedCycleDate,
-                    transactionProofURL: data.transactionProofOfURL,
-                    totalAmountOfTransaction: data.totalAmountOfTransaction
+                    loanStatus: data.loanStatus,
+                    loanProofOfURL: data.loanProofOfURL
                 };
-                console.log('Add Transaction data being sent:', transactionData);
+                console.log('Add Loan data being sent:', loanTransactionData);
 
                 // Add request
-                const response = await axios.post('/api/transaction/add', transactionData);                
+                const response = await axios.post('/api/transaction/loan/add', loanTransactionData);                
                 
                 console.log(response);
 
                 if(response.status === 200) {
                     // setTransactionData(response.data);
-                    alert('Transaction Addition successful');
-                    router.push('/income-expense')
+                    alert('Loan Addition successful');
+                    router.push('/loans')
                 } else if (response.status === 400 || response.status === 500){
-                    alert('Transaction Addition unsuccessful');
+                    alert('Loan Addition unsuccessful');
                 }
             }
 
             if (type === 'edit') {
-                console.log('Transaction Edit initiated');
-                const formattedTransactionDetails = transactionIndividualDetails.map(detail => ({
-                    nameOfTransactionIndividual: detail.transactionIndividualDetailsName,
-                    descriptionOfTransactionIndividual: detail.transactionIndividualDetailsDescription,
-                    typeOfTransactionIndividual: detail.transactionIndividualDetailsType,
-                    amountOfTransactionIndividual: detail.transactionIndividualDetailsAmount,
-                    individualTransactionCurrency: detail.transactionIndividualDetailsCurrency
-                }));                
+                console.log('Loan Edit initiated');
+
                 const loggedInUserID = sessionStorage.getItem('loggedInUserID');
 
                 console.log('Logged In User ID: ', loggedInUserID);
 
                 console.log('Data received from form: ', data);
 
-                const transactionData = {
+                const loanTransactionData = {
                     userID: loggedInUserID,
                     oldLoanTransactionID: oldLoanTransactionID,
-                    newTransactionName: data.transactionName,
-                    newTransactionCategory: data.transactionCategory,
-                    newDateOfTransaction: data.dateOfTransaction,
-                    newTransactionDescription: data.transactionDescription,
+                    newLoanName: data.loanName,
+                    newLoanCategory: data.loanCategory,
+                    newStartingDateOfLoan: data.startingDateOfLoan,
+                    newLoanDescription: data.loanDescription,
+                    newLoanCurrency: data.loanCurrency,
+                    newLoanAmount: data.loanAmount,
+                    newLoanTermYear: data.loanTermYear,
+                    newLoanTermMonth: data.loanTermMonth,
+                    newInterestRate: data.interestRate,
+                    newInterestRateType: data.interestRateType,
                     newReceiverID: data.receiverID,
                     newSenderID: data.senderID,
-                    newTransactionCurrency: data.transactionCurrency,
-                    newTransactionIndividualDetails: formattedTransactionDetails,
-                    newTransactionType: data.transactionType,
-                    newTransactionStatus: data.transactionStatus,
-                    newTransactionCycleType: data.transactionPlannedCycleType,
-                    newTransactionPlannedCycle: data.transactionPlannedCycle,
-                    newTransactionPlannedCycleDate: data.transactionPlannedCycleDate,
-                    newTransactionProofURL: data.transactionProofOfURL,
-                    newTotalAmountOfTransaction: data.totalAmountOfTransaction
+                    newLoanStatus: data.loanStatus,
+                    newLoanProofOfURL: data.loanProofOfURL
                 };
-                console.log('Edit Transaction data being sent:', transactionData);
+                console.log('Edit Loan data being sent:', loanTransactionData);
 
                 // Edit request
-                const response = await axios.post('/api/transaction/edit', transactionData);
+                const response = await axios.post('/api/transaction/loan/edit', loanTransactionData);
 
                 console.log(response);
                 
@@ -282,12 +255,12 @@ const IndividualTransactionForm = ({ type, oldLoanTransactionID }: IndividualTra
                     // setUser(response.data.loggedInUser);
                     // setUser(response.data);
                     // setTransactionData(response.data);
-                    alert('Transaction Edit successful');
+                    alert('Loan Edit successful');
                     // sessionStorage.setItem('loggedInUser', response.data.loggedInUserInfo)
-                    router.push('/income-expense')
+                    router.push('/loans')
                 } else {
                     // setErrorMessage('Login unsuccessful');
-                    alert('Transaction Edit unsuccessful');
+                    alert('Loan Edit unsuccessful');
                 }
             }
         } catch (error: any) {
@@ -301,7 +274,7 @@ const IndividualTransactionForm = ({ type, oldLoanTransactionID }: IndividualTra
     return (
         <section className="transaction-form">
             <header className="flex flex-col gap-5 md:gap-8">
-                <h1>Transactions</h1>
+                <h1>Loans</h1>
                 {/* <Link href="/" className="flex cursor-pointer items-center gap-1 px-4">
                     <Image
                         src="/icons/logo-wallet-blue.svg"
@@ -320,138 +293,73 @@ const IndividualTransactionForm = ({ type, oldLoanTransactionID }: IndividualTra
                     <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="transaction-form-layout">
                         <div className='flex gap-4 my-[10px]'>
-                            <h1>Old Transaction ID: {oldLoanTransactionID}</h1>
+                            <h1>Old Loan Transaction ID: {oldLoanTransactionID}</h1>
                         </div>
                         <div className="transaction-form-row-layout">
                         <div className='transaction-column-first-item'>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionName' labelInfo='Transaction Name' placeholderInfo='Enter your transaction name' formType='edit'/>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionCategory' labelInfo='Transaction Category' placeholderInfo='Enter your category' formType='edit'/>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionDescription' labelInfo='Transaction Description' placeholderInfo='Enter your Description' formType='edit'/>
+                            <CustomLoanTransactionFormInput control={form.control} typeInfo='loanName' labelInfo='Loan Name' placeholderInfo='Enter your loan name' formType='edit'/>
+                            <CustomLoanTransactionFormInput control={form.control} typeInfo='loanCategory' labelInfo='Loan Category' placeholderInfo='Enter your loan category' formType='edit'/>
+                            <CustomLoanTransactionFormInput control={form.control} typeInfo='loanDescription' labelInfo='Loan Description' placeholderInfo='Enter your loan Description' formType='edit'/>                            
 
+                            <div className='flex flex-row gap-[30px]'>
+                                <div className='w-[235px]'>
+                                    <CustomLoanTransactionFormInput control={form.control} typeInfo='interestRate' labelInfo='Interest Rate Amount' placeholderInfo='Enter your Loan Interest Rate Amount' formType='edit' />
+                                </div>
+                                <div className='w-[235px]'>
+                                    <CustomLoanTransactionFormInput control={form.control} typeInfo='interestRateType' labelInfo='Types of Interest Rates' placeholderInfo='Enter your Loan Type of Interest Rates' formType='edit' options={
+                                        [
+                                            {value: "Daily"},
+                                            {value: "Weekly"},
+                                            {value: "Monthly"},
+                                            {value: "Yearly"}
+                                        ]
+                                    }/>
+                                </div>
 
-                            {/* Given options income or expense */}
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionType' labelInfo='Transaction Type' placeholderInfo='Enter your Transaction Type' formType='edit' options={
-                                [
-                                    {value: "Income"},
-                                    {value: "Expense"}
-                                ]
-                            }/>
+                            </div>
                             
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionProofOfURL' labelInfo='Transaction Proof of URL' placeholderInfo='Enter your Transaction Proof URL' formType='edit'/>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionPlannedCycleType' labelInfo='Transaction Planned Cycle Type' placeholderInfo='Enter your Transaction Planned Cycle Type' formType='edit' options={
-                                [
-                                    {value: "One-Time"},
-                                    {value: "Recurring"}
-                                ]
-                            }/>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionPlannedCycle' labelInfo='Transaction Planned Cycle' placeholderInfo='Enter your Transaction Planned Cycle' formType='edit' options={
-                                [
-                                    {value: "None"},
-                                    {value: "Daily"},
-                                    {value: "Weekly"},
-                                    {value: "Monthly"},
-                                    {value: "Yearly"}
-                                ]
-                            }/>
+                            <div className='flex flex-row gap-[30px]'>
+                            <div className='w-[235px]'>
+                                <CustomLoanTransactionFormInput control={form.control} typeInfo='loanTermYear' labelInfo='Loan Term Year' placeholderInfo='Enter your Year Term' formType='edit'/>
+                            </div>
+                            <div className='w-[235px]'>
+                                <CustomLoanTransactionFormInput control={form.control} typeInfo='loanTermMonth' labelInfo='Loan Term Month' placeholderInfo='Enter your Month Term' formType='edit'/>                            
+                            </div>
+                            </div>
+                            <CustomLoanTransactionFormInput control={form.control} typeInfo='loanStatus' labelInfo='Loan Status' placeholderInfo='Enter your Transaction Status' formType='edit'
+                                options={[
+                                    {value: 'Not Paid'},
+                                    {value: 'In Progress'},
+                                    {value: 'Done'}
+                                ]}/>
+                                <CustomLoanTransactionFormInput control={form.control} typeInfo='loanProofOfURL' labelInfo='Loan Proof of URL' placeholderInfo='Enter your Loan Proof URL' formType='edit'/>
                             </div>
                             <div className='transaction-column-second-item'>
-                            <CustomTransactionFormInput control={form.control} typeInfo='receiverID' labelInfo='Receiver ID' placeholderInfo='Enter your Receiver ID' formType='edit'/>
-                            <CustomTransactionFormInput control={form.control} typeInfo='senderID' labelInfo='Sender ID' placeholderInfo='Enter your Sender ID' formType='edit'/>
+                            <CustomLoanTransactionFormInput control={form.control} typeInfo='startingDateOfLoan' labelInfo='Starting Date of Loan' placeholderInfo='Enter your Date of Transaction' formType='edit'/>
 
-                            {/* Given options on currency */}
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionCurrency' labelInfo='Transaction Currency' placeholderInfo='Enter your Transaction Currency' formType='edit' options={currencyOptions}/>
+                            <CustomLoanTransactionFormInput control={form.control} typeInfo='receiverID' labelInfo='Receiver ID' placeholderInfo='Enter your Receiver ID' formType='edit'/>
+                            <CustomLoanTransactionFormInput control={form.control} typeInfo='senderID' labelInfo='Sender ID' placeholderInfo='Enter your Sender ID' formType='edit'/>
 
-                            {/* Given options on status */}
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionStatus' labelInfo='Transaction Status' placeholderInfo='Enter your Transaction Status' formType='edit'
-                            options={[
-                                {value: 'Not Paid'},
-                                {value: 'Pending'},
-                                {value: 'Done'}
-                            ]}/>
-                            
-                            <CustomTransactionFormInput control={form.control} typeInfo='totalAmountOfTransaction' labelInfo='Total Amount' placeholderInfo='Total Amount' formType='edit'/>                                                    
-                            <CustomTransactionFormInput control={form.control} typeInfo='dateOfTransaction' labelInfo='Date of Transaction' placeholderInfo='Enter your Date of Transaction' formType='edit'/>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionPlannedCycleDate' labelInfo='Transaction Planned Cycle Date' placeholderInfo='Enter your Transaction Planned Cycle Date' formType='edit'/>
+                            <CustomLoanTransactionFormInput control={form.control} typeInfo='loanCurrency' labelInfo='Loan Currency' placeholderInfo='Enter your Transaction Currency' formType='edit' options={currencyOptions}/>                            
+                            <CustomLoanTransactionFormInput control={form.control} typeInfo='loanAmount' labelInfo='Loan Amount' placeholderInfo='Total Amount' formType='edit'/>                                                    
+
+                            <div className='mt-[50px]'>
+                                <div className='mt-[20px]'>
+                                    Total Amount Before Interest: {formatAmount(loanAmountNumber)}
+                                </div>
+                                <div className='mt-[20px]'>
+                                    Total Amount After Interest: {formatAmount(totalAmountAfter)}
+                                </div>
+                                <div className='mt-[20px]'>
+                                    Total Interest Received: {formatAmount(totalInterest)}
+                                </div>
+                            </div>
                             </div>
                         </div>
                             {/*  */}
                         {/* TODO: Have to make it so that the individual details has a button which can be dyanmic and add or decrease based on the details */}
 
-                        <div className="my-6"></div> {/* Adds margin on the y-axis */}
-
-                        <table className='transaction-table padding-[10px]'>
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                    {/* <th>Type</th>
-                                    <th>Currency</th> */}
-                                    <th>Amount</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {transactionIndividualDetails.map((transactionIndividualDetail, index) => (
-                                    <tr key={index}>
-                                    <td className='input-td w-[200px]'>
-                                        <input
-                                        type="text"
-                                        value={transactionIndividualDetail.transactionIndividualDetailsName}
-                                        onChange={(e) => handleIndividualTransactionDetailChange(e, index, 'transactionIndividualDetailsName', e.target.value)}
-                                        className='w-[200px]'
-                                        />
-                                    </td>
-                                    <td className='input-td w-[575px]'>
-                                        <input
-                                        type="text"
-                                        value={transactionIndividualDetail.transactionIndividualDetailsDescription}
-                                        onChange={(e) => handleIndividualTransactionDetailChange(e, index, 'transactionIndividualDetailsDescription', e.target.value)}
-                                        className='w-[575px]'
-                                        />
-                                    </td>
-                                    {/* <td className='input-td w-[100px]'>
-                                        <input
-                                        type="text"
-                                        value={transactionIndividualDetail.transactionIndividualDetailsType}
-                                        onChange={(e) => handleIndividualTransactionDetailChange(e, index, 'transactionIndividualDetailsType', e.target.value)}
-                                        className='w-[100px]'
-                                        />
-                                    </td>
-                                    
-                                    <td className='input-td w-[100px]'>
-                                        <input
-                                        type="text"
-                                        value={transactionIndividualDetail.transactionIndividualDetailsCurrency}
-                                        onChange={(e) => handleIndividualTransactionDetailChange(e, index, 'transactionIndividualDetailsCurrency', e.target.value)}
-                                        className='w-[100px]'
-                                        />
-                                    </td> */}
-
-                                    <td className='input-td w-[75px]'>
-                                        <input
-                                        type="number"
-                                        value={transactionIndividualDetail.transactionIndividualDetailsAmount}
-                                        onChange={(e) => handleIndividualTransactionDetailChange(e, index, 'transactionIndividualDetailsAmount', e.target.value)}
-                                        className='w-[75px]'
-                                        />
-                                    </td>
-                                    <td className='button-td'>
-                                        <button type="button" className='remove-button' onClick={() => deleteTransactionIndividualDetailsRow(index)}>
-                                        Remove
-                                        </button>
-                                    </td>
-                                    </tr>
-                                ))}
-                                <tr>
-                                    <td colSpan={5}>
-                                        <button type="button" onClick={() => addTransactionIndividualDetailsRow()}>
-                                            Add
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <Button type="submit" disabled={isLoading}>
+                        <Button type="submit" disabled={isLoading} className='mt-[25px]'>
                             {isLoading ? 'Submitting...' : 'Submit'}
                         </Button>
                     </form>
@@ -465,157 +373,63 @@ const IndividualTransactionForm = ({ type, oldLoanTransactionID }: IndividualTra
                     <>
                     <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="transaction-form-layout">
-                        <div className="transaction-form-row-layout">
+                    <div className="transaction-form-row-layout">
                         <div className='transaction-column-first-item'>
-                        <CustomTransactionFormInput control={form.control} typeInfo='transactionName' labelInfo='Transaction Name' placeholderInfo='Enter your transaction name' formType='edit'/>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionCategory' labelInfo='Transaction Category' placeholderInfo='Enter your category' formType='edit'/>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionDescription' labelInfo='Transaction Description' placeholderInfo='Enter your Description' formType='edit'/>
+                            <CustomLoanTransactionFormInput control={form.control} typeInfo='loanName' labelInfo='Loan Name' placeholderInfo='Enter your loan name' formType='add'/>
+                            <CustomLoanTransactionFormInput control={form.control} typeInfo='loanCategory' labelInfo='Loan Category' placeholderInfo='Enter your loan category' formType='add'/>
+                            <CustomLoanTransactionFormInput control={form.control} typeInfo='loanDescription' labelInfo='Loan Description' placeholderInfo='Enter your loan Description' formType='add'/>
 
+                            <div className='flex flex-row gap-[30px]'>
+                                <div className='w-[250px]'>
+                                    <CustomLoanTransactionFormInput control={form.control} typeInfo='interestRate' labelInfo='Interest Rate Amount' placeholderInfo='Enter your Loan Interest Rate Amount' formType='add' />
+                                </div>
+                                <div className='w-[250px]'>
+                                    <CustomLoanTransactionFormInput control={form.control} typeInfo='interestRateType' labelInfo='Types of Interest Rates' placeholderInfo='Enter your Loan Type of Interest Rates' formType='add' options={
+                                    [
+                                        {value: "Daily"},
+                                        {value: "Weekly"},
+                                        {value: "Monthly"},
+                                        {value: "Yearly"}
+                                    ]
+                                }/>
+                                </div>
+                            </div>
 
-                            {/* Given options income or expense */}
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionType' labelInfo='Transaction Type' placeholderInfo='Enter your Transaction Type' formType='edit' options={
-                                [
-                                    {value: "Income"},
-                                    {value: "Expense"}
-                                ]
-                            }/>
-                            
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionProofOfURL' labelInfo='Transaction Proof of URL' placeholderInfo='Enter your Transaction Proof URL' formType='edit'/>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionPlannedCycleType' labelInfo='Transaction Planned Cycle Type' placeholderInfo='Enter your Transaction Planned Cycle Type' formType='edit' options={
-                                [
-                                    {value: "One-Time"},
-                                    {value: "Recurring"}
-                                ]
-                            }/>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionPlannedCycle' labelInfo='Transaction Planned Cycle' placeholderInfo='Enter your Transaction Planned Cycle' formType='edit' options={
-                                [
-                                    {value: "None"},
-                                    {value: "Daily"},
-                                    {value: "Weekly"},
-                                    {value: "Monthly"},
-                                    {value: "Yearly"}
-                                ]
-                            }/>
+                            <div className='flex flex-row gap-[30px]'>
+                            <div className='w-[250px]'>
+                                <CustomLoanTransactionFormInput control={form.control} typeInfo='loanTermYear' labelInfo='Loan Term Year' placeholderInfo='Enter your Year Term' formType='add'/>
+                            </div>
+                            <div className='w-[250px]'>
+                                <CustomLoanTransactionFormInput control={form.control} typeInfo='loanTermMonth' labelInfo='Loan Term Month' placeholderInfo='Enter your Month Term' formType='add'/>                            
+                            </div>
+                            </div>
                             </div>
                             <div className='transaction-column-second-item'>
-                            <CustomTransactionFormInput control={form.control} typeInfo='receiverID' labelInfo='Receiver ID' placeholderInfo='Enter your Receiver ID' formType='edit'/>
-                            <CustomTransactionFormInput control={form.control} typeInfo='senderID' labelInfo='Sender ID' placeholderInfo='Enter your Sender ID' formType='edit'/>
+                            <CustomLoanTransactionFormInput control={form.control} typeInfo='startingDateOfLoan' labelInfo='Starting Date of Loan' placeholderInfo='Enter your Date of Transaction' formType='add'/>
+                            <CustomLoanTransactionFormInput control={form.control} typeInfo='receiverID' labelInfo='Receiver ID' placeholderInfo='Enter your Receiver ID' formType='add'/>
+                            <CustomLoanTransactionFormInput control={form.control} typeInfo='senderID' labelInfo='Sender ID' placeholderInfo='Enter your Sender ID' formType='add'/>
 
-                            {/* Given options on currency */}
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionCurrency' labelInfo='Transaction Currency' placeholderInfo='Enter your Transaction Currency' formType='edit' options={currencyOptions}/>
+                            <CustomLoanTransactionFormInput control={form.control} typeInfo='loanCurrency' labelInfo='Loan Currency' placeholderInfo='Enter your Transaction Currency' formType='add' options={currencyOptions}/>                            
+                            <CustomLoanTransactionFormInput control={form.control} typeInfo='loanAmount' labelInfo='Loan Amount' placeholderInfo='Total Amount' formType='add'/>                                                    
 
-                            {/* Given options on status */}
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionStatus' labelInfo='Transaction Status' placeholderInfo='Enter your Transaction Status' formType='edit'
+                            <div>
+                                Total Amount Before Interest: ${loanAmountNumber}
+                            </div>
+                            <div>
+                                Total Amount After Interest: ${totalAmountAfter}
+                            </div>
+                            <div>
+                                Total Interest: ${totalInterest}
+                            </div>
+                            </div>
+                        </div>
+                            <CustomLoanTransactionFormInput control={form.control} typeInfo='loanStatus' labelInfo='Loan Status' placeholderInfo='Enter your Transaction Status' formType='add'
                             options={[
                                 {value: 'Not Paid'},
-                                {value: 'Pending'},
+                                {value: 'In Progress'},
                                 {value: 'Done'}
                             ]}/>
-                            
-                            <CustomTransactionFormInput control={form.control} typeInfo='totalAmountOfTransaction' labelInfo='Total Amount' placeholderInfo='Total Amount' formType='edit'/>                                                    
-                            <CustomTransactionFormInput control={form.control} typeInfo='dateOfTransaction' labelInfo='Date of Transaction' placeholderInfo='Enter your Date of Transaction' formType='edit'/>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionPlannedCycleDate' labelInfo='Transaction Planned Cycle Date' placeholderInfo='Enter your Transaction Planned Cycle Date' formType='edit'/>
-                            </div>
-                        </div>
-
-                        {/* <div className="transaction-form-row-layout">
-                            <div className='transaction-column-first-item'>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionDescription' labelInfo='Transaction Description' placeholderInfo='Enter your Transaction Description' />
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionProofOfURL' labelInfo='Transaction Proof of URL' placeholderInfo='Enter your Transaction Proof URL' />
-                            </div>
-                            <div className='transaction-column-second-item'>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionCurrency' labelInfo='Transaction Currency' placeholderInfo='Enter your Transaction Currency' />
-                            <CustomTransactionFormInput control={form.control} typeInfo='totalAmountOfTransaction' labelInfo='Total Amount' placeholderInfo='Total Amount' />                        
-                            </div>
-                        </div>
-
-                        <div className="transaction-form-row-layout">
-                            <div className='transaction-column-first-item'>
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionType' labelInfo='Transaction Type' placeholderInfo='Enter your Transaction Type' />
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionPlannedCycle' labelInfo='Transaction Planned Cycle' placeholderInfo='Enter your Transaction Planned Cycle' />
-                            </div>
-                            <div className='transaction-column-second-item'>
-                            <CustomTransactionFormInput control={form.control} typeInfo='dateOfTransaction' labelInfo='Date of Transaction' placeholderInfo='Enter your Date of Transaction' />
-                            <CustomTransactionFormInput control={form.control} typeInfo='transactionPlannedCycleDate' labelInfo='Transaction Planned Cycle Date' placeholderInfo='Enter your Transaction Planned Cycle Date' />
-                            </div>
-                        </div> */}
-                            
-                        {/* TODO: Have to make it so that the individual details has a button which can be dyanmic and add or decrease based on the details */}
-                        {/* <CustomTransactionFormInput control={form.control} typeInfo='transactionIndividualDetails' labelInfo='Transaction Individual Details' placeholderInfo='Enter your Transaction Details' /> */}
-
-                        <div className="my-6"></div> {/* Adds margin on the y-axis */}
-
-                        <table className='transaction-table padding-[10px]'>
-                            <thead>
-                                <tr>
-                                    <th>Add Name</th>
-                                    <th>Description</th>
-                                    {/* <th>Type</th>
-                                    <th>Currency</th> */}
-                                    <th>Amount</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {transactionIndividualDetails.map((transactionIndividualDetail, index) => (
-                                    <tr key={index}>
-                                    <td className='input-td w-[200px]'>
-                                        <input
-                                        type="text"
-                                        value={transactionIndividualDetail.transactionIndividualDetailsName}
-                                        onChange={(e) => handleIndividualTransactionDetailChange(e, index, 'transactionIndividualDetailsName', e.target.value)}
-                                        className='w-[200px]'
-                                        />
-                                    </td>
-                                    <td className='input-td w-[575px]'>
-                                        <input
-                                        type="text"
-                                        value={transactionIndividualDetail.transactionIndividualDetailsDescription}
-                                        onChange={(e) => handleIndividualTransactionDetailChange(e, index, 'transactionIndividualDetailsDescription', e.target.value)}
-                                        className='w-[575px]'
-                                        />
-                                    </td>
-                                    {/* <td className='input-td w-[100px]'>
-                                        <input
-                                        type="text"
-                                        value={transactionIndividualDetail.transactionIndividualDetailsType}
-                                        onChange={(e) => handleIndividualTransactionDetailChange(e, index, 'transactionIndividualDetailsType', e.target.value)}
-                                        className='w-[100px]'
-                                        />
-                                    </td>
-                                    <td className='input-td w-[100px]'>
-                                        <input
-                                        type="text"
-                                        value={transactionIndividualDetail.transactionIndividualDetailsCurrency}
-                                        onChange={(e) => handleIndividualTransactionDetailChange(e, index, 'transactionIndividualDetailsCurrency', e.target.value)}
-                                        className='w-[100px]'
-                                        />
-                                    </td> */}
-                                    <td className='input-td w-[75px]'>
-                                        <input
-                                        type="number"
-                                        value={transactionIndividualDetail.transactionIndividualDetailsAmount}
-                                        onChange={(e) => handleIndividualTransactionDetailChange(e, index, 'transactionIndividualDetailsAmount', e.target.value)}
-                                        className='w-[75px]'
-                                        />
-                                    </td>
-                                    <td className='button-td'>
-                                        <button type="button" className='remove-button' onClick={() => deleteTransactionIndividualDetailsRow(index)}>
-                                        Remove
-                                        </button>
-                                    </td>
-                                    </tr>
-                                ))}
-                                <tr>
-                                    <td colSpan={5}>
-                                        <button type="button" onClick={() => addTransactionIndividualDetailsRow()}>
-                                            Add
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        {/* <CustomTransactionFormInput control={form.control} typeInfo='dateOfTransaction' labelInfo='Date of Transaction' placeholderInfo='Enter your Date of Transaction' /> */}
+                        <CustomLoanTransactionFormInput control={form.control} typeInfo='loanProofOfURL' labelInfo='Loan Proof of URL' placeholderInfo='Enter your Loan Proof URL' formType='add'/>
 
                         <Button type="submit" disabled={isLoading}>
                             {isLoading ? 'Submitting...' : 'Submit'}                            
@@ -629,4 +443,4 @@ const IndividualTransactionForm = ({ type, oldLoanTransactionID }: IndividualTra
     );
 }
 
-export default IndividualTransactionForm
+export default IndividualLoanTransactionForm

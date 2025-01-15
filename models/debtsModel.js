@@ -163,32 +163,35 @@ const currencies = [
     { code: "ZWL", name: "Zimbabwean Dollar" }
 ];
 
+const currencyCodes = currencies.map(currency => currency.code);
+
 const repaymentHistorySchema = mongoose.Schema({
     debtID: {type: mongoose.Schema.ObjectId, ref: 'Debt', required: true},
     payerID: {type: mongoose.Schema.ObjectId, default: 'Undefined', required: true},
     paymentDate: {type: Date},
     typeOfPayment: {type: String, enum: ['Normal', 'Extra'], required: true, default: 'Normal Payments'},
     paymentAmount: {type: Number, required: true},
+    repaymentProofOfURL: {type: String, default: 'Empty', required: true}
 });
 
 const debtSchema = new mongoose.Schema({
     userID: {type: mongoose.Schema.Types.ObjectId, required: true},
     debtName: {type: String, required:true},
     debtCategory: {type: String, required:true},
-    dateOfDebt: {type: Date, default: Date.now},
+    startingDateOfDebt: {type: Date, default: Date.now, required: true},
     debtDescription: {type: String, required: true},
+    debtCurrency : {type:String, enum: currencyCodes, required: true},
     debtAmount: {type: Number, required: true},
-    startingDate: {type: Date, default: Date.now},
-    endingDate: {type: Date, default: Date.now},
-    debtInterestRateType: {type: String, enum: ['Daily', 'Weekly', 'Monthly', 'Yearly'], default: 'Monthly', required: true},
-    debtInterestRate: {type: Number, required: true},
-    debtType: {type: mongoose.Schema.Types.ObjectId, enum: ['Individual', 'Shared'], default: 'Individual', required: true},
-    debtPayerGroup: {type: mongoose.Schema.Types.ObjectId, enum: 'Group'},
+    interestRateType: {type: String, enum: ['Daily', 'Weekly', 'Monthly', 'Yearly'], default: 'Monthly', required: true},
+    interestRate: {type: Number, required: true},
+    debtType: {type: String, enum: ['Individual', 'Shared'], default: 'Individual', required: true},
+    debtPayerGroup: {type: String, },//will be convereted to mongoose object id and connected to a group id
     debtPaymentPlan: {type: String, enum: ['Daily', 'Weekly', 'Biweekly', 'Monthly', 'Quarterly', 'Yearly'], default: 'Monthly', required: true},
-    debtPaymentAmount: {type: Number, required: true},
-    receiverID: {type: mongoose.Schema.ObjectId, ref: 'User', default: 'Undefined'},//might need to change to string to avoid user not found error due to the sende/receiver not being a registered user in the database
-    senderID: {type: mongoose.Schema.ObjectId, ref: 'User', default: 'Undefined'}//might need to change to string to avoid user not found error due to the sende/receiver not being a registered user in the database
+    debtRegularPaymentAmount: {type: Number, required: true},
+    debtStatus: {type: String, enum: ['Not Paid', 'In Progress', 'Paid Full'], default: 'Not Paid'},
+    receiverID: {type: String, ref: 'User', default: 'Undefined'},//might need to change to string to avoid user not found error due to the sende/receiver not being a registered user in the database
+    senderID: {type: String, ref: 'User', default: 'Undefined'}//might need to change to string to avoid user not found error due to the sende/receiver not being a registered user in the database
 });
 
-const Debt = mongoose.model('Debt', debtSchema);
+var Debt = mongoose.models.Debt ||  mongoose.model('Debt', debtSchema);
 module.exports = Debt;

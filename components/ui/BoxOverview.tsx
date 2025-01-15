@@ -4,16 +4,20 @@ import { formatAmount } from "@/lib/utils";
 import AnimatedCounter from "./AnimatedCounter";
 import { useState } from "react";
 import DoughnutChartOverview from "./DoughnutChartOverview";
-import DoughnutChartTextOverview from "./DoughnutChartOverviewText";
+import DoughnutChartTextOverview from "./DoughnutChartTextOverview";
 
 const BoxOverview = ({
     accounts = [],
     totalBanks,
-    totalLeftBalance,
+    // totalLeftBalance,
     boxData,
     boxTextData,
     typeBox,
 }: BoxOverviewProps) => {
+
+  const totalLeftBalance = boxData.reduce((acc, val) => {
+    return acc + val.amount
+  }, 0)
 
     return (
         <>
@@ -21,6 +25,7 @@ const BoxOverview = ({
             <section className="savings-balance">
               <div className="savings-chart">
                 <DoughnutChartOverview doughnutChartData={boxData} />
+                {/* <DoughnutChartTextOverview doughnutChartData={boxData} doughnutChartDataType="savings"/> */}
                 {/* <DoughnutChartTextOverview doughnutChartData={boxTextData} chartOverviewType="savings"/> */}
               </div>
     
@@ -40,7 +45,7 @@ const BoxOverview = ({
             <section className="savings-balance">
             <div className="savings-chart">
               <DoughnutChartOverview doughnutChartData={boxData} />
-              <DoughnutChartTextOverview doughnutChartData={boxTextData} chartOverviewType="savings"/>
+              {/* <DoughnutChartTextOverview doughnutChartData={boxData} doughnutChartDataType="expense"/> */}
             </div>
   
             <div className="flex flex-col gap-6">
@@ -58,8 +63,8 @@ const BoxOverview = ({
           ): typeBox === "Debt" ? (
             <section className="savings-balance">
             <div className="savings-chart">
-              <DoughnutChartOverview doughnutChartData={boxData} />
-              <DoughnutChartTextOverview doughnutChartData={boxTextData} chartOverviewType="savings"/>
+              <DoughnutChartOverview doughnutChartData={boxData} />              
+              {/* <DoughnutChartTextOverview doughnutChartData={boxData} doughnutChartDataType="debt"/> */}
             </div>
   
             <div className="flex flex-col gap-6">

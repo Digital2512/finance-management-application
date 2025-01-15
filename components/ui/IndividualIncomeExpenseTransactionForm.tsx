@@ -112,7 +112,7 @@ const IndividualTransactionForm = ({ type, oldTransactionID }: IndividualTransac
         const fetchTransactionData = async (oldTransactionID: string) => {
             try {
                 setIsLoading(true);
-                const response = await axios.get('/api/transaction/fetchTransaction', {
+                const response = await axios.get('/api/transaction/income-expense/fetchTransaction', {
                     params: { transactionID: oldTransactionID }, 
                 });
     
@@ -224,7 +224,7 @@ const IndividualTransactionForm = ({ type, oldTransactionID }: IndividualTransac
                 console.log('Add Transaction data being sent:', transactionData);
 
                 // Add request
-                const response = await axios.post('/api/transaction/add', transactionData);                
+                const response = await axios.post('/api/transaction/income-expense/add', transactionData);                
                 
                 console.log(response);
 
@@ -274,7 +274,7 @@ const IndividualTransactionForm = ({ type, oldTransactionID }: IndividualTransac
                 console.log('Edit Transaction data being sent:', transactionData);
 
                 // Edit request
-                const response = await axios.post('/api/transaction/edit', transactionData);
+                const response = await axios.post('/api/transaction/income-expense/edit', transactionData);
 
                 console.log(response);
                 
