@@ -54,7 +54,7 @@ const TransactionsSavingsTable = ({userID} : TransactionsTableProps) => {
     const router = useRouter();
 
     const onEdit = (transactionID: string) => {
-        router.push(`/savings/individual-savings-transaction-details?savingsTransactionID=${transactionID}`);
+        router.push(`/savings/individual-transaction?savingsTransactionID=${transactionID}`);
     }
 
     useEffect(() => {

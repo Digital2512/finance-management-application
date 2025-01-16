@@ -13,7 +13,9 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 //     doughnutChartData: Array<{ category: string, amount: number }>;  
 // }
 
-const DoughnutChartOverview = ({ doughnutChartData, doughnutChartDataType, doughnutChartPercentageData }: DoughnutChartProps) => {
+const DoughnutChartOverview = ({ doughnutChartData, doughnutChartPercentageData }: DoughnutChartProps) => {
+
+  console.log('Data Received: ', doughnutChartData)
 
   if(doughnutChartPercentageData){
     console.log("===================================")
@@ -175,7 +177,7 @@ const DoughnutChartOverview = ({ doughnutChartData, doughnutChartDataType, dough
     const groupedData = React.useMemo(() => {
         return doughnutChartData.reduce((acc, curr) => {
           if(!acc[curr.category]){
-            acc[curr.category] = {category: curr.category, amount: curr.amount};
+            acc[curr.category] = {category: curr.category, amount: 0};
           }
     
           acc[curr.category].amount += curr.amount;
