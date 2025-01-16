@@ -20,7 +20,6 @@ import { formatAmount } from "@/lib/utils"
 
 const DoughnutChartTextOverview = ({
   doughnutChartData,
-  doughnutChartDataType,
   doughnutChartPercentageData,
 }: DoughnutChartProps) => {
 
@@ -100,7 +99,7 @@ const DoughnutChartTextOverview = ({
 
     const transformedTotalDataChart = React.useMemo(() => {
       return Object.values(totalPercentageAmountChartData);
-    }, [groupedTotalData])
+    }, [totalPercentageAmountChartData])
 
     console.log('Total Percentage Amount Chart Data Transformed: ', transformedTotalDataChart);
 
@@ -169,7 +168,7 @@ const DoughnutChartTextOverview = ({
                             y={(viewBox.cy || 0) + 24}
                             className="fill-muted-foreground"
                           >
-                            {doughnutChartDataType === "income" ? "Amount Earned" : doughnutChartDataType === "expense" ? "Amount Spent" : doughnutChartDataType === "savings" ? "Amount Saved" : doughnutChartDataType === "debt" ? "Amount Left" : doughnutChartDataType === "percentage" ? "Finished" : "Amount"}
+                            {/* {doughnutChartDataType === "income" ? "Amount Earned" : doughnutChartDataType === "expense" ? "Amount Spent" : doughnutChartDataType === "savings" ? "Amount Saved" : doughnutChartDataType === "debt" ? "Amount Left" : doughnutChartDataType === "percentage" ? "Finished" : "Amount"} */}
                           </tspan>
                           </>
                       </text>
@@ -301,7 +300,7 @@ const DoughnutChartTextOverview = ({
                             y={(viewBox.cy || 0) + 24}
                             className="fill-muted-foreground"
                           >
-                            {doughnutChartDataType === "income" ? "Amount Earned" : doughnutChartDataType === "expense" ? "Amount Spent" : doughnutChartDataType === "savings" ? "Amount Saved" : doughnutChartDataType === "debt" ? "Amount Left" : "Amount"}
+                            {/* {doughnutChartDataType === "income" ? "Amount Earned" : doughnutChartDataType === "expense" ? "Amount Spent" : doughnutChartDataType === "savings" ? "Amount Saved" : doughnutChartDataType === "debt" ? "Amount Left" : "Amount"} */}
                           </tspan>
                           </>
                       </text>
