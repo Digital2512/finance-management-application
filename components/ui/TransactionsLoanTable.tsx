@@ -54,7 +54,7 @@ const TransactionsLoanTable = ({userID} : TransactionsTableProps) => {
     const router = useRouter();
 
     const onEdit = (transactionID: string) => {
-        router.push(`/loans/individual-loans-transaction-details?loanTransactionID=${transactionID}`);
+        router.push(`/loans/individual-loans-transaction?loanTransactionID=${transactionID}`);
     }
 
     useEffect(() => {
