@@ -85,24 +85,16 @@ const IndividualSavingsTransactionForm = ({ type, oldSavingsTransactionID }: Ind
     const savingsGoalDepositNumber = parseFloat(savingsGoalDeposit);
 
     const monthlyDepositAmount = useMemo(() => {
-        var totalMonthlyDepositAmount =  0
         if(savingsGoalDepositType === 'Yearly'){
-            totalMonthlyDepositAmount = savingsGoalDepositNumber / 12;
+            return savingsGoalDepositNumber / 12;
         }else if(savingsGoalDepositType === 'Weekly'){
-            totalMonthlyDepositAmount = savingsGoalDepositNumber * 4;
+            return savingsGoalDepositNumber * 4;
         }else if(savingsGoalDepositType === 'Daily'){
-            totalMonthlyDepositAmount = savingsGoalDepositNumber * 30;
+            return savingsGoalDepositNumber * 30;
         }else{
-            totalMonthlyDepositAmount = savingsGoalDepositNumber;
-        }
-
-        if(totalMonthlyDepositAmount >= savingsAmountNumber){
-            return savingsAmountNumber;
-        }else{
-            return totalMonthlyDepositAmount
+            return savingsGoalDepositNumber;
         }
     }, [savingsGoalDepositType, savingsGoalDepositNumber])
-
 
     const goalTermMonthConversion = useMemo(() => {
         if(savingsGoalYearNumber === 0 || savingsGoalMonthNumber === 0){

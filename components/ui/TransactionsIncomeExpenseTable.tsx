@@ -54,7 +54,7 @@ const TransactionsIncomeExpenseTable = ({userID} : TransactionsTableProps) => {
     const router = useRouter();
 
     const onEdit = (transactionID: string) => {
-        router.push(`/income-expense/individual-transaction?transactionID=${transactionID}`);
+        router.push(`/income-expense/individual-transaction-details?transactionID=${transactionID}`);
     }
 
     useEffect(() => {

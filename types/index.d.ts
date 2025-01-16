@@ -323,6 +323,7 @@ type DoughnutChartPercentageData = {
 declare interface DoughnutChartProps {
   doughnutChartData: DoughnutChartData[],
   doughnutChartPercentageData?: DoughnutChartPercentageData[],
+  doughnutChartDataType: string,
 }
 
 declare interface BoxOverviewProps {

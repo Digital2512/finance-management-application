@@ -19,9 +19,6 @@ export const loginUser = async (username: string, password: string) => {
       
       console.log('Database is connected');
 
-      const allUsers = await User.find({});
-      console.log('All Users in the Database:', allUsers);
-
         const foundUser = await User.findOne({ username });
         if(!foundUser){
           console.log('User not found');
