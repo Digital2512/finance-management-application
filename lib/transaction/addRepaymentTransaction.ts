@@ -12,12 +12,12 @@ require('dotenv').config();
 
 export const addRepaymentTransaction = async ( 
   userID:string,
-  debtID: string,
+  transactionID: string,
   senderID: string,
   receiverID: string,
   dateOfRepayment: Date,
   typeOfRepayment: string,
-  repaymentCategory: string,
+  transactionType: string,
   repaymentStatus: string,
   repaymentCurrency: string,
   repaymentAmount: string,
@@ -25,12 +25,12 @@ export const addRepaymentTransaction = async (
 ) => {
     console.log('Adding Transaction:', { 
       userID,
-      debtID,
+      transactionID,
       senderID,
       receiverID,
       dateOfRepayment,
       typeOfRepayment,
-      repaymentCategory,
+      transactionType,
       repaymentStatus,
       repaymentCurrency,
       repaymentAmount,
@@ -38,12 +38,12 @@ export const addRepaymentTransaction = async (
      }); // Log the incoming data
     console.log(`Function Transaction Data: UserID: 
       ${userID}
-      ${debtID}
+      ${transactionID}
       ${senderID}
       ${receiverID}
       ${dateOfRepayment}
       ${typeOfRepayment}
-      ${repaymentCategory}
+      ${transactionType}
       ${repaymentStatus}
       ${repaymentCurrency}
       ${repaymentAmount}
@@ -61,7 +61,7 @@ export const addRepaymentTransaction = async (
     try {
       const existingRepaymentTransaction = await Repayment.findOne({ 
         userID,
-        debtID, 
+        transactionID, 
         senderID,
         receiverID,
         dateOfRepayment
@@ -83,12 +83,12 @@ export const addRepaymentTransaction = async (
         console.log('User ID Object: ', userIDObject);
         const newLoanTransaction = new Repayment({
           userID: userIDObject,
-          debtID: debtID,
+          transactionID: transactionID,
           senderID: senderID,
           receiverID: receiverID,
           dateOfRepayment: dateOfRepayment,
           typeOfRepayment: typeOfRepayment,
-          repaymentCategory: repaymentCategory,
+          transactionType: transactionType,
           repaymentStatus: repaymentStatus,
           repaymentCurrency: repaymentCurrency,
           repaymentAmount: repaymentAmount,

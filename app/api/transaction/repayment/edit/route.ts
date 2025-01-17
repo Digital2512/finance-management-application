@@ -11,12 +11,12 @@ export async function POST(request: NextRequest) {
     const { 
       userID,
       oldRepaymentTransactionID,
-      newDebtID,
+      newTransactionID,
       newSenderID,
       newReceiverID,
       newDateOfRepayment,
       newTypeOfRepayment,
-      newRepaymentCategory,
+      newTransactionType,
       newRepaymentStatus,
       newRepaymentCurrency,
       newRepaymentAmount,
@@ -25,25 +25,26 @@ export async function POST(request: NextRequest) {
         console.log('Edit Transaction API Data being received: ',
           userID,
           oldRepaymentTransactionID,
-          newDebtID,
+          newTransactionID,
           newSenderID,
           newReceiverID,
           newDateOfRepayment,
           newTypeOfRepayment,
-          newRepaymentCategory,
+          newTransactionType,
           newRepaymentStatus,
           newRepaymentCurrency,
           newRepaymentAmount,
           newRepaymentProofOfURL
         );
-    const {result, token, message, deletedTransactionID, newTransactionID} = await editRepaymentTransaction(userID,
+    const {result, token, message, deletedTransactionID, newRepaymentTransactionID} = await editRepaymentTransaction(
+      userID,
       oldRepaymentTransactionID,
-      newDebtID,
+      newTransactionID,
       newSenderID,
       newReceiverID,
       newDateOfRepayment,
       newTypeOfRepayment,
-      newRepaymentCategory,
+      newTransactionType,
       newRepaymentStatus,
       newRepaymentCurrency,
       newRepaymentAmount,
@@ -51,7 +52,7 @@ export async function POST(request: NextRequest) {
 
     console.log('Old Transaction Info: ' + oldRepaymentTransactionID);
     console.log('Deleted Transaction Info: ' + deletedTransactionID);
-    console.log('New Transaction Info: ' + newTransactionID);
+    console.log('New Transaction Info: ' + newRepaymentTransactionID);
 
     console.log('----------------------------------------------------------------------------------------------------------------------------------------------------');
     

@@ -153,7 +153,7 @@ const TransactionsSavingsTable = ({userID} : TransactionsTableProps) => {
         <Table className="ml-6 max-w-[1100px]">
             <TableHeader>
                 <TableRow>
-                    <TableHead className="px-2">Savings Transaction ID</TableHead>
+                    <TableHead className="px-2">Transaction Name</TableHead>
                     <TableHead className="px-2">Goal Amount</TableHead>
                     <TableHead className="px-2">Goal Deposit Amount</TableHead>
                     <TableHead className="px-2">Goal Deposit Frequency</TableHead>

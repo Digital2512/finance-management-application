@@ -380,12 +380,12 @@ export const debtTransactionFormSchema = () => z.object({
 });
 
 export const repaymentTransactionFormSchema = () => z.object({
-  debtID: z.string().min(1, {message: 'Debt ID is required'}),
+  transactionID: z.string().min(1, {message: 'Debt ID is required'}),
   senderID: z.string().min(1, {message: 'Sender ID is required'}),
   receiverID: z.string().min(1, {message: 'Receiver ID is required'}),
   dateOfRepayment: z.date().default(new Date()),
   typeOfRepayment: z.enum(['Normal', 'Extra']).default('Normal'),
-  repaymentCategory: z.enum(['Savings', 'Debt']).default('Savings'),
+  transactionType: z.enum(['Savings', 'Debts']).default('Savings'),
   repaymentStatus: z.enum(['Not Deposited', 'Pending', 'Deposited']).default('Not Deposited'),
   repaymentCurrency: z.enum(currencyCodes),
   repaymentAmount: z.preprocess(

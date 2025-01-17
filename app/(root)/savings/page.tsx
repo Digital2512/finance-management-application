@@ -7,6 +7,7 @@ import TransactionsSavingsTable from '@/components/ui/TransactionsSavingsTable'
 import React, { useEffect, useState } from 'react'
 import { formatAmount } from "@/lib/utils"
 import axios from 'axios';
+import TransactionsRepaymentTable from '@/components/ui/TransactionsRepaymentTable';
 
 const SavingsPage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -49,10 +50,10 @@ const SavingsPage = () => {
 
     useEffect(() => {
       if(loggedInUserID){
-        const fetchUserSavingsRepaymentTransactions = async () => {
+        const fetchUserRepaymentTransactions = async () => {
           setIsLoading(true);
           try{
-            const response = await axios.get('/api/transactions/repayment/fetchUserTransactions', {
+            const response = await axios.get('/api/transaction/repayment/fetchUserTransactions', {
               params: {userID: loggedInUserID}
             }
             )
@@ -67,79 +68,62 @@ const SavingsPage = () => {
             setIsLoading(false)
           }
         }
+        if(loggedInUserID){
+          console.log('User Repayment Data: ', userRepaymentTransactions)
+          fetchUserRepaymentTransactions()
+        }else{
+          console.log('No user repayment data found')
+        }
       }else{
         console.log('No User ID Found');
+        setIsLoading(false)
       }
     }, [])
 
     console.log('User Savings Transaction Data: ', userSavingsTransactions);
+    console.log('User Repayments Transaction Data: ', userRepaymentTransactions);
 
     if(isLoading){
       return <p>Loading...</p>
     }
 
     if(!userSavingsTransactions || userSavingsTransactions.length === 0){
-      return <p>No transactions found</p>
+      return <p>No Transactions Found</p>
     }
 
     if(!userRepaymentTransactions || userRepaymentTransactions.length === 0){
-      return
+      return <p>No Transactions Found</p>
     }
 
-    const transformedUserSavingsData = userSavingsTransactions.map((curr) => ({
+    const transformedUserSavingsData = userSavingsTransactions?.map((curr) => ({
       category: curr.savingsCategory,
       amount: curr.savingsTotalAmount
     }), {} as DoughnutChartData[])
 
-    const filteredUserRepaymentData = userRepaymentTransactions.filter((data) => data.typeOfRepayment === 'Savings');
-
-    const transformedUserRepaymentData = filteredUserRepaymentData.map((curr) => ({
-      category: curr.repaymentCategory,
-      amount: curr.repaymentAmount
-    }), {} as DoughnutChartData[])
+    const filteredUserRepaymentData = userRepaymentTransactions?.filter((data) => data.transactionType === 'Savings');
+    const transformedUserRepaymentData = filteredUserRepaymentData?.map((curr) => ({
+      category: curr.transactionType,
+      amount: curr.repaymentAmount,
+      date : curr.dateOfRepayment,
+    }), {} as DoughnutChartPercentageData[])
 
     console.log('User Savings Data', transformedUserSavingsData);
 
-    // const dummyData: DoughnutChartTextData[] = [
-    //   { name: "Salary", category: "Job", amount: 4000},
-    //   { name: "Side Hustle", category: "Freelance", amount: 1200},
-    //   { name: "Rental Income", category: "Rent", amount: 700 },
-    //   { name: "Stock Profits", category: "Investments", amount: 800 },
-    //   { name: "Dividends", category: "Investments", amount: 500 },
-    //   { name: "Consulting", category: "Freelance", amount: 900 },
-    //   { name: "App Royalties", category: "Royalties", amount: 600 },
-    //   { name: "YouTube Revenue", category: "Content Creation", amount: 1000 },
-    //   { name: "Blog Ads", category: "Content Creation", amount: 750 },
-    //   { name: "E-book Sales", category: "Sales", amount: 550 },
-    //   { name: "Tutoring", category: "Education", amount: 400 },
-    //   { name: "Delivery Tips", category: "Tips", amount: 300 },
-    //   { name: "Gift", category: "Personal", amount: 200 },
-    //   { name: "Scholarship", category: "Education", amount: 1500 },
-    //   { name: "Cashback", category: "Rebates", amount: 250 },
-    // ];
+    console.log('User Savings Repayment Data', transformedUserRepaymentData);
     
-    // const doughnutChartPercentageData: DoughnutChartPercentageData[] = [
-    //   { name: "January Income", category: "Income", amount: 3000, date: new Date("2025-01-01") },
-    //   { name: "January Expense", category: "Income", amount: 1500, date: new Date("2025-01-01") },
-    //   { name: "January Savings", category: "Income", amount: 1000, date: new Date("2025-01-01") },
-    // ];
-    
-    // const doughnutChartData: DoughnutChartTextData[] = [
-    //   { name: "Income for January", category: "Income", amount: 4000 }
-    //   // { name: "Expenses for January", category: "Expense", amount: 2500 },
-    //   // { name: "Savings for January", category: "Savings", amount: 1500 },
-    // ];
-
     const options = [
+      {label: 'Add Deposits', value: 'addDeposits', route: '/savings/individual-repayment-transaction', icon: "/icons/logo-wallet-blue.svg"},
+      {label: 'Add Savings', value: 'addSavingsTransactions', route: '/savings/individual-transaction', icon: "/icons/logo-wallet-blue.svg"},
       {label: 'Add Repayment', value: 'addRepaymentTransactions', route: '/debts', icon: "/icons/logo-wallet-blue.svg"},
       {label: 'Add Debt', value: 'addDebtsTransactions', route: '/debts', icon: "/icons/logo-wallet-blue.svg"},
       {label: 'Add Income and Expense Transactions', value: 'addIncomeExpenseTransactions', route: '/income-expense', icon: "/icons/logo-wallet-blue.svg"},
-      {label: 'Add Savings', value: 'addSavingsTransactions', route: '/savings/individual-transaction', icon: "/icons/logo-wallet-blue.svg"},
     ]
 
     const totalSavings = transformedUserSavingsData.reduce((sum, item) => sum + item.amount, 0);
     const totalDeposit = transformedUserRepaymentData.reduce((sum, item) => sum + item.amount, 0);
-    const remainingTotal = totalSavings-totalDeposit;
+    const remainingTotal = totalSavings - totalDeposit;
+
+    console.log('Data Retrieved: ', transformedUserSavingsData, transformedUserRepaymentData)
   return (
     <div>
         <Card className='w-[975px] m-6'>
@@ -153,32 +137,20 @@ const SavingsPage = () => {
 
           </CardHeader>
           <CardContent className='max-h-[200px]'>
-            <div className='flex flex-col'>
-              <>
-              {userSavingsTransactions 
-              ? (<div className='ml-4 mt-6 mb-6 max-h-[150px]'>
-                <DoughnutChartOverview doughnutChartData={transformedUserSavingsData}/>
-                </div>) 
-              : (<div className='ml-4 mt-6 mb-6 max-h-[150px]'>
-                <DoughnutChartOverview doughnutChartData={[{ category: "None", amount: 0 }]}/>
-                </div>
-              )
-              }
-              </>
+            <div className='flex flex-row gap-4 mt-4'>
+              <div className='max-h-[150px]'>
+              <DoughnutChartOverview doughnutChartData={transformedUserSavingsData || [{category: 'None', amount: 0}]}/>              
+              </div>
 
-              <>
-              {userRepaymentTransactions 
-              ? (<div className='ml-4 mt-6 mb-6 max-h-[150px]'>
-                <DoughnutChartOverview doughnutChartData={transformedUserRepaymentData}/>
-                </div>) 
-              : (<div className='ml-4 mt-6 mb-6 max-h-[150px]'>
-                <DoughnutChartOverview doughnutChartData={[{ category: "None", amount: 0 }]}/>
-                </div>
-              )
-              }
-              </>
+              {/* <div className='max-h-[150px]'>
+              <DoughnutChartOverview doughnutChartData={transformedUserRepaymentData || [{category: 'None', amount: 0}]}/>
+              </div> */}
 
-              <div className="items-center justify-center gap-4">
+              <div className='max-h-[150px]'>
+                <DoughnutChartOverview doughnutChartData={transformedUserSavingsData  || [{category: 'None', amount: 0}]} doughnutChartPercentageData={transformedUserRepaymentData || [{category: 'None', amount: 0}]}/>              
+              </div>
+
+              <div className="items-center justify-center gap-4 ml-5">
                 <div className="mb-1 text-lg font-bold">Total</div>
                 <div className="mb-2">Total Savings: {formatAmount(totalSavings)}</div>
                 <div className="mb-2">Total Deposits: {formatAmount(totalDeposit)}</div>
@@ -194,6 +166,7 @@ const SavingsPage = () => {
           </CardContent>
         </Card>
         <TransactionsSavingsTable userID={loggedInUserID || ''}/>
+        <TransactionsRepaymentTable userID={loggedInUserID || ''} typeOfRepayment='Savings'/>
         <FloatingButton floatingButtonOptions={options}/>
     </div>
   )

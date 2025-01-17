@@ -167,17 +167,39 @@ const currencyCodes = currencies.map(currency => currency.code);
 
 const repaymentHistorySchema = mongoose.Schema({
     userID: {type: mongoose.Schema.ObjectId, ref: 'User', required: true},
-    debtID: {type: mongoose.Schema.ObjectId, ref: 'Debt', required: true},
+    transactionID: {type: mongoose.Schema.ObjectId, required: true},
     senderID: {type: String, default: 'Undefined', required: true},
     receiverID: {type: String, default: 'Undefined', required: true},
     dateOfRepayment: {type: Date, required: true},
     typeOfRepayment: {type: String, enum: ['Normal', 'Extra'], required: true, default: 'Normal'},
-    repaymentCategory: {type: String, enum: ['Debt', 'Savings'], required: true, default: 'Savings'},
-    repaymentStatus: {type: String, enum: ['Not Paid', 'Pending', 'Paid'], required: true, default: 'Not Paid'},
+    transactionType: {type: String, enum: ['Debts', 'Savings'], required: true, default: 'Savings'},
+    repaymentStatus: {type: String, enum: ['Not Deposited', 'Pending', 'Deposited'], required: true, default: 'Not Paid'},
     repaymentCurrency: {type: String, enum: currencyCodes, required: true},
     repaymentAmount: {type: Number, required: true},
     repaymentProofOfURL: {type: String, default: 'Empty', required: true}
 });
+
+// repaymentHistorySchema.pre('save', async function (next) {
+//     try{
+//         console.log('Transaction Type: ', this.transactionType);
+//         if(this.transactionType === 'Savings'){
+//             const savingsTransactionIDFound = await mongoose.model('Savings').findById(this.transactionID);
+//             if(!savingsTransactionIDFound){
+//                 throw new Error('Invalid transactionID: Not found in Savings Database')
+//             }
+//         }else if(this.transactionType === 'Debts'){
+//             const debtTransactionIDFound = await mongoose.model('Debts').findById(this.transactionID);
+//             if(!debtTransactionIDFound){
+//                 throw new Error('Invalid transactionID: not found in Debt database');
+//             }
+//         }else{
+//             throw new Error('Invalid transaction type')
+//         }
+//         next();
+//     }catch(error){
+//         next(error);
+//     }
+// })
 
 var Repayment = mongoose.models.Repayment ||  mongoose.model('Repayment', repaymentHistorySchema);
 module.exports = Repayment;
