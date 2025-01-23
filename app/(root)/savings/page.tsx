@@ -126,7 +126,7 @@ const SavingsPage = () => {
     console.log('Data Retrieved: ', transformedUserSavingsData, transformedUserRepaymentData)
   return (
     <div>
-        <Card className='w-[975px] m-6'>
+        <Card className='w-[1100px] m-6'>
         <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
           <div className="grid flex-1 gap-1 text-center sm:text-left">
             <CardTitle className='mb-4'>Savings Progress</CardTitle>
@@ -157,7 +157,7 @@ const SavingsPage = () => {
               
                 <div>
                   Remaining Total: {" "}
-                  <span className={`font-bold ${remainingTotal>= 0 ? "text-green-600": "text-red-600"}`}>
+                  <span className={`font-bold ${remainingTotal>= 0 ? "text-red-600": "text-green-600"}`}>
                     {formatAmount(remainingTotal)}
                   </span>
                 </div>
@@ -165,7 +165,10 @@ const SavingsPage = () => {
             </div>
           </CardContent>
         </Card>
+        <h2 className='ml-8 mb-2 text-xl'>Savings</h2>
         <TransactionsSavingsTable userID={loggedInUserID || ''}/>
+        <br></br>
+        <h2 className='ml-8 mb-2 text-xl'>Repayment</h2>
         <TransactionsRepaymentTable userID={loggedInUserID || ''} typeOfRepayment='Savings'/>
         <FloatingButton floatingButtonOptions={options}/>
     </div>
