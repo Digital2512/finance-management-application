@@ -234,9 +234,9 @@ const SavingsDebtAreaChart = ({ userID }: AreaChartProps) => {
       acc.push(entry);
     }
   
-    if (curr.repaymentCategory === "Savings") {
+    if (curr.transactionType === "Savings") {
       entry.savings += curr.repaymentAmount;
-    } else if (curr.repaymentCategory === "Debt") {
+    } else if (curr.transactionType === "Debt") {
       entry.debts += curr.repaymentAmount;
     }
   

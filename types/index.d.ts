@@ -314,7 +314,6 @@ type DoughnutChartTextData = {
 }  
 
 type DoughnutChartPercentageData = {
-  name: string,
   category: string, 
   amount: number,
   date? : Date,
@@ -628,12 +627,12 @@ declare type Debt = {
 declare type Repayment = {
   _id: string;
   userID:string,
-  debtID: string,
+  transactionID: string,
   senderID: string,
   receiverID: string,
   dateOfRepayment: Date,
   typeOfRepayment: string,
-  repaymentCategory: string,
+  transactionType: string,
   repaymentStatus: string,
   repaymentCurrency: string,
   repaymentAmount: number,

@@ -54,11 +54,11 @@ const IndividualRepaymentTransactionForm = ({ type, oldRepaymentTransactionID }:
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            debtID: '',
+            transactionID: '',
             receiverID: '',
             senderID: '',
             typeOfRepayment: 'Normal',
-            repaymentCategory: 'Savings',
+            transactionType: 'Savings',
             repaymentStatus: 'Not Deposited',
             dateOfRepayment: new Date(),
             repaymentCurrency: 'USD',
@@ -168,7 +168,7 @@ const IndividualRepaymentTransactionForm = ({ type, oldRepaymentTransactionID }:
     // Submit handler for form
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
         console.log('Submit button clicked');
-        console.log('Data being sent: Debt ID: ', data.debtID, 'Type of Repayment: ', data.typeOfRepayment, 'Repayment Category: ', data.repaymentCategory);
+        console.log('Data being sent: Debt ID: ', data.transactionID, 'Type of Repayment: ', data.typeOfRepayment, 'Transaction Type: ', data.transactionType);
         setIsLoading(true);
         // setErrorMessage(null);
 
@@ -183,12 +183,12 @@ const IndividualRepaymentTransactionForm = ({ type, oldRepaymentTransactionID }:
                 const repaymentTransactionData = {
                     userID: loggedInUserID,
                     oldRepaymentTransactionID: oldRepaymentTransactionID,
-                    debtID: data.debtID,
+                    transactionID: data.transactionID,
                     senderID: data.senderID,
                     receiverID: data.receiverID,
                     dateOfRepayment: data.dateOfRepayment,
                     typeOfRepayment: data.typeOfRepayment,
-                    repaymentCategory: data.repaymentCategory,
+                    transactionType: data.transactionType,
                     repaymentStatus: data.repaymentStatus,
                     repaymentCurrency: data.repaymentCurrency,
                     repaymentAmount: data.repaymentAmount,
@@ -222,12 +222,12 @@ const IndividualRepaymentTransactionForm = ({ type, oldRepaymentTransactionID }:
                 const repaymentTransactionData = {
                     userID: loggedInUserID,
                     oldRepaymentTransactionID: oldRepaymentTransactionID,
-                    newDebtID: data.debtID,
+                    newTransactionID: data.transactionID,
                     newSenderID: data.senderID,
                     newReceiverID: data.receiverID,
                     newDateOfRepayment: data.dateOfRepayment,
                     newTypeOfRepayment: data.typeOfRepayment,
-                    newRepaymentCategory: data.repaymentCategory,
+                    newTransactionType: data.transactionType,
                     newRepaymentStatus: data.repaymentStatus,
                     newRepaymentCurrency: data.repaymentCurrency,
                     newRepaymentAmount: data.repaymentAmount,
@@ -287,14 +287,14 @@ const IndividualRepaymentTransactionForm = ({ type, oldRepaymentTransactionID }:
                         </div>
                     <div className="transaction-form-row-layout">
                         <div className='transaction-column-first-item'>
-                            <CustomRepaymentHistoryFormInput control={form.control} typeInfo='debtID' labelInfo='Debt ID' placeholderInfo='Enter your debt ID' formType='edit'/>
+                            <CustomRepaymentHistoryFormInput control={form.control} typeInfo='transactionID' labelInfo='Transaction ID' placeholderInfo='Enter your transaction ID' formType='edit'/>
                             <CustomRepaymentHistoryFormInput control={form.control} typeInfo='typeOfRepayment' labelInfo='Type of Repayment' placeholderInfo='Enter your repayment type' formType='edit' options={[
                                 {value: 'Normal'},
                                 {value: 'Extra'}                                
                             ]}/>
-                            <CustomRepaymentHistoryFormInput control={form.control} typeInfo='repaymentCategory' labelInfo='Type of Repayment' placeholderInfo='Enter your repayment type' formType='edit' options={[
+                            <CustomRepaymentHistoryFormInput control={form.control} typeInfo='transactionType' labelInfo='Type of Repayment' placeholderInfo='Enter your repayment type' formType='edit' options={[
                                 {value: 'Savings'},
-                                {value: 'Debt'}                                
+                                {value: 'Debts'}                                
                             ]}/>
 
                             <div className='flex flex-row gap-[30px]'>
@@ -339,14 +339,14 @@ const IndividualRepaymentTransactionForm = ({ type, oldRepaymentTransactionID }:
                     <form onSubmit={form.handleSubmit(onSubmit)} className="transaction-form-layout">
                     <div className="transaction-form-row-layout">
                         <div className='transaction-column-first-item'>
-                            <CustomRepaymentHistoryFormInput control={form.control} typeInfo='debtID' labelInfo='Debt ID' placeholderInfo='Enter your debt ID' formType='add'/>
+                            <CustomRepaymentHistoryFormInput control={form.control} typeInfo='transactionID' labelInfo='Debt ID' placeholderInfo='Enter your debt ID' formType='add'/>
                             <CustomRepaymentHistoryFormInput control={form.control} typeInfo='typeOfRepayment' labelInfo='Type of Repayment' placeholderInfo='Enter your repayment type' formType='add' options={[
                                 {value: 'Normal'},
                                 {value: 'Extra'}                                
                             ]}/>
-                            <CustomRepaymentHistoryFormInput control={form.control} typeInfo='repaymentCategory' labelInfo='Type of Repayment' placeholderInfo='Enter your repayment type' formType='edit' options={[
+                            <CustomRepaymentHistoryFormInput control={form.control} typeInfo='transactionType' labelInfo='Type of Repayment' placeholderInfo='Enter your repayment type' formType='edit' options={[
                                 {value: 'Savings'},
-                                {value: 'Debt'}                                
+                                {value: 'Debts'}                                
                             ]}/>
 
                             <div className='flex flex-row gap-[30px]'>

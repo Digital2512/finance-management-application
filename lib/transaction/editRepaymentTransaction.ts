@@ -14,18 +14,18 @@ require('dotenv').config();
 export const editRepaymentTransaction = async ( 
     userID: string,
     oldRepaymentTransactionID: string, 
-    newDebtID: string,
+    newTransactionID: string,
     newSenderID: string,
     newReceiverID: string,
     newDateOfRepayment: Date,
     newTypeOfRepayment: string,
-    newRepaymentCategory: string,
+    newTransactionType: string,
     newRepaymentStatus: string,
     newRepaymentCurrency: string,
     newRepaymentAmount: string,
     newRepaymentProofOfURL: string,
 ) => {
-    console.log('Edit Transaction:', { userID, oldRepaymentTransactionID, newDebtID, newReceiverID, newSenderID, newDateOfRepayment }); // Log the incoming data
+    console.log('Edit Transaction:', { userID, oldRepaymentTransactionID, newTransactionID, newReceiverID, newSenderID, newDateOfRepayment }); // Log the incoming data
 
     const connected = await connectToDatabase();
 
@@ -51,30 +51,30 @@ export const editRepaymentTransaction = async (
         }
       }
 
-      const addNewRepayment = new Repayment({
+      const editNewRepayment = new Repayment({
         userID: userID,
-        debtID: newDebtID,
+        transactionID: newTransactionID,
         senderID: newSenderID,
         receiverID: newReceiverID,
         dateOfRepayment: newDateOfRepayment,
         typeOfRepayment: newTypeOfRepayment,
-        repaymentCategory: newRepaymentCategory,
+        transactionType: newTransactionType,
         repaymentStatus: newRepaymentStatus,
         repaymentCurrency: newRepaymentCurrency,
         repaymentAmount: newRepaymentAmount,
         repaymentProofOfURL:newRepaymentProofOfURL
       });
 
-      await addNewRepayment.save();
+      await editNewRepayment.save();
 
       // console.log('CREATED USER -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------');
 
-      const token = authMiddleware({ userID: addNewRepayment._id, debtID: addNewRepayment.debtID, expiresInAmount: '1h'}, 'sign');
+      const token = authMiddleware({ userID: editNewRepayment._id, debtID: editNewRepayment.debtID, expiresInAmount: '1h'}, 'sign');
       console.log('Edit Transaction Token: ' + token);
 
       if(token){
         console.log("Edit Transaction successful");
-        return { result: true, token: token, message: 'Edit Transaction Successful', deletedTransactionID: oldRepaymentTransactionID, newTransactionID: addNewRepayment._id};
+        return { result: true, token: token, message: 'Edit Transaction Successful', deletedTransactionID: oldRepaymentTransactionID, newRepaymentTransactionID: editNewRepayment._id};
       }
 
       console.log("Edit Transaction unsuccessful");

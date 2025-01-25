@@ -15,7 +15,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 const DoughnutChartOverview = ({ doughnutChartData, doughnutChartPercentageData }: DoughnutChartProps) => {
 
-  console.log('Data Received: ', doughnutChartData)
+  console.log('Data Received: ', doughnutChartData, doughnutChartPercentageData);
 
   if(doughnutChartPercentageData){
     console.log("===================================")
@@ -38,7 +38,7 @@ const DoughnutChartOverview = ({ doughnutChartData, doughnutChartPercentageData 
     const groupedTotalData = React.useMemo(() => {
       return doughnutChartData.reduce((acc, curr) => {
         if(!acc[curr.category]){
-          acc[curr.category] = {category: curr.category, amount: curr.amount}; 
+          acc[curr.category] = {category: curr.category, amount: 0}; 
         }
 
         acc[curr.category].amount += curr.amount;
@@ -90,15 +90,18 @@ const DoughnutChartOverview = ({ doughnutChartData, doughnutChartPercentageData 
 
     console.log('Total Percentage Amount Chart Data: ', totalPercentageAmountChartData)
 
-    const transformedTotalDataChart = React.useMemo(() => {
+    const transformedTotalDataChart = React.useMemo(() => {      
       return Object.values(totalPercentageAmountChartData)
     }, [totalPercentageAmountChartData])
 
     console.log('Transformed Total Data Chart Data: ', transformedTotalDataChart)
 
+    console.log('Total Done Percentage Amount: ', totalDonePercentageDataAmount);
+    console.log('Total Percentage Amount: ', totalPercentageDataAmount);
+
     const totalDonePercentage = React.useMemo(() => {
       var totalPercentageAmountChart = (totalDonePercentageDataAmount / totalPercentageDataAmount) * 100;
-      return totalPercentageAmountChart;
+      return totalPercentageAmountChart.toFixed(2);
     }, [totalPercentageDataAmount, totalPercentageDataAmount])
 
     console.log("Total Done Percentage: ", totalDonePercentage);
@@ -140,9 +143,9 @@ const DoughnutChartOverview = ({ doughnutChartData, doughnutChartPercentageData 
       const height = chart.height;
       const { datasets } = chart.data;
 
-      // const total = (datasets[0].data as number[]).reduce((acc: number, val: number) => {
-      //   return acc + val;
-      // }, 0);
+      const total = (datasets[0].data as number[]).reduce((acc: number, val: number) => {
+        return acc + val;
+      }, 0);
 
       const centerX = width / 2;
       const centerY = height / 2;
@@ -152,7 +155,7 @@ const DoughnutChartOverview = ({ doughnutChartData, doughnutChartPercentageData 
       ctx.textBaseline = "middle";
       ctx.font = "bold 12px Arial";
       ctx.fillStyle = "#000";
-      ctx.fillText(`$${totalDonePercentage} %`, centerX, centerY);
+      ctx.fillText(`${totalDonePercentage}%`, centerX, centerY);
       ctx.restore();
     }
   };
@@ -210,35 +213,6 @@ const DoughnutChartOverview = ({ doughnutChartData, doughnutChartPercentageData 
       const transformed5CategoriesWithOthersData = React.useMemo(() => {
         return Object.values(top5CategoriesWithOthers);
       }, [top5CategoriesWithOthers])
-
-      // const chartConfig = {
-      //   chart1: {
-      //     label: top5CategoriesWithOthers[0]?.category || "N/A",
-      //     color: "#0747b6",
-      //   },
-      //   chart2: {
-      //     label: top5CategoriesWithOthers[1]?.category || "N/A",
-      //     color: "#2265d8",
-      //   },
-      //   chart3: {
-      //     label: top5CategoriesWithOthers[2]?.category || "N/A",
-      //     color: "#f0c419",
-      //   },
-      //   chart4: {
-      //     label: top5CategoriesWithOthers[3]?.category || "N/A",
-      //     color: "#1f77b4",
-      //   },
-      //   chart5: {
-      //     label: top5CategoriesWithOthers[4]?.category || "N/A",
-      //     color: "#ff7f0e",
-      //   },
-      //   others: {
-      //     label: top5CategoriesWithOthers[5]?.category || "N/A",
-      //     color: "#d62728"
-      //   }
-      // } satisfies ChartConfig;
-      
-    // const chartKeys: (keyof typeof chartConfig)[] = ["chart1", "chart2", "chart3", "chart4", "chart5", "others"]
 
     // Prepare the data for the doughnut chart
   const doughnutChartDataAmount = top5CategoriesWithOthers.map(dataIndividual => dataIndividual.amount);  // Extract amounts

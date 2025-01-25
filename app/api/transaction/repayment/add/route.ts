@@ -10,12 +10,12 @@ export async function POST(request: NextRequest) {
   try {
     const { 
         userID,
-        debtID,
+        transactionID,
         senderID,
         receiverID,
         dateOfRepayment,
         typeOfRepayment,
-        repaymentCategory,
+        transactionType,
         repaymentStatus,
         repaymentCurrency,
         repaymentAmount,
@@ -23,12 +23,12 @@ export async function POST(request: NextRequest) {
 
     console.log(`Transaction Data: 
       userID:${userID}
-      debtID: ${debtID}
+      transactionID: ${transactionID}
       senderID: ${senderID}
       receiverID: ${receiverID}
       dateOfRepayment: ${dateOfRepayment}
       typeOfRepayment: ${typeOfRepayment}
-      repaymentCategory: ${repaymentCategory}
+      transactionType: ${transactionType}
       repaymentStatus: ${repaymentStatus}
       repaymentCurrency: ${repaymentCurrency}
       repaymentAmount: ${repaymentAmount}
@@ -38,12 +38,12 @@ export async function POST(request: NextRequest) {
     console.log('User ID Route: ', userID);
     const {result, token, message, addTransactionID} = await addRepaymentTransaction(
       userID,
-      debtID,
+      transactionID,
       senderID,
       receiverID,
       dateOfRepayment,
       typeOfRepayment,
-      repaymentCategory,
+      transactionType,
       repaymentStatus,
       repaymentCurrency,
       repaymentAmount,

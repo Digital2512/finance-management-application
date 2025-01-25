@@ -44,27 +44,31 @@ const CategoryBadge = ({category}: CategoryBadgeProps) => {
 
 interface TransactionsTableProps {
     userID: string;
+    typeOfRepayment: string;
     // Other props if needed
   }
 
-const TransactionsRepaymentTable = ({userID} : TransactionsTableProps) => {
-    const [userTransactionsData, setUserTransactionsData] = useState<Repayment[]>([]);
-    const [transactionData, setTransactionsData] = useState<Repayment>();
+const TransactionsRepaymentTable = ({userID, typeOfRepayment} : TransactionsTableProps) => {
+    const [userTransactionsData, setUserTransactionsData] = useState<Repayment[]>([]);    
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
 
     const onEdit = (transactionID: string) => {
-        router.push(`/debts/individual-repayment-transaction?repaymentTransactionID=${transactionID}`);
+        if(typeOfRepayment === 'Savings'){
+            router.push(`/savings/individual-repayment-transaction?repaymentTransactionID=${transactionID}`);
+        }else{
+            router.push(`/debts/individual-repayment-transaction?repaymentTransactionID=${transactionID}`);
+        }
     }
 
     useEffect(() => {
-        const fetchUserTransactions = async (loggedInUserID: string) => {
+        const fetchUserTransactions = async (userID: string) => {
             setIsLoading(true);
-            console.log('Logged In User ID Use Effect', loggedInUserID);
-            if (loggedInUserID) {
+            console.log('Logged In User ID Use Effect', userID);
+            if (userID) {
                 try {
                     const response = await axios.get('/api/transaction/repayment/fetchUserTransactions', {
-                        params: { userID: loggedInUserID }
+                        params: { userID: userID }
                     });
     
                     console.log('User Repayment Transactions Response Function:', response);
@@ -91,7 +95,7 @@ const TransactionsRepaymentTable = ({userID} : TransactionsTableProps) => {
         }
     }, []); // Ensure only runs once
 
-    console.log('User Transactions Data Table:', userTransactionsData);
+    console.log('User Repayment Transactions Data Table:', userTransactionsData);
 
     if (isLoading) {
         return <p>Loading...</p>; // Show loading message while fetching data
@@ -148,72 +152,140 @@ const TransactionsRepaymentTable = ({userID} : TransactionsTableProps) => {
         //     console.log('No Logged In User ID');
         //     setIsLoading(false);
         // }
+        
+        console.log("=================================================")
+    console.log('Users Repayment Table: ', userTransactionsData);
+
+    const savingsUserTransactionData = userTransactionsData.filter((curr) => curr.transactionType === 'Savings');
+    const debtUserTransactionData = userTransactionsData.filter((curr) => curr.transactionType === 'Debts');
+
+    console.log('Savings Repayment Table: ', savingsUserTransactionData);
+    console.log('Debts Repayment Table: ', debtUserTransactionData);
+    console.log("=================================================")
 
     return(
         <Table className="ml-6 max-w-[1100px]">
             <TableHeader>
                 <TableRow>
-                    <TableHead className="px-2">Repayment Transaction ID</TableHead>
+                    <TableHead className="px-2">Transaction ID</TableHead>
+                    <TableHead className="px-2">Date</TableHead>
                     <TableHead className="px-2">Amount</TableHead>
-                    <TableHead className="px-2">Sender ID</TableHead>
-                    <TableHead className="px-2">Receiver ID</TableHead>
-                    <TableHead className="px-2">Type Of Repayment</TableHead>
+                    <TableHead className="px-2 max-md::hidden">Type</TableHead>
+                    <TableHead className="px-2 max-md::hidden">Sender ID</TableHead>
+                    <TableHead className="px-2 max-md::hidden">Receiver ID</TableHead>
+                    <TableHead className="px-2">Status</TableHead>
+                    {/* <TableHead className="px-2">Type Of Repayment</TableHead> */}
                     {/* <TableHead className="px-2 max-md:hidden">Category</TableHead>
                     <TableHead className="px-2 max-md:hidden">Receiver ID</TableHead>
                     <TableHead className="px-2 max-md:hidden">Sender ID</TableHead> */}
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {userTransactionsData.map((r: Repayment) => {
-                    const status = getTransactionStatus (new Date(r.dateOfRepayment))
-                    const amount = formatAmount(r.repaymentAmount)
+            {typeOfRepayment === 'Savings' ? (
+            savingsUserTransactionData.map((r: Repayment) => {
+            const dateStatus = getTransactionStatus(new Date(r.dateOfRepayment));
+            const status = r.repaymentStatus;
+            const amount = formatAmount(r.repaymentAmount);
 
-                    // const isHighInterest = l.interestRate >= 15;
-                    // const isLowInterest = l.interestRate < 15;
+            return (
+                <TableRow key={r._id}>
+                <TableCell className="max-w-[100px] pl-2 pr-10">
+                    <div className="flex items-center gap-3">
+                    <h1 className="text-14 truncate font-semibold text-[#344054]">
+                        {r.transactionID}
+                    </h1>
+                    </div>
+                </TableCell>
 
-                    // const isHighCummulative = l.interestRateType === 'Daily' || 'Weekly';
-                    // const isLowCummulative = l.interestRateType === 'Monthly' || 'Yearly';
+                <TableCell className="max-w-[100px] pl-2 pr-10">
+                    {formatDateTime(new Date(r.dateOfRepayment)).dateTime}
+                </TableCell>
 
-                    // const expensiveUrgent = isHighInterest && isHighCummulative;
-                    // const expensiveNotUrgent = isHighInterest && isLowCummulative;
-                    // const notExpensiveUrgent = isLowInterest && isHighCummulative;
-                    // const notExpensiveNotUrgent = isLowInterest && isLowCummulative;
+                <TableCell className="pl-2 pr-10 font-semibold text-[#f04438]">
+                    {formatAmount(r.repaymentAmount)}
+                </TableCell>
 
-                    return(
-                        <TableRow key={r._id} className="">
-                            <TableCell className="max-w-[100px] pl-2 pr-10">
-                            <div className="flex items-center gap-3">
-                                    <h1 className="text-14 truncate font-semibold text-[#344054]">
-                                        {r.debtID}
-                                    </h1>
-                                </div>
-                            </TableCell>
+                <TableCell className="pl-2 pr-10">
+                    {r.typeOfRepayment}
+                </TableCell>
 
-                            <TableCell className = {`pl-2 pr-10 font-semibold text-[#f04438]`}>
-                                {formatAmount(r.repaymentAmount)}
-                            </TableCell>
+                <TableCell className="pl-2 pr-10">{r.senderID}</TableCell>
 
-                            <TableCell className = {`pl-2 pr-10`}>
-                            {r.repaymentCategory}
-                                {r.senderID}
-                            </TableCell>
+                <TableCell className="pl-2 pr-10">{r.receiverID}</TableCell>
 
-                            <TableCell className = {`pl-2 pr-10`}>
-                                {r.senderID}
-                            </TableCell>
+                <TableCell className="pl-2 pr-10">{r.repaymentStatus}</TableCell>
 
-                            <TableCell className = {`pl-2 pr-10`}>
-                                {r.receiverID}
-                            </TableCell>
+                <TableCell className="pl-2 pr-10 flex flex-col max-md:hidden">
+                    <button
+                    onClick={() => onEdit(r._id)}
+                    className="text-blue-500 hover:underline mr-2"
+                    >
+                    Edit
+                    </button>
+                    <button
+                    onClick={() => onDelete(r._id)}
+                    className="text-blue-500 hover:underline mr-2"
+                    >
+                    Delete
+                    </button>
+                </TableCell>
+                </TableRow>
+            );
+            })
+        ) : typeOfRepayment === 'Debts' ? (
+            debtUserTransactionData.map((r: Repayment) => {
+                const dateStatus = getTransactionStatus(new Date(r.dateOfRepayment));
+                const status = r.repaymentStatus;
+                const amount = formatAmount(r.repaymentAmount);
 
-                            <TableCell className="pl-2 pr-10 max-md:hidden">
-                                <button onClick={() => onEdit(r._id)} className="text-blue-500 hover:underline mr-2">Edit</button>
-                                <button onClick={() => onDelete(r._id)} className="text-blue-500 hover:underline mr-2">Delete</button>
-                            </TableCell>
-                        </TableRow>
-                    )
-                })}
-            </TableBody>
+            return (
+                <TableRow key={r._id}>
+                <TableCell className="max-w-[100px] pl-2 pr-10">
+                    <div className="flex items-center gap-3">
+                    <h1 className="text-14 truncate font-semibold text-[#344054]">
+                        {r.transactionID}
+                    </h1>
+                    </div>
+                </TableCell>
+
+                <TableCell className="max-w-[100px] pl-2 pr-10">
+                    {formatDateTime(new Date(r.dateOfRepayment)).dateTime}
+                </TableCell>
+
+                <TableCell className="pl-2 pr-10 font-semibold text-[#f04438]">
+                    {formatAmount(r.repaymentAmount)}
+                </TableCell>
+
+                <TableCell className="pl-2 pr-10">
+                    {r.typeOfRepayment}
+                </TableCell>
+
+                <TableCell className="pl-2 pr-10">{r.senderID}</TableCell>
+
+                <TableCell className="pl-2 pr-10">{r.receiverID}</TableCell>
+
+                <TableCell className="pl-2 pr-10">{r.repaymentStatus}</TableCell>
+
+                <TableCell className="pl-2 pr-10 flex flex-col max-md:hidden">
+                    <button
+                    onClick={() => onEdit(r._id)}
+                    className="text-blue-500 hover:underline mr-2"
+                    >
+                    Edit
+                    </button>
+                    <button
+                    onClick={() => onDelete(r._id)}
+                    className="text-blue-500 hover:underline mr-2"
+                    >
+                    Delete
+                    </button>
+                </TableCell>
+                </TableRow>
+            );
+            })
+        ): (<p>No Repayment Transactions</p>)}
+</TableBody>
+
         </Table>
     )
 }
