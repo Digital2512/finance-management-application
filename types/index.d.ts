@@ -675,3 +675,24 @@ declare type floatingButtonOptionItem = {
 declare interface floatingButtonProps {  
   floatingButtonOptions : floatingButtonOptionItem[]
 }
+
+declare type OverviewProps = {
+  userID: string;
+}
+
+declare type filterTransactions = {
+  transactionName: string;
+  transactionAmount : number;
+  transactionCategory: string;
+  transactionDate: Date;  
+}
+
+declare interface filterTransactionsProps {
+  transactions: filterTransactions[];
+  dateRange: string;
+}
+
+declare interface filterTransactionsProps {
+  transactions: filterTransactions[];
+  dateRange: string;
+}
