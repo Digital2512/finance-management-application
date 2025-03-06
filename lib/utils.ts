@@ -395,29 +395,4 @@ export const repaymentTransactionFormSchema = () => z.object({
   repaymentProofOfURL: z.string().default('Empty')
 });
 
-export const filterTransactionsByDateRange = ({ transactions, dateRange }: filterTransactionsProps) => {
-  const now = new Date();
-  return transactions.filter(transaction => {
-    const transactionDate = new Date(transaction.transactionDate);
-    switch (dateRange) {
-      case 'today':
-        return transactionDate.toDateString() === now.toDateString();
-      case 'thisWeek':
-        const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
-        const endOfWeek = new Date(now.setDate(now.getDate() + 7));
-        return transactionDate >= startOfWeek && transactionDate <= endOfWeek;
-      case 'thisMonth':
-        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-        const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-        return transactionDate >= startOfMonth && transactionDate <= endOfMonth;
-      default:
-        return true;
-    }
-  }, []);
-};
-
-export const calculateTotalAmount = (transactions : filterTransactions[]) => {
-  return transactions.reduce((total, transaction) => total + transaction.transactionAmount, 0);
-};
-
 

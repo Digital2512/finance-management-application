@@ -35,12 +35,12 @@ export const sidebarLinks = [
     route: "/investment",
     label: "Investment",
   },
-  // {
-  //   imgURL: "/icons/transaction-history-icon-black.svg",
-  //   chosenImgURL: "/icons/transaction-history-icon-white.svg",
-  //   route: "/transaction-history",
-  //   label: "Transaction History",
-  // },
+  {
+    imgURL: "/icons/transaction-history-icon-black.svg",
+    chosenImgURL: "/icons/transaction-history-icon-white.svg",
+    route: "/transaction-history",
+    label: "Transaction History",
+  },
   {
     imgURL: "/icons/leaderboard-icon-black.svg",
     chosenImgURL: "/icons/leaderboard-icon-white.svg",
