@@ -138,22 +138,8 @@ const TransactionsRepaymentTable = ({userID, typeOfRepayment} : TransactionsTabl
                 setIsLoading(false);
             }
         };
-    
-    // After `userTransactionsData` is set, you can add further useEffect hooks if needed to track updates
-    
-
-    // HAS A PROBLEM ON ITS DATABASE (UNDEFINED DATABASE)
-    
-    
-        // if (userID) {
-        //     console.log('User ID Table:', userID);
-        //     fetchUserTransactions(userID);
-        // } else {
-        //     console.log('No Logged In User ID');
-        //     setIsLoading(false);
-        // }
         
-        console.log("=================================================")
+    console.log("=================================================")
     console.log('Users Repayment Table: ', userTransactionsData);
 
     const savingsUserTransactionData = userTransactionsData.filter((curr) => curr.transactionType === 'Savings');
